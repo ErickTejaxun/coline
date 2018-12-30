@@ -1,0 +1,10 @@
+release/main.o
+release/mainwindow.o
+release/editor.o
+release/parser.o
+release/scanner.o
+release/graficador.o
+release/nodo.o
+release/constantes.o
+release/moc_mainwindow.o
+release/moc_editor.o

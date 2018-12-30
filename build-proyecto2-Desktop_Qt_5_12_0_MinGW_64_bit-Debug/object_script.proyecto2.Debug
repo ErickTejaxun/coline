@@ -1,0 +1,10 @@
+debug/main.o
+debug/mainwindow.o
+debug/editor.o
+debug/parser.o
+debug/scanner.o
+debug/graficador.o
+debug/nodo.o
+debug/constantes.o
+debug/moc_mainwindow.o
+debug/moc_editor.o
