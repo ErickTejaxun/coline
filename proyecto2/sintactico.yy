@@ -138,13 +138,15 @@ class nodo *nodito;
 %type<nodito> UNARIOS;
 %type<nodito> DECLARACION;
 %type<nodito> TIPO;
-%type<nodito> SENTENCIAS;
+%type<nodito> SENTENCIASG;  // Lista de sentencias en la raíz del documento
+%type<nodito> SENTENCIAS;   // Lista de sentencias dentro de un método.
 %type<nodito> DECLARACIONARRAY;
 %type<nodito> DIMENSIONES;
 %type<nodito> VALORESA; // VALORES ARRAY
 %type<nodito> LVALORES;
 %type<nodito> VALORES;
-%type<nodito> INSTRUCCION;
+%type<nodito> INSTRUCCIONG; // Instrucción global
+%type<nodito> INSTRUCCION; // Instrucción dentro de los métodos;
 %type<nodito> ASIGNACION;
 %type<nodito> TIPOASIG;
 %type<nodito> SENTSELEC;
@@ -156,10 +158,17 @@ class nodo *nodito;
 %type<nodito> ATRIBUTO;
 //%type<nodito> ATRIBUTOS; // LISTA DE ATRIBUTOS
 %type<nodito> CLASE;
-%type<nodito> INSCLASE;
+%type<nodito> ICLASE; // Instruccion clase
+%type<nodito> ICLASES; // Lista de instrucciones
 %type<nodito> IMPORTAR;
-%type<nodito> TIPOR; // TIPO DE RETORNO
+//%type<nodito> TIPOR; // TIPO DE RETORNO
 %type<nodito> FUNCION;
+%type<nodito> PARAMETRO;
+%type<nodito> PARAMETROS;
+%type<nodito> LPARAMETROS; // Auxiliar, porque puede venir vacia
+%type<nodito> RETORNO;
+%type<nodito> DIM; //[]
+%type<nodito> DIMS; //[][][]... para el tipo de función.
 //LOS NO TERMINALES PUEDEN SER DE DIFERENTE TIPO, LOS TERMINALES SIEMPRE SON STRINGS O NO SE ESPECIFICA TIPO
 //PRECEDENCIA DE LOS OPERADORES PARA QUITAR LA AMBIGUEDAD DEN LA GRAMTICA
 %left suma menos
@@ -174,19 +183,14 @@ class nodo *nodito;
 %%
 
 /*INICIO: EXPA{ $$ = $1;};*/
-INICIO : SENTENCIAS {$$=$1; raiz = $$;};
+INICIO : SENTENCIASG {$$=$1; raiz = $$;};
 
-SENTENCIAS:   SENTENCIAS INSTRUCCION{ $$ = $1; $$->add(*$2);}
-            | INSTRUCCION { nodo *nuevo = new nodo("sentencias","sentencias",@1.first_line, @1.first_column); nuevo->add(*$1); $$ = nuevo;}
+SENTENCIASG:   SENTENCIASG INSTRUCCIONG{ $$ = $1; $$->add(*$2);}
+            | INSTRUCCIONG { nodo *nuevo = new nodo("sentencias","sentencias",@1.first_line, @1.first_column); nuevo->add(*$1); $$ = nuevo;}
 ;
 
-INSTRUCCION:
-              DECLARACION puntoComa { $$ = $1;}
-            | DECLARACIONARRAY puntoComa{ $$ = $1;}
-            | ASIGNACION puntoComa {$$ = $1;}
-            | CONCATENAR puntoComa {$$ = $1;}
-            | IMPRIMIR puntoComa {$$ = $1;}
-            | IMPORTAR puntoComa{$$=$1;}
+INSTRUCCIONG:
+              IMPORTAR puntoComa{$$=$1;}
             | CLASE{$$ = $1;}
               ;
 
@@ -228,71 +232,186 @@ IMPORTAR : importar parA cadena parC
 // Clases----------------------------------------------------------------------
 
 // INSTRUCCIONES DE CLASE
-INSCLASE :INSCLASE ATRIBUTO
+ICLASES :ICLASES ICLASE
               {
                  $$=$1;
                  $$->hijos.append(*$2);
               }
-        |INSCLASE FUNCION
-              {
-                 $$=$1;
-                 $$->hijos.append(*$2);
-              }
-         |ATRIBUTO
+        |ICLASE
               {
                  $$ = new nodo("instrucciones","instrucciones",@1.first_line,@1.first_column);
                  $$->hijos.append(*$1);
               }
-         | FUNCION
+        ;
+
+ICLASE:
+        FUNCION {$$=$1;} // Estas van en la cabecera. O bien no dentro de algún metodo.
+       |sobreescribir FUNCION
+       {
+            $$=$2;
+            nodo *sobre = new nodo("sobreescribir","sobreescribir",@1.first_line,@1.first_column);
+            $$->hijos.prepend(*sobre);
+       } // Estas van en la cabecera. O bien no dentro de algún metodo.
+       |ATRIBUTO{$$=$1;};
+
+
+SENTENCIAS: SENTENCIAS INSTRUCCION{ $$ = $1; $$->add(*$2);}
+              |INSTRUCCION { nodo *nuevo = new nodo("sentencias","sentencias",@1.first_line, @1.first_column); nuevo->add(*$1); $$ = nuevo;}
+              ;
+
+INSTRUCCION:    DECLARACION puntoComa { $$ = $1;}
+              | DECLARACIONARRAY puntoComa{ $$ = $1;}
+              | ASIGNACION puntoComa {$$ = $1;}
+              | CONCATENAR puntoComa {$$ = $1;}
+              | IMPRIMIR puntoComa {$$ = $1;}
+              | RETORNO puntoComa {$$=$1;}
+              ;
+
+RETORNO: retornar EXPL
               {
-                 $$ = new nodo("instrucciones","instrucciones",@1.first_line,@1.first_column);
-                 $$->hijos.append(*$1);
-              };
+                $$=new nodo("retorno","retorno",@1.first_line,@1.first_column);
+                $$->hijos.append(*$2);
+              }
+              ;
 
+ATRIBUTO:  VISIBILIDAD DECLARACION puntoComa
+            {
+                $$ = $2;
+                $$->hijos.prepend(*$1);
+                $$->tipo = "declatrib";
+            }
+        |DECLARACION puntoComa
+            {
+                $$ = $1;
+                nodo *nod = new nodo("visibilidad","publico",@1.first_line, @1.first_column);
+                $$->hijos.prepend(*nod);
+                $$->tipo = "declatrib";
+            };
 
-  ATRIBUTO:  VISIBILIDAD DECLARACION puntoComa
-                {
-                    $$ = $2;
-                    $$->hijos.prepend(*$1);
-                    $$->tipo = "declatrib";
-                }
-            |DECLARACION puntoComa
-                {
-                    $$ = $1;
-                    nodo *nod = new nodo("visibilidad","publico",@1.first_line, @1.first_column);
-                    $$->hijos.prepend(*nod);
-                    $$->tipo = "declatrib";
-                };
-
-  VISIBILIDAD:
-                publico {$$ = new nodo("visibilidad",$1,@1.first_line, @1.first_column);}
-               |privado {$$ = new nodo("visibilidad",$1,@1.first_line, @1.first_column);}
-               |protegido{$$ = new nodo("visibilidad",$1,@1.first_line, @1.first_column);}
-                ;
+VISIBILIDAD:
+            publico {$$ = new nodo("visibilidad",$1,@1.first_line, @1.first_column);}
+           |privado {$$ = new nodo("visibilidad",$1,@1.first_line, @1.first_column);}
+           |protegido{$$ = new nodo("visibilidad",$1,@1.first_line, @1.first_column);}
+            ;
 
 
 // METODOS
+LPARAMETROS: PARAMETROS{$$=$1;}
+            |
+            {
+                $$ = new nodo("parametros","parametros",0,0);
+            }
+            ;
 
-FUNCION: VISIBILIDAD TIPOR id parA parC illave fllave
+
+PARAMETROS : PARAMETROS coma PARAMETRO
+            {
+                $$=$1;
+                $$->hijos.append(*$3);
+            }
+            |PARAMETRO
+            {
+                $$ = new nodo("parametros","parametros",@1.first_line, @1.first_column);
+                $$->hijos.append(*$1);
+            }
+            ;
+
+PARAMETRO: TIPO id
+            {
+                $1->tipo = $1->valor;
+                $1->valor = $2;
+                $$ = $1;
+            }
+            |TIPO id DIMENSIONES
+            {
+                $1->tipo = $1->valor;
+                $1->valor = $2;
+                $$ = $1;
+                $$->hijos.append(*$3);
+            }
+            ;
+
+FUNCION: VISIBILIDAD TIPO DIMS id  parA LPARAMETROS parC illave SENTENCIAS fllave
+            {
+                $$ = new nodo("funcion",$4,@1.first_line,@1.first_column);
+                $$->hijos.append(*$1); // visibilidad
+                $$->hijos.append(*$2); // tipo
+                $$->hijos.append(*$3); // dimensiones del retorno
+                $$->hijos.append(*$6); // lista de parametros
+                $$->hijos.append(*$9); // lista de instrucciones;
+            }
+            |VISIBILIDAD TIPO id  parA LPARAMETROS parC illave SENTENCIAS fllave
             {
                 $$ = new nodo("funcion",$3,@1.first_line,@1.first_column);
                 $$->hijos.append(*$1); // visibilidad
                 $$->hijos.append(*$2); // tipo
-            };
+                $$->hijos.append(*$5); // lista de parametros
+                $$->hijos.append(*$8); // lista de instrucciones;
+            }
+            |VISIBILIDAD vacio id parA LPARAMETROS parC illave SENTENCIAS fllave
+            {
+                $$ = new nodo("funcion",$3,@1.first_line,@1.first_column);
+                $$->hijos.append(*$1); // visibilidad
+                nodo *tipo = new nodo("tipo",$2,@2.first_line,@2.first_column);
+                $$->hijos.append(*tipo); // tipo
+                $$->hijos.append(*$5); // lista de parametros
+                $$->hijos.append(*$8); // lista de instrucciones;
+            }
+            |TIPO  DIMS id   parA LPARAMETROS parC illave SENTENCIAS fllave
+            {
+                $$ = new nodo("funcion",$3,@1.first_line,@1.first_column);
+                nodo *vis = new nodo("visibilidad","publico",@1.first_line, @1.first_column);
+                $$->hijos.append(*vis); // visibilidad
+                $$->hijos.append(*$1); // tipo
+                $$->hijos.append(*$2); // dimensiones del retorno
+                $$->hijos.append(*$5); // lista de parametros
+                $$->hijos.append(*$8); // lista de instrucciones;
+            }
+            |TIPO id   parA LPARAMETROS parC illave SENTENCIAS fllave
+            {
+                $$ = new nodo("funcion",$2,@1.first_line,@1.first_column);
+                nodo *vis = new nodo("visibilidad","publico",@1.first_line, @1.first_column);
+                $$->hijos.append(*vis); // visibilidad
+                $$->hijos.append(*$1); // tipo
+                $$->hijos.append(*$4); // lista de parametros
+                $$->hijos.append(*$7); // lista de instrucciones;
+            }
+            |vacio id parA  LPARAMETROS parC illave SENTENCIAS fllave
+            {
+                $$ = new nodo("funcion",$2,@1.first_line,@1.first_column);
+                nodo *vis = new nodo("visibilidad","publico",@1.first_line, @1.first_column);
+                $$->hijos.append(*vis); // visibilidad
+                nodo *tipo = new nodo("tipo",$1,@1.first_line,@1.first_column);
+                $$->hijos.append(*tipo); // tipo
+                $$->hijos.append(*$4); // lista de parametros.
+                $$->hijos.append(*$7); // lista de instrucciones;
+            }
+            ;
+
+DIMS: DIMS DIM
+        {
+             $$= $1;
+             $$->hijos.append(*$2);
+        }
+     |DIM {
+             $$= new nodo("dims","dims",@1.first_line, @1.first_column);
+             $$->hijos.append(*$1);
+          };
+
+DIM: iCor fCor { $$ = new nodo("dim","dim",@1.first_line,@1.first_column);};
+
+/*
+TIPOR:  vacio {$$= new nodo("tipo",$1,@1.first_line,@1.first_column);}
+       |TIPO {$$=$1;};*/
 
 
-TIPOR:
-          TIPO{$$=$1;}
-        | vacio {$$= new nodo("tipo",$1,@1.first_line,@1.first_column);};
-
-
-CLASE: VISIBILIDAD clase id illave INSCLASE fllave
+CLASE: VISIBILIDAD clase id illave ICLASES fllave
               {
                   $$ = new nodo("clase",$3,@1.first_line, @1.first_column);
                   $$->hijos.append(*$1);
                   $$->hijos.append(*$5);
               }
-        |clase id illave  INSCLASE fllave
+        |clase id illave  ICLASES fllave
               {
                   $$ = new nodo("clase",$2,@1.first_line, @1.first_column);
                   nodo *nod = new nodo("visibilidad","publico",@1.first_line, @1.first_column);
@@ -300,7 +419,7 @@ CLASE: VISIBILIDAD clase id illave INSCLASE fllave
                   $$->hijos.append(*$4);
               }
          // Con herencia
-        |VISIBILIDAD clase id heredade id illave INSCLASE fllave
+        |VISIBILIDAD clase id heredade id illave ICLASES fllave
               {
                   $$ = new nodo("clase",$3,@1.first_line, @1.first_column);
                   $$->hijos.append(*$1);
@@ -308,7 +427,7 @@ CLASE: VISIBILIDAD clase id illave INSCLASE fllave
                   $$->hijos.append(*padre);
                   $$->hijos.append(*$7);
               }
-        |clase id  heredade id illave  INSCLASE fllave
+        |clase id  heredade id illave  ICLASES fllave
               {
                   $$ = new nodo("clase",$2,@1.first_line, @1.first_column);
                   nodo *nod = new nodo("visibilidad","publico",@1.first_line, @1.first_column);
@@ -318,18 +437,6 @@ CLASE: VISIBILIDAD clase id illave INSCLASE fllave
                   $$->hijos.append(*$6);
               }
               ;
-/*
-ATRIBUTOS: ATRIBUTOS ATRIBUTO
-              {
-                $$=$1;
-                $$->hijos.append(*$2);
-              }
-           |ATRIBUTO
-              {
-                  $$ = new nodo("atributos","atributos",@1.first_line, @1.first_column);
-                  $$->hijos.append(*$1);
-              };*/
-
 
 // Clases-----------------------------------------------------------------------
 
@@ -358,6 +465,14 @@ ASIGNACION:
                           $$->hijos.append(*$2);
                           $$->hijos.append(*$4);
                           }
+              |este ACCESO TIPOASIG VALAS
+                          {
+                          $$=$3;
+                          nodo *nod = new nodo("id",$1,@1.first_line, @1.first_column);
+                          $2->hijos.prepend(*nod);
+                          $$->hijos.append(*$2);
+                          $$->hijos.append(*$4);
+                          }
                |id DIMENSIONES ACCESO  TIPOASIG VALAS
                            {
                            $$=$4;
@@ -365,7 +480,8 @@ ASIGNACION:
                            nod->hijos.append(*$2);
                            $$->hijos.prepend(*nod);
                            $$->hijos.append(*$5);
-                           };
+                           }
+
               ;
 TIPOASIG:
               masigual{$$=new nodo("asig",$1,@1.first_line, @1.first_column);}
@@ -486,8 +602,7 @@ SENTSELEC: EXPL interrogacion  EXPL dosP EXPL
 EXPL :
            EXPL y EXPL {$$ = new nodo("expl",$2,@2.first_line,@2.first_column); $$->add(*$1); $$->add(*$3);}
          | EXPL o EXPL {$$ = new nodo("expl",$2,@2.first_line,@2.first_column); $$->add(*$1); $$->add(*$3);}
-         | no EXPL {$$ = new nodo("expl",$1,@1.first_line,@1.first_column); $$->add(*$2);};
-         //| parA EXPL parC {$$ = new nodo("expl","expl",@1.first_line,@1.first_column); $$->add(*$2);}
+         | no EXPL {$$ = new nodo("expl",$1,@1.first_line,@1.first_column); $$->add(*$2);};         
          | EXPR {$$ =$1;};
 
 
@@ -503,8 +618,7 @@ EXPA:
         |EXPA menos EXPA {nodo *nod = new nodo("expa",$2,@2.first_line, @2.first_column); nod->add(*$1); nod->add(*$3); $$=nod;}
         |EXPA multi EXPA {nodo *nod = new nodo("expa",$2,@2.first_line, @2.first_column); nod->add(*$1); nod->add(*$3); $$=nod;}
         |EXPA division EXPA{nodo *nod = new nodo("expa",$2,@2.first_line, @2.first_column); nod->add(*$1); nod->add(*$3); $$=nod;}
-        |EXPA potencia EXPA{ nodo *nod = new nodo("expa",$2,@2.first_line, @2.first_column); nod->add(*$1);  nod->add(*$3);  $$=nod ;  }
-        //|parA EXPA parC{ $$ = $2;} // (E)
+        |EXPA potencia EXPA{ nodo *nod = new nodo("expa",$2,@2.first_line, @2.first_column); nod->add(*$1);  nod->add(*$3);  $$=nod ;  }        
         |menos EXPA { $$ = new nodo("expa",$1,@1.first_line, @1.first_column); $$->add(*$2);}
         |id { $$ = new nodo("variable",$1,@1.first_line, @1.first_column);}
         |id DIMENSIONES{$$ = new nodo("acceso",$1,@1.first_line,@1.first_column); $$->hijos.append(*$2);}
@@ -526,6 +640,12 @@ EXPA:
                      nodo *nod = new nodo("id",$1,@1.first_line, @1.first_column);
                      $$->hijos.prepend(*nod);
                      }
+        //----this
+         |este ACCESO {
+                     $$=$2;
+                     nodo *nod = new nodo("id",$1,@1.first_line, @1.first_column);
+                     $$->hijos.prepend(*nod);
+                     }
          |convertirAcadena parA EXPL parC
          {
             $$ = new nodo("convertacadena","convertacadena",@1.first_line,@1.first_column);
@@ -535,7 +655,7 @@ EXPA:
          {
             $$ = new nodo("convertaentero","convertaentero",@1.first_line,@1.first_column);
             $$->hijos.append(*$3);
-         }
+         }                  
          ;
         // LLAMADAS funciones
         // ACCESOS a objetos
@@ -574,49 +694,4 @@ ACCESO : ACCESO punto id
              nod->hijos.append(*$3);
              $$->hijos.append(*nod);
          }
-
-
-
-/*
-E:   E suma T{nodo *nod = new nodo("expa",$2,@2.first_line, @2.first_column);  nod->add(*$1); nod->add(*$3); $$=nod;}
-    |E menos T{nodo *nod = new nodo("expa",$2,@2.first_line, @2.first_column); nod->add(*$1); nod->add(*$3); $$=nod;}
-    |T{ $$=$1;};
-
-
-
-T:   T multi F {nodo *nod = new nodo("expa",$2,@2.first_line, @2.first_column); nod->add(*$1); nod->add(*$3); $$=nod;}
-    |T division F {nodo *nod = new nodo("expa",$2,@2.first_line, @2.first_column); nod->add(*$1); nod->add(*$3); $$=nod;}
-    |F{$$=$1;};
-
-
-
-F:    F potencia PRIM { nodo *nod = new nodo("expa",$2,@2.first_line, @2.first_column); nod->add(*$1);  nod->add(*$3);  $$=nod ;  }
-     |PRIM{$$=$1;}
-
-PRIM: id { $$ = new nodo("var",$1,@1.first_line, @1.first_column);}
-     |entero { $$ = new nodo("entero",$1,@1.first_line, @1.first_column);}
-     |caracter { $$ = new nodo("caracter",$1,@1.first_line, @1.first_column);}
-     |booleano { $$ = new nodo("booleano",$1,@1.first_line, @1.first_column);}
-     |E{$$=$1;};
-*/
-
-
-
-
-
-
-
-/*
-EXPA:    EXPA suma EXPA{nodo nodo = new nodo("+"); nod->add(*$1); nod->add(*$3); $$= nodo;}
-        |EXPA resta EXPA{nodo nodo = new nodo("-"); nod->add(*$1); nod->add(*$3); $$= nodo;}
-        |EXPA multi EXPA{nodo nodo = new nodo("*"); nod->add(*$1); nod->add(*$3); $$= nodo;}
-        |EXPA div EXPA{nodo nodo = new nodo("/"); nod->add(*$1); nod->add(*$3); $$= nodo;}
-        |EXPA potencia EXPA{nodo nodo = new nodo("^"); nod->add(*$1); nod->add(*$3); $$= nodo;}
-        |menos EXPA {nodo  nodo = new nodo("-"); nod->add(*$2); $$ = nodo;}
-        |parA EXPA parC{$$ = $2;}
-        |entero {$$ = new nodo("entero",$1);}
-        |id {$$ = new nodo("variable",$1);};
-        |llamada
- *      |acceso a objetos y metodos
-*/
 %%

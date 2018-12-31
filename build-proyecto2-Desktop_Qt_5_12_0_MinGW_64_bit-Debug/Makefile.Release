@@ -67,7 +67,8 @@ OBJECTS       = release/main.o \
 
 DIST          = lexico.l \
 		sintactico.yy \
-		compilacion.bat ..\proyecto2\mainwindow.h \
+		compilacion.bat \
+		parser.output ..\proyecto2\mainwindow.h \
 		..\proyecto2\editor.h \
 		..\proyecto2\scanner.h \
 		..\proyecto2\parser.h \
@@ -506,7 +507,21 @@ release/main.o: ../proyecto2/main.cpp ../proyecto2/mainwindow.h \
 		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qeventloop.h \
 		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qdesktopwidget.h \
 		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qguiapplication.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qinputmethod.h
+		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qinputmethod.h \
+		../proyecto2/editor.h \
+		../proyecto2/parser.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QTextEdit \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qtextedit.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qabstractscrollarea.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qframe.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qtextdocument.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qtextoption.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qtextcursor.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qtextformat.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qpen.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/QString \
+		../proyecto2/nodo.h \
+		../proyecto2/graficador.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o ..\proyecto2\main.cpp
 
 release/mainwindow.o: ../proyecto2/mainwindow.cpp ../proyecto2/mainwindow.h \

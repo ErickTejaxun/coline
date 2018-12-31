@@ -1,2 +1,2 @@
 flex lexico.l
-bison sintactico.yy
+bison sintactico.yy -v

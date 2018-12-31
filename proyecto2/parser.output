@@ -1,0 +1,3793 @@
+Terminals unused in grammar
+
+   tamanio
+   verdadero
+   falso
+   principal
+   nuevo
+   detener
+   continuar
+   si
+   sinosi
+   sino
+   seleccionar
+   caso
+   defecto
+   mientras
+   hacer
+   para
+   lista
+   insertar
+   obtener
+   buscar
+   pila
+   apilar
+   desapilar
+   cola
+   encolar
+   desencolar
+   mostraredd
+   leer_teclado
+
+
+Grammar
+
+    0 $accept: INICIO $end
+
+    1 INICIO: SENTENCIASG
+
+    2 SENTENCIASG: SENTENCIASG INSTRUCCIONG
+    3            | INSTRUCCIONG
+
+    4 INSTRUCCIONG: IMPORTAR puntoComa
+    5             | CLASE
+
+    6 IMPRIMIR: imprimir parA EXPL parC
+    7         | imprimir parA CONCATENAR parC
+
+    8 CONCATENAR: concatenar parA EXPL coma EXPL parC
+    9           | concatenar parA EXPL coma EXPL coma EXPL parC
+
+   10 IMPORTAR: importar parA cadena parC
+
+   11 ICLASES: ICLASES ICLASE
+   12        | ICLASE
+
+   13 ICLASE: FUNCION
+   14       | sobreescribir FUNCION
+   15       | ATRIBUTO
+
+   16 SENTENCIAS: SENTENCIAS INSTRUCCION
+   17           | INSTRUCCION
+
+   18 INSTRUCCION: DECLARACION puntoComa
+   19            | DECLARACIONARRAY puntoComa
+   20            | ASIGNACION puntoComa
+   21            | CONCATENAR puntoComa
+   22            | IMPRIMIR puntoComa
+   23            | RETORNO puntoComa
+
+   24 RETORNO: retornar EXPL
+
+   25 ATRIBUTO: VISIBILIDAD DECLARACION puntoComa
+   26         | DECLARACION puntoComa
+
+   27 VISIBILIDAD: publico
+   28            | privado
+   29            | protegido
+
+   30 LPARAMETROS: PARAMETROS
+   31            | %empty
+
+   32 PARAMETROS: PARAMETROS coma PARAMETRO
+   33           | PARAMETRO
+
+   34 PARAMETRO: TIPO id
+   35          | TIPO id DIMENSIONES
+
+   36 FUNCION: VISIBILIDAD TIPO DIMS id parA LPARAMETROS parC illave SENTENCIAS fllave
+   37        | VISIBILIDAD TIPO id parA LPARAMETROS parC illave SENTENCIAS fllave
+   38        | VISIBILIDAD vacio id parA LPARAMETROS parC illave SENTENCIAS fllave
+   39        | TIPO DIMS id parA LPARAMETROS parC illave SENTENCIAS fllave
+   40        | TIPO id parA LPARAMETROS parC illave SENTENCIAS fllave
+   41        | vacio id parA LPARAMETROS parC illave SENTENCIAS fllave
+
+   42 DIMS: DIMS DIM
+   43     | DIM
+
+   44 DIM: iCor fCor
+
+   45 CLASE: VISIBILIDAD clase id illave ICLASES fllave
+   46      | clase id illave ICLASES fllave
+   47      | VISIBILIDAD clase id heredade id illave ICLASES fllave
+   48      | clase id heredade id illave ICLASES fllave
+
+   49 ASIGNACION: id TIPOASIG VALAS
+   50           | id DIMENSIONES TIPOASIG VALAS
+   51           | id ACCESO TIPOASIG VALAS
+   52           | este ACCESO TIPOASIG VALAS
+   53           | id DIMENSIONES ACCESO TIPOASIG VALAS
+
+   54 TIPOASIG: masigual
+   55         | porigual
+   56         | menosigual
+   57         | divigual
+   58         | igual
+
+   59 DECLARACION: TIPO id
+   60            | TIPO id igual VALAS
+
+   61 DECLARACIONARRAY: TIPO id DIMENSIONES
+   62                 | TIPO id DIMENSIONES igual EXPL
+   63                 | TIPO id DIMENSIONES igual VALORESA
+
+   64 DIMENSIONES: DIMENSIONES iCor EXPL fCor
+   65            | iCor EXPL fCor
+
+   66 VALORESA: illave LVALORES fllave
+
+   67 LVALORES: LVALORES coma illave VALORES fllave
+   68         | illave VALORES fllave
+
+   69 VALORES: VALORES coma EXPL
+   70        | EXPL
+
+   71 VALAS: EXPL
+   72      | SENTSELEC
+
+   73 TIPO: tipoBooleano
+   74     | tipoEntero
+   75     | tipoCaracter
+   76     | tipoDecimal
+   77     | id
+
+   78 SENTSELEC: EXPL interrogacion EXPL dosP EXPL
+
+   79 EXPL: EXPL y EXPL
+   80     | EXPL o EXPL
+   81     | no EXPL
+   82     | EXPR
+
+   83 EXPR: EXPA igualigual EXPA
+   84     | EXPA desigual EXPA
+   85     | EXPA menor EXPA
+   86     | EXPA mayor EXPA
+   87     | EXPA menorigual EXPA
+   88     | EXPA mayorigual EXPA
+   89     | EXPA
+
+   90 EXPA: EXPA suma EXPA
+   91     | EXPA menos EXPA
+   92     | EXPA multi EXPA
+   93     | EXPA division EXPA
+   94     | EXPA potencia EXPA
+   95     | menos EXPA
+   96     | id
+   97     | id DIMENSIONES
+   98     | entero
+   99     | caracter
+  100     | decimal
+  101     | booleano
+  102     | cadena
+  103     | nada
+  104     | UNARIOS
+  105     | parA EXPL parC
+  106     | id ACCESO
+  107     | id DIMENSIONES ACCESO
+  108     | este ACCESO
+  109     | convertirAcadena parA EXPL parC
+  110     | convertirAentero parA EXPL parC
+
+  111 UNARIOS: EXPA aumento
+  112        | EXPA decremento
+
+  113 ACCESO: ACCESO punto id
+  114       | ACCESO punto id DIMENSIONES
+  115       | punto id
+  116       | punto id DIMENSIONES
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+entero <TEXT> (258) 98
+decimal <TEXT> (259) 100
+caracter <TEXT> (260) 99
+booleano <TEXT> (261) 101
+cadena <TEXT> (262) 10 102
+id <TEXT> (263) 34 35 36 37 38 39 40 41 45 46 47 48 49 50 51 53 59
+    60 61 62 63 77 96 97 106 107 113 114 115 116
+parA <TEXT> (264) 6 7 8 9 10 36 37 38 39 40 41 105 109 110
+parC <TEXT> (265) 6 7 8 9 10 36 37 38 39 40 41 105 109 110
+illave <TEXT> (266) 36 37 38 39 40 41 45 46 47 48 66 67 68
+fllave <TEXT> (267) 36 37 38 39 40 41 45 46 47 48 66 67 68
+iCor <TEXT> (268) 44 64 65
+fCor <TEXT> (269) 44 64 65
+dosP <TEXT> (270) 78
+coma <TEXT> (271) 8 9 32 67 69
+aumento <TEXT> (272) 111
+decremento <TEXT> (273) 112
+masigual <TEXT> (274) 54
+porigual <TEXT> (275) 55
+menosigual <TEXT> (276) 56
+divigual <TEXT> (277) 57
+suma <TEXT> (278) 90
+menos <TEXT> (279) 91 95
+multi <TEXT> (280) 92
+division <TEXT> (281) 93
+potencia <TEXT> (282) 94
+mayor <TEXT> (283) 86
+menor <TEXT> (284) 85
+mayorigual <TEXT> (285) 88
+menorigual <TEXT> (286) 87
+igualigual <TEXT> (287) 83
+desigual <TEXT> (288) 84
+o <TEXT> (289) 80
+y <TEXT> (290) 79
+igual <TEXT> (291) 58 60 62 63
+no <TEXT> (292) 81
+interrogacion <TEXT> (293) 78
+tipoBooleano <TEXT> (294) 73
+tipoEntero <TEXT> (295) 74
+tipoCaracter <TEXT> (296) 75
+tipoDecimal <TEXT> (297) 76
+imprimir <TEXT> (298) 6 7
+concatenar <TEXT> (299) 8 9
+tamanio <TEXT> (300)
+verdadero <TEXT> (301)
+falso <TEXT> (302)
+convertirAcadena <TEXT> (303) 109
+convertirAentero <TEXT> (304) 110
+clase <TEXT> (305) 45 46 47 48
+este <TEXT> (306) 52 108
+publico <TEXT> (307) 27
+privado <TEXT> (308) 28
+protegido <TEXT> (309) 29
+vacio <TEXT> (310) 38 41
+heredade <TEXT> (311) 47 48
+retornar <TEXT> (312) 24
+importar <TEXT> (313) 10
+sobreescribir <TEXT> (314) 14
+principal <TEXT> (315)
+nuevo <TEXT> (316)
+nada <TEXT> (317) 103
+detener <TEXT> (318)
+continuar <TEXT> (319)
+si <TEXT> (320)
+sinosi <TEXT> (321)
+sino <TEXT> (322)
+seleccionar <TEXT> (323)
+caso <TEXT> (324)
+defecto <TEXT> (325)
+mientras <TEXT> (326)
+hacer <TEXT> (327)
+para <TEXT> (328)
+lista <TEXT> (329)
+insertar <TEXT> (330)
+obtener <TEXT> (331)
+buscar <TEXT> (332)
+pila <TEXT> (333)
+apilar <TEXT> (334)
+desapilar <TEXT> (335)
+cola <TEXT> (336)
+encolar <TEXT> (337)
+desencolar <TEXT> (338)
+mostraredd <TEXT> (339)
+leer_teclado <TEXT> (340)
+puntoComa <TEXT> (341) 4 18 19 20 21 22 23 25 26
+punto <TEXT> (342) 113 114 115 116
+
+
+Nonterminals, with rules where they appear
+
+$accept (88)
+    on left: 0
+INICIO <nodito> (89)
+    on left: 1, on right: 0
+SENTENCIASG <nodito> (90)
+    on left: 2 3, on right: 1 2
+INSTRUCCIONG <nodito> (91)
+    on left: 4 5, on right: 2 3
+IMPRIMIR <nodito> (92)
+    on left: 6 7, on right: 22
+CONCATENAR <nodito> (93)
+    on left: 8 9, on right: 7 21
+IMPORTAR <nodito> (94)
+    on left: 10, on right: 4
+ICLASES <nodito> (95)
+    on left: 11 12, on right: 11 45 46 47 48
+ICLASE <nodito> (96)
+    on left: 13 14 15, on right: 11 12
+SENTENCIAS <nodito> (97)
+    on left: 16 17, on right: 16 36 37 38 39 40 41
+INSTRUCCION <nodito> (98)
+    on left: 18 19 20 21 22 23, on right: 16 17
+RETORNO <nodito> (99)
+    on left: 24, on right: 23
+ATRIBUTO <nodito> (100)
+    on left: 25 26, on right: 15
+VISIBILIDAD <nodito> (101)
+    on left: 27 28 29, on right: 25 36 37 38 45 47
+LPARAMETROS <nodito> (102)
+    on left: 30 31, on right: 36 37 38 39 40 41
+PARAMETROS <nodito> (103)
+    on left: 32 33, on right: 30 32
+PARAMETRO <nodito> (104)
+    on left: 34 35, on right: 32 33
+FUNCION <nodito> (105)
+    on left: 36 37 38 39 40 41, on right: 13 14
+DIMS <nodito> (106)
+    on left: 42 43, on right: 36 39 42
+DIM <nodito> (107)
+    on left: 44, on right: 42 43
+CLASE <nodito> (108)
+    on left: 45 46 47 48, on right: 5
+ASIGNACION <nodito> (109)
+    on left: 49 50 51 52 53, on right: 20
+TIPOASIG <nodito> (110)
+    on left: 54 55 56 57 58, on right: 49 50 51 52 53
+DECLARACION <nodito> (111)
+    on left: 59 60, on right: 18 25 26
+DECLARACIONARRAY <nodito> (112)
+    on left: 61 62 63, on right: 19
+DIMENSIONES <nodito> (113)
+    on left: 64 65, on right: 35 50 53 61 62 63 64 97 107 114 116
+VALORESA <nodito> (114)
+    on left: 66, on right: 63
+LVALORES <nodito> (115)
+    on left: 67 68, on right: 66 67
+VALORES <nodito> (116)
+    on left: 69 70, on right: 67 68 69
+VALAS <nodito> (117)
+    on left: 71 72, on right: 49 50 51 52 53 60
+TIPO <nodito> (118)
+    on left: 73 74 75 76 77, on right: 34 35 36 37 39 40 59 60 61 62
+    63
+SENTSELEC <nodito> (119)
+    on left: 78, on right: 72
+EXPL <nodito> (120)
+    on left: 79 80 81 82, on right: 6 8 9 24 62 64 65 69 70 71 78 79
+    80 81 105 109 110
+EXPR <nodito> (121)
+    on left: 83 84 85 86 87 88 89, on right: 82
+EXPA <nodito> (122)
+    on left: 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105
+    106 107 108 109 110, on right: 83 84 85 86 87 88 89 90 91 92 93
+    94 95 111 112
+UNARIOS <nodito> (123)
+    on left: 111 112, on right: 104
+ACCESO <nodito> (124)
+    on left: 113 114 115 116, on right: 51 52 53 106 107 108 113 114
+
+
+State 0
+
+    0 $accept: . INICIO $end
+
+    clase      shift, and go to state 1
+    publico    shift, and go to state 2
+    privado    shift, and go to state 3
+    protegido  shift, and go to state 4
+    importar   shift, and go to state 5
+
+    INICIO        go to state 6
+    SENTENCIASG   go to state 7
+    INSTRUCCIONG  go to state 8
+    IMPORTAR      go to state 9
+    VISIBILIDAD   go to state 10
+    CLASE         go to state 11
+
+
+State 1
+
+   46 CLASE: clase . id illave ICLASES fllave
+   48      | clase . id heredade id illave ICLASES fllave
+
+    id  shift, and go to state 12
+
+
+State 2
+
+   27 VISIBILIDAD: publico .
+
+    $default  reduce using rule 27 (VISIBILIDAD)
+
+
+State 3
+
+   28 VISIBILIDAD: privado .
+
+    $default  reduce using rule 28 (VISIBILIDAD)
+
+
+State 4
+
+   29 VISIBILIDAD: protegido .
+
+    $default  reduce using rule 29 (VISIBILIDAD)
+
+
+State 5
+
+   10 IMPORTAR: importar . parA cadena parC
+
+    parA  shift, and go to state 13
+
+
+State 6
+
+    0 $accept: INICIO . $end
+
+    $end  shift, and go to state 14
+
+
+State 7
+
+    1 INICIO: SENTENCIASG .
+    2 SENTENCIASG: SENTENCIASG . INSTRUCCIONG
+
+    clase      shift, and go to state 1
+    publico    shift, and go to state 2
+    privado    shift, and go to state 3
+    protegido  shift, and go to state 4
+    importar   shift, and go to state 5
+
+    $default  reduce using rule 1 (INICIO)
+
+    INSTRUCCIONG  go to state 15
+    IMPORTAR      go to state 9
+    VISIBILIDAD   go to state 10
+    CLASE         go to state 11
+
+
+State 8
+
+    3 SENTENCIASG: INSTRUCCIONG .
+
+    $default  reduce using rule 3 (SENTENCIASG)
+
+
+State 9
+
+    4 INSTRUCCIONG: IMPORTAR . puntoComa
+
+    puntoComa  shift, and go to state 16
+
+
+State 10
+
+   45 CLASE: VISIBILIDAD . clase id illave ICLASES fllave
+   47      | VISIBILIDAD . clase id heredade id illave ICLASES fllave
+
+    clase  shift, and go to state 17
+
+
+State 11
+
+    5 INSTRUCCIONG: CLASE .
+
+    $default  reduce using rule 5 (INSTRUCCIONG)
+
+
+State 12
+
+   46 CLASE: clase id . illave ICLASES fllave
+   48      | clase id . heredade id illave ICLASES fllave
+
+    illave    shift, and go to state 18
+    heredade  shift, and go to state 19
+
+
+State 13
+
+   10 IMPORTAR: importar parA . cadena parC
+
+    cadena  shift, and go to state 20
+
+
+State 14
+
+    0 $accept: INICIO $end .
+
+    $default  accept
+
+
+State 15
+
+    2 SENTENCIASG: SENTENCIASG INSTRUCCIONG .
+
+    $default  reduce using rule 2 (SENTENCIASG)
+
+
+State 16
+
+    4 INSTRUCCIONG: IMPORTAR puntoComa .
+
+    $default  reduce using rule 4 (INSTRUCCIONG)
+
+
+State 17
+
+   45 CLASE: VISIBILIDAD clase . id illave ICLASES fllave
+   47      | VISIBILIDAD clase . id heredade id illave ICLASES fllave
+
+    id  shift, and go to state 21
+
+
+State 18
+
+   46 CLASE: clase id illave . ICLASES fllave
+
+    id             shift, and go to state 22
+    tipoBooleano   shift, and go to state 23
+    tipoEntero     shift, and go to state 24
+    tipoCaracter   shift, and go to state 25
+    tipoDecimal    shift, and go to state 26
+    publico        shift, and go to state 2
+    privado        shift, and go to state 3
+    protegido      shift, and go to state 4
+    vacio          shift, and go to state 27
+    sobreescribir  shift, and go to state 28
+
+    ICLASES      go to state 29
+    ICLASE       go to state 30
+    ATRIBUTO     go to state 31
+    VISIBILIDAD  go to state 32
+    FUNCION      go to state 33
+    DECLARACION  go to state 34
+    TIPO         go to state 35
+
+
+State 19
+
+   48 CLASE: clase id heredade . id illave ICLASES fllave
+
+    id  shift, and go to state 36
+
+
+State 20
+
+   10 IMPORTAR: importar parA cadena . parC
+
+    parC  shift, and go to state 37
+
+
+State 21
+
+   45 CLASE: VISIBILIDAD clase id . illave ICLASES fllave
+   47      | VISIBILIDAD clase id . heredade id illave ICLASES fllave
+
+    illave    shift, and go to state 38
+    heredade  shift, and go to state 39
+
+
+State 22
+
+   77 TIPO: id .
+
+    $default  reduce using rule 77 (TIPO)
+
+
+State 23
+
+   73 TIPO: tipoBooleano .
+
+    $default  reduce using rule 73 (TIPO)
+
+
+State 24
+
+   74 TIPO: tipoEntero .
+
+    $default  reduce using rule 74 (TIPO)
+
+
+State 25
+
+   75 TIPO: tipoCaracter .
+
+    $default  reduce using rule 75 (TIPO)
+
+
+State 26
+
+   76 TIPO: tipoDecimal .
+
+    $default  reduce using rule 76 (TIPO)
+
+
+State 27
+
+   41 FUNCION: vacio . id parA LPARAMETROS parC illave SENTENCIAS fllave
+
+    id  shift, and go to state 40
+
+
+State 28
+
+   14 ICLASE: sobreescribir . FUNCION
+
+    id            shift, and go to state 22
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    publico       shift, and go to state 2
+    privado       shift, and go to state 3
+    protegido     shift, and go to state 4
+    vacio         shift, and go to state 27
+
+    VISIBILIDAD  go to state 41
+    FUNCION      go to state 42
+    TIPO         go to state 43
+
+
+State 29
+
+   11 ICLASES: ICLASES . ICLASE
+   46 CLASE: clase id illave ICLASES . fllave
+
+    id             shift, and go to state 22
+    fllave         shift, and go to state 44
+    tipoBooleano   shift, and go to state 23
+    tipoEntero     shift, and go to state 24
+    tipoCaracter   shift, and go to state 25
+    tipoDecimal    shift, and go to state 26
+    publico        shift, and go to state 2
+    privado        shift, and go to state 3
+    protegido      shift, and go to state 4
+    vacio          shift, and go to state 27
+    sobreescribir  shift, and go to state 28
+
+    ICLASE       go to state 45
+    ATRIBUTO     go to state 31
+    VISIBILIDAD  go to state 32
+    FUNCION      go to state 33
+    DECLARACION  go to state 34
+    TIPO         go to state 35
+
+
+State 30
+
+   12 ICLASES: ICLASE .
+
+    $default  reduce using rule 12 (ICLASES)
+
+
+State 31
+
+   15 ICLASE: ATRIBUTO .
+
+    $default  reduce using rule 15 (ICLASE)
+
+
+State 32
+
+   25 ATRIBUTO: VISIBILIDAD . DECLARACION puntoComa
+   36 FUNCION: VISIBILIDAD . TIPO DIMS id parA LPARAMETROS parC illave SENTENCIAS fllave
+   37        | VISIBILIDAD . TIPO id parA LPARAMETROS parC illave SENTENCIAS fllave
+   38        | VISIBILIDAD . vacio id parA LPARAMETROS parC illave SENTENCIAS fllave
+
+    id            shift, and go to state 22
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    vacio         shift, and go to state 46
+
+    DECLARACION  go to state 47
+    TIPO         go to state 48
+
+
+State 33
+
+   13 ICLASE: FUNCION .
+
+    $default  reduce using rule 13 (ICLASE)
+
+
+State 34
+
+   26 ATRIBUTO: DECLARACION . puntoComa
+
+    puntoComa  shift, and go to state 49
+
+
+State 35
+
+   39 FUNCION: TIPO . DIMS id parA LPARAMETROS parC illave SENTENCIAS fllave
+   40        | TIPO . id parA LPARAMETROS parC illave SENTENCIAS fllave
+   59 DECLARACION: TIPO . id
+   60            | TIPO . id igual VALAS
+
+    id    shift, and go to state 50
+    iCor  shift, and go to state 51
+
+    DIMS  go to state 52
+    DIM   go to state 53
+
+
+State 36
+
+   48 CLASE: clase id heredade id . illave ICLASES fllave
+
+    illave  shift, and go to state 54
+
+
+State 37
+
+   10 IMPORTAR: importar parA cadena parC .
+
+    $default  reduce using rule 10 (IMPORTAR)
+
+
+State 38
+
+   45 CLASE: VISIBILIDAD clase id illave . ICLASES fllave
+
+    id             shift, and go to state 22
+    tipoBooleano   shift, and go to state 23
+    tipoEntero     shift, and go to state 24
+    tipoCaracter   shift, and go to state 25
+    tipoDecimal    shift, and go to state 26
+    publico        shift, and go to state 2
+    privado        shift, and go to state 3
+    protegido      shift, and go to state 4
+    vacio          shift, and go to state 27
+    sobreescribir  shift, and go to state 28
+
+    ICLASES      go to state 55
+    ICLASE       go to state 30
+    ATRIBUTO     go to state 31
+    VISIBILIDAD  go to state 32
+    FUNCION      go to state 33
+    DECLARACION  go to state 34
+    TIPO         go to state 35
+
+
+State 39
+
+   47 CLASE: VISIBILIDAD clase id heredade . id illave ICLASES fllave
+
+    id  shift, and go to state 56
+
+
+State 40
+
+   41 FUNCION: vacio id . parA LPARAMETROS parC illave SENTENCIAS fllave
+
+    parA  shift, and go to state 57
+
+
+State 41
+
+   36 FUNCION: VISIBILIDAD . TIPO DIMS id parA LPARAMETROS parC illave SENTENCIAS fllave
+   37        | VISIBILIDAD . TIPO id parA LPARAMETROS parC illave SENTENCIAS fllave
+   38        | VISIBILIDAD . vacio id parA LPARAMETROS parC illave SENTENCIAS fllave
+
+    id            shift, and go to state 22
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    vacio         shift, and go to state 46
+
+    TIPO  go to state 58
+
+
+State 42
+
+   14 ICLASE: sobreescribir FUNCION .
+
+    $default  reduce using rule 14 (ICLASE)
+
+
+State 43
+
+   39 FUNCION: TIPO . DIMS id parA LPARAMETROS parC illave SENTENCIAS fllave
+   40        | TIPO . id parA LPARAMETROS parC illave SENTENCIAS fllave
+
+    id    shift, and go to state 59
+    iCor  shift, and go to state 51
+
+    DIMS  go to state 52
+    DIM   go to state 53
+
+
+State 44
+
+   46 CLASE: clase id illave ICLASES fllave .
+
+    $default  reduce using rule 46 (CLASE)
+
+
+State 45
+
+   11 ICLASES: ICLASES ICLASE .
+
+    $default  reduce using rule 11 (ICLASES)
+
+
+State 46
+
+   38 FUNCION: VISIBILIDAD vacio . id parA LPARAMETROS parC illave SENTENCIAS fllave
+
+    id  shift, and go to state 60
+
+
+State 47
+
+   25 ATRIBUTO: VISIBILIDAD DECLARACION . puntoComa
+
+    puntoComa  shift, and go to state 61
+
+
+State 48
+
+   36 FUNCION: VISIBILIDAD TIPO . DIMS id parA LPARAMETROS parC illave SENTENCIAS fllave
+   37        | VISIBILIDAD TIPO . id parA LPARAMETROS parC illave SENTENCIAS fllave
+   59 DECLARACION: TIPO . id
+   60            | TIPO . id igual VALAS
+
+    id    shift, and go to state 62
+    iCor  shift, and go to state 51
+
+    DIMS  go to state 63
+    DIM   go to state 53
+
+
+State 49
+
+   26 ATRIBUTO: DECLARACION puntoComa .
+
+    $default  reduce using rule 26 (ATRIBUTO)
+
+
+State 50
+
+   40 FUNCION: TIPO id . parA LPARAMETROS parC illave SENTENCIAS fllave
+   59 DECLARACION: TIPO id .
+   60            | TIPO id . igual VALAS
+
+    parA   shift, and go to state 64
+    igual  shift, and go to state 65
+
+    $default  reduce using rule 59 (DECLARACION)
+
+
+State 51
+
+   44 DIM: iCor . fCor
+
+    fCor  shift, and go to state 66
+
+
+State 52
+
+   39 FUNCION: TIPO DIMS . id parA LPARAMETROS parC illave SENTENCIAS fllave
+   42 DIMS: DIMS . DIM
+
+    id    shift, and go to state 67
+    iCor  shift, and go to state 51
+
+    DIM  go to state 68
+
+
+State 53
+
+   43 DIMS: DIM .
+
+    $default  reduce using rule 43 (DIMS)
+
+
+State 54
+
+   48 CLASE: clase id heredade id illave . ICLASES fllave
+
+    id             shift, and go to state 22
+    tipoBooleano   shift, and go to state 23
+    tipoEntero     shift, and go to state 24
+    tipoCaracter   shift, and go to state 25
+    tipoDecimal    shift, and go to state 26
+    publico        shift, and go to state 2
+    privado        shift, and go to state 3
+    protegido      shift, and go to state 4
+    vacio          shift, and go to state 27
+    sobreescribir  shift, and go to state 28
+
+    ICLASES      go to state 69
+    ICLASE       go to state 30
+    ATRIBUTO     go to state 31
+    VISIBILIDAD  go to state 32
+    FUNCION      go to state 33
+    DECLARACION  go to state 34
+    TIPO         go to state 35
+
+
+State 55
+
+   11 ICLASES: ICLASES . ICLASE
+   45 CLASE: VISIBILIDAD clase id illave ICLASES . fllave
+
+    id             shift, and go to state 22
+    fllave         shift, and go to state 70
+    tipoBooleano   shift, and go to state 23
+    tipoEntero     shift, and go to state 24
+    tipoCaracter   shift, and go to state 25
+    tipoDecimal    shift, and go to state 26
+    publico        shift, and go to state 2
+    privado        shift, and go to state 3
+    protegido      shift, and go to state 4
+    vacio          shift, and go to state 27
+    sobreescribir  shift, and go to state 28
+
+    ICLASE       go to state 45
+    ATRIBUTO     go to state 31
+    VISIBILIDAD  go to state 32
+    FUNCION      go to state 33
+    DECLARACION  go to state 34
+    TIPO         go to state 35
+
+
+State 56
+
+   47 CLASE: VISIBILIDAD clase id heredade id . illave ICLASES fllave
+
+    illave  shift, and go to state 71
+
+
+State 57
+
+   41 FUNCION: vacio id parA . LPARAMETROS parC illave SENTENCIAS fllave
+
+    id            shift, and go to state 22
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+
+    $default  reduce using rule 31 (LPARAMETROS)
+
+    LPARAMETROS  go to state 72
+    PARAMETROS   go to state 73
+    PARAMETRO    go to state 74
+    TIPO         go to state 75
+
+
+State 58
+
+   36 FUNCION: VISIBILIDAD TIPO . DIMS id parA LPARAMETROS parC illave SENTENCIAS fllave
+   37        | VISIBILIDAD TIPO . id parA LPARAMETROS parC illave SENTENCIAS fllave
+
+    id    shift, and go to state 76
+    iCor  shift, and go to state 51
+
+    DIMS  go to state 63
+    DIM   go to state 53
+
+
+State 59
+
+   40 FUNCION: TIPO id . parA LPARAMETROS parC illave SENTENCIAS fllave
+
+    parA  shift, and go to state 64
+
+
+State 60
+
+   38 FUNCION: VISIBILIDAD vacio id . parA LPARAMETROS parC illave SENTENCIAS fllave
+
+    parA  shift, and go to state 77
+
+
+State 61
+
+   25 ATRIBUTO: VISIBILIDAD DECLARACION puntoComa .
+
+    $default  reduce using rule 25 (ATRIBUTO)
+
+
+State 62
+
+   37 FUNCION: VISIBILIDAD TIPO id . parA LPARAMETROS parC illave SENTENCIAS fllave
+   59 DECLARACION: TIPO id .
+   60            | TIPO id . igual VALAS
+
+    parA   shift, and go to state 78
+    igual  shift, and go to state 65
+
+    $default  reduce using rule 59 (DECLARACION)
+
+
+State 63
+
+   36 FUNCION: VISIBILIDAD TIPO DIMS . id parA LPARAMETROS parC illave SENTENCIAS fllave
+   42 DIMS: DIMS . DIM
+
+    id    shift, and go to state 79
+    iCor  shift, and go to state 51
+
+    DIM  go to state 68
+
+
+State 64
+
+   40 FUNCION: TIPO id parA . LPARAMETROS parC illave SENTENCIAS fllave
+
+    id            shift, and go to state 22
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+
+    $default  reduce using rule 31 (LPARAMETROS)
+
+    LPARAMETROS  go to state 80
+    PARAMETROS   go to state 73
+    PARAMETRO    go to state 74
+    TIPO         go to state 75
+
+
+State 65
+
+   60 DECLARACION: TIPO id igual . VALAS
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    VALAS      go to state 94
+    SENTSELEC  go to state 95
+    EXPL       go to state 96
+    EXPR       go to state 97
+    EXPA       go to state 98
+    UNARIOS    go to state 99
+
+
+State 66
+
+   44 DIM: iCor fCor .
+
+    $default  reduce using rule 44 (DIM)
+
+
+State 67
+
+   39 FUNCION: TIPO DIMS id . parA LPARAMETROS parC illave SENTENCIAS fllave
+
+    parA  shift, and go to state 100
+
+
+State 68
+
+   42 DIMS: DIMS DIM .
+
+    $default  reduce using rule 42 (DIMS)
+
+
+State 69
+
+   11 ICLASES: ICLASES . ICLASE
+   48 CLASE: clase id heredade id illave ICLASES . fllave
+
+    id             shift, and go to state 22
+    fllave         shift, and go to state 101
+    tipoBooleano   shift, and go to state 23
+    tipoEntero     shift, and go to state 24
+    tipoCaracter   shift, and go to state 25
+    tipoDecimal    shift, and go to state 26
+    publico        shift, and go to state 2
+    privado        shift, and go to state 3
+    protegido      shift, and go to state 4
+    vacio          shift, and go to state 27
+    sobreescribir  shift, and go to state 28
+
+    ICLASE       go to state 45
+    ATRIBUTO     go to state 31
+    VISIBILIDAD  go to state 32
+    FUNCION      go to state 33
+    DECLARACION  go to state 34
+    TIPO         go to state 35
+
+
+State 70
+
+   45 CLASE: VISIBILIDAD clase id illave ICLASES fllave .
+
+    $default  reduce using rule 45 (CLASE)
+
+
+State 71
+
+   47 CLASE: VISIBILIDAD clase id heredade id illave . ICLASES fllave
+
+    id             shift, and go to state 22
+    tipoBooleano   shift, and go to state 23
+    tipoEntero     shift, and go to state 24
+    tipoCaracter   shift, and go to state 25
+    tipoDecimal    shift, and go to state 26
+    publico        shift, and go to state 2
+    privado        shift, and go to state 3
+    protegido      shift, and go to state 4
+    vacio          shift, and go to state 27
+    sobreescribir  shift, and go to state 28
+
+    ICLASES      go to state 102
+    ICLASE       go to state 30
+    ATRIBUTO     go to state 31
+    VISIBILIDAD  go to state 32
+    FUNCION      go to state 33
+    DECLARACION  go to state 34
+    TIPO         go to state 35
+
+
+State 72
+
+   41 FUNCION: vacio id parA LPARAMETROS . parC illave SENTENCIAS fllave
+
+    parC  shift, and go to state 103
+
+
+State 73
+
+   30 LPARAMETROS: PARAMETROS .
+   32 PARAMETROS: PARAMETROS . coma PARAMETRO
+
+    coma  shift, and go to state 104
+
+    $default  reduce using rule 30 (LPARAMETROS)
+
+
+State 74
+
+   33 PARAMETROS: PARAMETRO .
+
+    $default  reduce using rule 33 (PARAMETROS)
+
+
+State 75
+
+   34 PARAMETRO: TIPO . id
+   35          | TIPO . id DIMENSIONES
+
+    id  shift, and go to state 105
+
+
+State 76
+
+   37 FUNCION: VISIBILIDAD TIPO id . parA LPARAMETROS parC illave SENTENCIAS fllave
+
+    parA  shift, and go to state 78
+
+
+State 77
+
+   38 FUNCION: VISIBILIDAD vacio id parA . LPARAMETROS parC illave SENTENCIAS fllave
+
+    id            shift, and go to state 22
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+
+    $default  reduce using rule 31 (LPARAMETROS)
+
+    LPARAMETROS  go to state 106
+    PARAMETROS   go to state 73
+    PARAMETRO    go to state 74
+    TIPO         go to state 75
+
+
+State 78
+
+   37 FUNCION: VISIBILIDAD TIPO id parA . LPARAMETROS parC illave SENTENCIAS fllave
+
+    id            shift, and go to state 22
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+
+    $default  reduce using rule 31 (LPARAMETROS)
+
+    LPARAMETROS  go to state 107
+    PARAMETROS   go to state 73
+    PARAMETRO    go to state 74
+    TIPO         go to state 75
+
+
+State 79
+
+   36 FUNCION: VISIBILIDAD TIPO DIMS id . parA LPARAMETROS parC illave SENTENCIAS fllave
+
+    parA  shift, and go to state 108
+
+
+State 80
+
+   40 FUNCION: TIPO id parA LPARAMETROS . parC illave SENTENCIAS fllave
+
+    parC  shift, and go to state 109
+
+
+State 81
+
+   98 EXPA: entero .
+
+    $default  reduce using rule 98 (EXPA)
+
+
+State 82
+
+  100 EXPA: decimal .
+
+    $default  reduce using rule 100 (EXPA)
+
+
+State 83
+
+   99 EXPA: caracter .
+
+    $default  reduce using rule 99 (EXPA)
+
+
+State 84
+
+  101 EXPA: booleano .
+
+    $default  reduce using rule 101 (EXPA)
+
+
+State 85
+
+  102 EXPA: cadena .
+
+    $default  reduce using rule 102 (EXPA)
+
+
+State 86
+
+   96 EXPA: id .
+   97     | id . DIMENSIONES
+  106     | id . ACCESO
+  107     | id . DIMENSIONES ACCESO
+
+    iCor   shift, and go to state 110
+    punto  shift, and go to state 111
+
+    $default  reduce using rule 96 (EXPA)
+
+    DIMENSIONES  go to state 112
+    ACCESO       go to state 113
+
+
+State 87
+
+  105 EXPA: parA . EXPL parC
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 114
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 88
+
+   95 EXPA: menos . EXPA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPA     go to state 115
+    UNARIOS  go to state 99
+
+
+State 89
+
+   81 EXPL: no . EXPL
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 116
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 90
+
+  109 EXPA: convertirAcadena . parA EXPL parC
+
+    parA  shift, and go to state 117
+
+
+State 91
+
+  110 EXPA: convertirAentero . parA EXPL parC
+
+    parA  shift, and go to state 118
+
+
+State 92
+
+  108 EXPA: este . ACCESO
+
+    punto  shift, and go to state 111
+
+    ACCESO  go to state 119
+
+
+State 93
+
+  103 EXPA: nada .
+
+    $default  reduce using rule 103 (EXPA)
+
+
+State 94
+
+   60 DECLARACION: TIPO id igual VALAS .
+
+    $default  reduce using rule 60 (DECLARACION)
+
+
+State 95
+
+   72 VALAS: SENTSELEC .
+
+    $default  reduce using rule 72 (VALAS)
+
+
+State 96
+
+   71 VALAS: EXPL .
+   78 SENTSELEC: EXPL . interrogacion EXPL dosP EXPL
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    o              shift, and go to state 120
+    y              shift, and go to state 121
+    interrogacion  shift, and go to state 122
+
+    $default  reduce using rule 71 (VALAS)
+
+
+State 97
+
+   82 EXPL: EXPR .
+
+    $default  reduce using rule 82 (EXPL)
+
+
+State 98
+
+   83 EXPR: EXPA . igualigual EXPA
+   84     | EXPA . desigual EXPA
+   85     | EXPA . menor EXPA
+   86     | EXPA . mayor EXPA
+   87     | EXPA . menorigual EXPA
+   88     | EXPA . mayorigual EXPA
+   89     | EXPA .
+   90 EXPA: EXPA . suma EXPA
+   91     | EXPA . menos EXPA
+   92     | EXPA . multi EXPA
+   93     | EXPA . division EXPA
+   94     | EXPA . potencia EXPA
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+    suma        shift, and go to state 125
+    menos       shift, and go to state 126
+    multi       shift, and go to state 127
+    division    shift, and go to state 128
+    potencia    shift, and go to state 129
+    mayor       shift, and go to state 130
+    menor       shift, and go to state 131
+    mayorigual  shift, and go to state 132
+    menorigual  shift, and go to state 133
+    igualigual  shift, and go to state 134
+    desigual    shift, and go to state 135
+
+    $default  reduce using rule 89 (EXPR)
+
+
+State 99
+
+  104 EXPA: UNARIOS .
+
+    $default  reduce using rule 104 (EXPA)
+
+
+State 100
+
+   39 FUNCION: TIPO DIMS id parA . LPARAMETROS parC illave SENTENCIAS fllave
+
+    id            shift, and go to state 22
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+
+    $default  reduce using rule 31 (LPARAMETROS)
+
+    LPARAMETROS  go to state 136
+    PARAMETROS   go to state 73
+    PARAMETRO    go to state 74
+    TIPO         go to state 75
+
+
+State 101
+
+   48 CLASE: clase id heredade id illave ICLASES fllave .
+
+    $default  reduce using rule 48 (CLASE)
+
+
+State 102
+
+   11 ICLASES: ICLASES . ICLASE
+   47 CLASE: VISIBILIDAD clase id heredade id illave ICLASES . fllave
+
+    id             shift, and go to state 22
+    fllave         shift, and go to state 137
+    tipoBooleano   shift, and go to state 23
+    tipoEntero     shift, and go to state 24
+    tipoCaracter   shift, and go to state 25
+    tipoDecimal    shift, and go to state 26
+    publico        shift, and go to state 2
+    privado        shift, and go to state 3
+    protegido      shift, and go to state 4
+    vacio          shift, and go to state 27
+    sobreescribir  shift, and go to state 28
+
+    ICLASE       go to state 45
+    ATRIBUTO     go to state 31
+    VISIBILIDAD  go to state 32
+    FUNCION      go to state 33
+    DECLARACION  go to state 34
+    TIPO         go to state 35
+
+
+State 103
+
+   41 FUNCION: vacio id parA LPARAMETROS parC . illave SENTENCIAS fllave
+
+    illave  shift, and go to state 138
+
+
+State 104
+
+   32 PARAMETROS: PARAMETROS coma . PARAMETRO
+
+    id            shift, and go to state 22
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+
+    PARAMETRO  go to state 139
+    TIPO       go to state 75
+
+
+State 105
+
+   34 PARAMETRO: TIPO id .
+   35          | TIPO id . DIMENSIONES
+
+    iCor  shift, and go to state 110
+
+    $default  reduce using rule 34 (PARAMETRO)
+
+    DIMENSIONES  go to state 140
+
+
+State 106
+
+   38 FUNCION: VISIBILIDAD vacio id parA LPARAMETROS . parC illave SENTENCIAS fllave
+
+    parC  shift, and go to state 141
+
+
+State 107
+
+   37 FUNCION: VISIBILIDAD TIPO id parA LPARAMETROS . parC illave SENTENCIAS fllave
+
+    parC  shift, and go to state 142
+
+
+State 108
+
+   36 FUNCION: VISIBILIDAD TIPO DIMS id parA . LPARAMETROS parC illave SENTENCIAS fllave
+
+    id            shift, and go to state 22
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+
+    $default  reduce using rule 31 (LPARAMETROS)
+
+    LPARAMETROS  go to state 143
+    PARAMETROS   go to state 73
+    PARAMETRO    go to state 74
+    TIPO         go to state 75
+
+
+State 109
+
+   40 FUNCION: TIPO id parA LPARAMETROS parC . illave SENTENCIAS fllave
+
+    illave  shift, and go to state 144
+
+
+State 110
+
+   65 DIMENSIONES: iCor . EXPL fCor
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 145
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 111
+
+  115 ACCESO: punto . id
+  116       | punto . id DIMENSIONES
+
+    id  shift, and go to state 146
+
+
+State 112
+
+   64 DIMENSIONES: DIMENSIONES . iCor EXPL fCor
+   97 EXPA: id DIMENSIONES .
+  107     | id DIMENSIONES . ACCESO
+
+    iCor   shift, and go to state 147
+    punto  shift, and go to state 111
+
+    $default  reduce using rule 97 (EXPA)
+
+    ACCESO  go to state 148
+
+
+State 113
+
+  106 EXPA: id ACCESO .
+  113 ACCESO: ACCESO . punto id
+  114       | ACCESO . punto id DIMENSIONES
+
+    punto  shift, and go to state 149
+
+    $default  reduce using rule 106 (EXPA)
+
+
+State 114
+
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+  105 EXPA: parA EXPL . parC
+
+    parC  shift, and go to state 150
+    o     shift, and go to state 120
+    y     shift, and go to state 121
+
+
+State 115
+
+   90 EXPA: EXPA . suma EXPA
+   91     | EXPA . menos EXPA
+   92     | EXPA . multi EXPA
+   93     | EXPA . division EXPA
+   94     | EXPA . potencia EXPA
+   95     | menos EXPA .
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+    multi       shift, and go to state 127
+    division    shift, and go to state 128
+    potencia    shift, and go to state 129
+
+    $default  reduce using rule 95 (EXPA)
+
+
+State 116
+
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+   81     | no EXPL .
+
+    $default  reduce using rule 81 (EXPL)
+
+
+State 117
+
+  109 EXPA: convertirAcadena parA . EXPL parC
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 151
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 118
+
+  110 EXPA: convertirAentero parA . EXPL parC
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 152
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 119
+
+  108 EXPA: este ACCESO .
+  113 ACCESO: ACCESO . punto id
+  114       | ACCESO . punto id DIMENSIONES
+
+    punto  shift, and go to state 149
+
+    $default  reduce using rule 108 (EXPA)
+
+
+State 120
+
+   80 EXPL: EXPL o . EXPL
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 153
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 121
+
+   79 EXPL: EXPL y . EXPL
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 154
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 122
+
+   78 SENTSELEC: EXPL interrogacion . EXPL dosP EXPL
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 155
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 123
+
+  111 UNARIOS: EXPA aumento .
+
+    $default  reduce using rule 111 (UNARIOS)
+
+
+State 124
+
+  112 UNARIOS: EXPA decremento .
+
+    $default  reduce using rule 112 (UNARIOS)
+
+
+State 125
+
+   90 EXPA: EXPA suma . EXPA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPA     go to state 156
+    UNARIOS  go to state 99
+
+
+State 126
+
+   91 EXPA: EXPA menos . EXPA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPA     go to state 157
+    UNARIOS  go to state 99
+
+
+State 127
+
+   92 EXPA: EXPA multi . EXPA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPA     go to state 158
+    UNARIOS  go to state 99
+
+
+State 128
+
+   93 EXPA: EXPA division . EXPA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPA     go to state 159
+    UNARIOS  go to state 99
+
+
+State 129
+
+   94 EXPA: EXPA potencia . EXPA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPA     go to state 160
+    UNARIOS  go to state 99
+
+
+State 130
+
+   86 EXPR: EXPA mayor . EXPA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPA     go to state 161
+    UNARIOS  go to state 99
+
+
+State 131
+
+   85 EXPR: EXPA menor . EXPA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPA     go to state 162
+    UNARIOS  go to state 99
+
+
+State 132
+
+   88 EXPR: EXPA mayorigual . EXPA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPA     go to state 163
+    UNARIOS  go to state 99
+
+
+State 133
+
+   87 EXPR: EXPA menorigual . EXPA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPA     go to state 164
+    UNARIOS  go to state 99
+
+
+State 134
+
+   83 EXPR: EXPA igualigual . EXPA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPA     go to state 165
+    UNARIOS  go to state 99
+
+
+State 135
+
+   84 EXPR: EXPA desigual . EXPA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPA     go to state 166
+    UNARIOS  go to state 99
+
+
+State 136
+
+   39 FUNCION: TIPO DIMS id parA LPARAMETROS . parC illave SENTENCIAS fllave
+
+    parC  shift, and go to state 167
+
+
+State 137
+
+   47 CLASE: VISIBILIDAD clase id heredade id illave ICLASES fllave .
+
+    $default  reduce using rule 47 (CLASE)
+
+
+State 138
+
+   41 FUNCION: vacio id parA LPARAMETROS parC illave . SENTENCIAS fllave
+
+    id            shift, and go to state 168
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    imprimir      shift, and go to state 169
+    concatenar    shift, and go to state 170
+    este          shift, and go to state 171
+    retornar      shift, and go to state 172
+
+    IMPRIMIR          go to state 173
+    CONCATENAR        go to state 174
+    SENTENCIAS        go to state 175
+    INSTRUCCION       go to state 176
+    RETORNO           go to state 177
+    ASIGNACION        go to state 178
+    DECLARACION       go to state 179
+    DECLARACIONARRAY  go to state 180
+    TIPO              go to state 181
+
+
+State 139
+
+   32 PARAMETROS: PARAMETROS coma PARAMETRO .
+
+    $default  reduce using rule 32 (PARAMETROS)
+
+
+State 140
+
+   35 PARAMETRO: TIPO id DIMENSIONES .
+   64 DIMENSIONES: DIMENSIONES . iCor EXPL fCor
+
+    iCor  shift, and go to state 147
+
+    $default  reduce using rule 35 (PARAMETRO)
+
+
+State 141
+
+   38 FUNCION: VISIBILIDAD vacio id parA LPARAMETROS parC . illave SENTENCIAS fllave
+
+    illave  shift, and go to state 182
+
+
+State 142
+
+   37 FUNCION: VISIBILIDAD TIPO id parA LPARAMETROS parC . illave SENTENCIAS fllave
+
+    illave  shift, and go to state 183
+
+
+State 143
+
+   36 FUNCION: VISIBILIDAD TIPO DIMS id parA LPARAMETROS . parC illave SENTENCIAS fllave
+
+    parC  shift, and go to state 184
+
+
+State 144
+
+   40 FUNCION: TIPO id parA LPARAMETROS parC illave . SENTENCIAS fllave
+
+    id            shift, and go to state 168
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    imprimir      shift, and go to state 169
+    concatenar    shift, and go to state 170
+    este          shift, and go to state 171
+    retornar      shift, and go to state 172
+
+    IMPRIMIR          go to state 173
+    CONCATENAR        go to state 174
+    SENTENCIAS        go to state 185
+    INSTRUCCION       go to state 176
+    RETORNO           go to state 177
+    ASIGNACION        go to state 178
+    DECLARACION       go to state 179
+    DECLARACIONARRAY  go to state 180
+    TIPO              go to state 181
+
+
+State 145
+
+   65 DIMENSIONES: iCor EXPL . fCor
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    fCor  shift, and go to state 186
+    o     shift, and go to state 120
+    y     shift, and go to state 121
+
+
+State 146
+
+  115 ACCESO: punto id .
+  116       | punto id . DIMENSIONES
+
+    iCor  shift, and go to state 110
+
+    $default  reduce using rule 115 (ACCESO)
+
+    DIMENSIONES  go to state 187
+
+
+State 147
+
+   64 DIMENSIONES: DIMENSIONES iCor . EXPL fCor
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 188
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 148
+
+  107 EXPA: id DIMENSIONES ACCESO .
+  113 ACCESO: ACCESO . punto id
+  114       | ACCESO . punto id DIMENSIONES
+
+    punto  shift, and go to state 149
+
+    $default  reduce using rule 107 (EXPA)
+
+
+State 149
+
+  113 ACCESO: ACCESO punto . id
+  114       | ACCESO punto . id DIMENSIONES
+
+    id  shift, and go to state 189
+
+
+State 150
+
+  105 EXPA: parA EXPL parC .
+
+    $default  reduce using rule 105 (EXPA)
+
+
+State 151
+
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+  109 EXPA: convertirAcadena parA EXPL . parC
+
+    parC  shift, and go to state 190
+    o     shift, and go to state 120
+    y     shift, and go to state 121
+
+
+State 152
+
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+  110 EXPA: convertirAentero parA EXPL . parC
+
+    parC  shift, and go to state 191
+    o     shift, and go to state 120
+    y     shift, and go to state 121
+
+
+State 153
+
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+   80     | EXPL o EXPL .
+
+    y  shift, and go to state 121
+
+    $default  reduce using rule 80 (EXPL)
+
+
+State 154
+
+   79 EXPL: EXPL . y EXPL
+   79     | EXPL y EXPL .
+   80     | EXPL . o EXPL
+
+    $default  reduce using rule 79 (EXPL)
+
+
+State 155
+
+   78 SENTSELEC: EXPL interrogacion EXPL . dosP EXPL
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    dosP  shift, and go to state 192
+    o     shift, and go to state 120
+    y     shift, and go to state 121
+
+
+State 156
+
+   90 EXPA: EXPA . suma EXPA
+   90     | EXPA suma EXPA .
+   91     | EXPA . menos EXPA
+   92     | EXPA . multi EXPA
+   93     | EXPA . division EXPA
+   94     | EXPA . potencia EXPA
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+    multi       shift, and go to state 127
+    division    shift, and go to state 128
+    potencia    shift, and go to state 129
+
+    $default  reduce using rule 90 (EXPA)
+
+
+State 157
+
+   90 EXPA: EXPA . suma EXPA
+   91     | EXPA . menos EXPA
+   91     | EXPA menos EXPA .
+   92     | EXPA . multi EXPA
+   93     | EXPA . division EXPA
+   94     | EXPA . potencia EXPA
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+    multi       shift, and go to state 127
+    division    shift, and go to state 128
+    potencia    shift, and go to state 129
+
+    $default  reduce using rule 91 (EXPA)
+
+
+State 158
+
+   90 EXPA: EXPA . suma EXPA
+   91     | EXPA . menos EXPA
+   92     | EXPA . multi EXPA
+   92     | EXPA multi EXPA .
+   93     | EXPA . division EXPA
+   94     | EXPA . potencia EXPA
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+    potencia    shift, and go to state 129
+
+    $default  reduce using rule 92 (EXPA)
+
+
+State 159
+
+   90 EXPA: EXPA . suma EXPA
+   91     | EXPA . menos EXPA
+   92     | EXPA . multi EXPA
+   93     | EXPA . division EXPA
+   93     | EXPA division EXPA .
+   94     | EXPA . potencia EXPA
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+    potencia    shift, and go to state 129
+
+    $default  reduce using rule 93 (EXPA)
+
+
+State 160
+
+   90 EXPA: EXPA . suma EXPA
+   91     | EXPA . menos EXPA
+   92     | EXPA . multi EXPA
+   93     | EXPA . division EXPA
+   94     | EXPA . potencia EXPA
+   94     | EXPA potencia EXPA .
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+
+    $default  reduce using rule 94 (EXPA)
+
+
+State 161
+
+   86 EXPR: EXPA mayor EXPA .
+   90 EXPA: EXPA . suma EXPA
+   91     | EXPA . menos EXPA
+   92     | EXPA . multi EXPA
+   93     | EXPA . division EXPA
+   94     | EXPA . potencia EXPA
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+    suma        shift, and go to state 125
+    menos       shift, and go to state 126
+    multi       shift, and go to state 127
+    division    shift, and go to state 128
+    potencia    shift, and go to state 129
+
+    $default  reduce using rule 86 (EXPR)
+
+
+State 162
+
+   85 EXPR: EXPA menor EXPA .
+   90 EXPA: EXPA . suma EXPA
+   91     | EXPA . menos EXPA
+   92     | EXPA . multi EXPA
+   93     | EXPA . division EXPA
+   94     | EXPA . potencia EXPA
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+    suma        shift, and go to state 125
+    menos       shift, and go to state 126
+    multi       shift, and go to state 127
+    division    shift, and go to state 128
+    potencia    shift, and go to state 129
+
+    $default  reduce using rule 85 (EXPR)
+
+
+State 163
+
+   88 EXPR: EXPA mayorigual EXPA .
+   90 EXPA: EXPA . suma EXPA
+   91     | EXPA . menos EXPA
+   92     | EXPA . multi EXPA
+   93     | EXPA . division EXPA
+   94     | EXPA . potencia EXPA
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+    suma        shift, and go to state 125
+    menos       shift, and go to state 126
+    multi       shift, and go to state 127
+    division    shift, and go to state 128
+    potencia    shift, and go to state 129
+
+    $default  reduce using rule 88 (EXPR)
+
+
+State 164
+
+   87 EXPR: EXPA menorigual EXPA .
+   90 EXPA: EXPA . suma EXPA
+   91     | EXPA . menos EXPA
+   92     | EXPA . multi EXPA
+   93     | EXPA . division EXPA
+   94     | EXPA . potencia EXPA
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+    suma        shift, and go to state 125
+    menos       shift, and go to state 126
+    multi       shift, and go to state 127
+    division    shift, and go to state 128
+    potencia    shift, and go to state 129
+
+    $default  reduce using rule 87 (EXPR)
+
+
+State 165
+
+   83 EXPR: EXPA igualigual EXPA .
+   90 EXPA: EXPA . suma EXPA
+   91     | EXPA . menos EXPA
+   92     | EXPA . multi EXPA
+   93     | EXPA . division EXPA
+   94     | EXPA . potencia EXPA
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+    suma        shift, and go to state 125
+    menos       shift, and go to state 126
+    multi       shift, and go to state 127
+    division    shift, and go to state 128
+    potencia    shift, and go to state 129
+
+    $default  reduce using rule 83 (EXPR)
+
+
+State 166
+
+   84 EXPR: EXPA desigual EXPA .
+   90 EXPA: EXPA . suma EXPA
+   91     | EXPA . menos EXPA
+   92     | EXPA . multi EXPA
+   93     | EXPA . division EXPA
+   94     | EXPA . potencia EXPA
+  111 UNARIOS: EXPA . aumento
+  112        | EXPA . decremento
+
+    aumento     shift, and go to state 123
+    decremento  shift, and go to state 124
+    suma        shift, and go to state 125
+    menos       shift, and go to state 126
+    multi       shift, and go to state 127
+    division    shift, and go to state 128
+    potencia    shift, and go to state 129
+
+    $default  reduce using rule 84 (EXPR)
+
+
+State 167
+
+   39 FUNCION: TIPO DIMS id parA LPARAMETROS parC . illave SENTENCIAS fllave
+
+    illave  shift, and go to state 193
+
+
+State 168
+
+   49 ASIGNACION: id . TIPOASIG VALAS
+   50           | id . DIMENSIONES TIPOASIG VALAS
+   51           | id . ACCESO TIPOASIG VALAS
+   53           | id . DIMENSIONES ACCESO TIPOASIG VALAS
+   77 TIPO: id .
+
+    iCor        shift, and go to state 110
+    masigual    shift, and go to state 194
+    porigual    shift, and go to state 195
+    menosigual  shift, and go to state 196
+    divigual    shift, and go to state 197
+    igual       shift, and go to state 198
+    punto       shift, and go to state 111
+
+    $default  reduce using rule 77 (TIPO)
+
+    TIPOASIG     go to state 199
+    DIMENSIONES  go to state 200
+    ACCESO       go to state 201
+
+
+State 169
+
+    6 IMPRIMIR: imprimir . parA EXPL parC
+    7         | imprimir . parA CONCATENAR parC
+
+    parA  shift, and go to state 202
+
+
+State 170
+
+    8 CONCATENAR: concatenar . parA EXPL coma EXPL parC
+    9           | concatenar . parA EXPL coma EXPL coma EXPL parC
+
+    parA  shift, and go to state 203
+
+
+State 171
+
+   52 ASIGNACION: este . ACCESO TIPOASIG VALAS
+
+    punto  shift, and go to state 111
+
+    ACCESO  go to state 204
+
+
+State 172
+
+   24 RETORNO: retornar . EXPL
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 205
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 173
+
+   22 INSTRUCCION: IMPRIMIR . puntoComa
+
+    puntoComa  shift, and go to state 206
+
+
+State 174
+
+   21 INSTRUCCION: CONCATENAR . puntoComa
+
+    puntoComa  shift, and go to state 207
+
+
+State 175
+
+   16 SENTENCIAS: SENTENCIAS . INSTRUCCION
+   41 FUNCION: vacio id parA LPARAMETROS parC illave SENTENCIAS . fllave
+
+    id            shift, and go to state 168
+    fllave        shift, and go to state 208
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    imprimir      shift, and go to state 169
+    concatenar    shift, and go to state 170
+    este          shift, and go to state 171
+    retornar      shift, and go to state 172
+
+    IMPRIMIR          go to state 173
+    CONCATENAR        go to state 174
+    INSTRUCCION       go to state 209
+    RETORNO           go to state 177
+    ASIGNACION        go to state 178
+    DECLARACION       go to state 179
+    DECLARACIONARRAY  go to state 180
+    TIPO              go to state 181
+
+
+State 176
+
+   17 SENTENCIAS: INSTRUCCION .
+
+    $default  reduce using rule 17 (SENTENCIAS)
+
+
+State 177
+
+   23 INSTRUCCION: RETORNO . puntoComa
+
+    puntoComa  shift, and go to state 210
+
+
+State 178
+
+   20 INSTRUCCION: ASIGNACION . puntoComa
+
+    puntoComa  shift, and go to state 211
+
+
+State 179
+
+   18 INSTRUCCION: DECLARACION . puntoComa
+
+    puntoComa  shift, and go to state 212
+
+
+State 180
+
+   19 INSTRUCCION: DECLARACIONARRAY . puntoComa
+
+    puntoComa  shift, and go to state 213
+
+
+State 181
+
+   59 DECLARACION: TIPO . id
+   60            | TIPO . id igual VALAS
+   61 DECLARACIONARRAY: TIPO . id DIMENSIONES
+   62                 | TIPO . id DIMENSIONES igual EXPL
+   63                 | TIPO . id DIMENSIONES igual VALORESA
+
+    id  shift, and go to state 214
+
+
+State 182
+
+   38 FUNCION: VISIBILIDAD vacio id parA LPARAMETROS parC illave . SENTENCIAS fllave
+
+    id            shift, and go to state 168
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    imprimir      shift, and go to state 169
+    concatenar    shift, and go to state 170
+    este          shift, and go to state 171
+    retornar      shift, and go to state 172
+
+    IMPRIMIR          go to state 173
+    CONCATENAR        go to state 174
+    SENTENCIAS        go to state 215
+    INSTRUCCION       go to state 176
+    RETORNO           go to state 177
+    ASIGNACION        go to state 178
+    DECLARACION       go to state 179
+    DECLARACIONARRAY  go to state 180
+    TIPO              go to state 181
+
+
+State 183
+
+   37 FUNCION: VISIBILIDAD TIPO id parA LPARAMETROS parC illave . SENTENCIAS fllave
+
+    id            shift, and go to state 168
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    imprimir      shift, and go to state 169
+    concatenar    shift, and go to state 170
+    este          shift, and go to state 171
+    retornar      shift, and go to state 172
+
+    IMPRIMIR          go to state 173
+    CONCATENAR        go to state 174
+    SENTENCIAS        go to state 216
+    INSTRUCCION       go to state 176
+    RETORNO           go to state 177
+    ASIGNACION        go to state 178
+    DECLARACION       go to state 179
+    DECLARACIONARRAY  go to state 180
+    TIPO              go to state 181
+
+
+State 184
+
+   36 FUNCION: VISIBILIDAD TIPO DIMS id parA LPARAMETROS parC . illave SENTENCIAS fllave
+
+    illave  shift, and go to state 217
+
+
+State 185
+
+   16 SENTENCIAS: SENTENCIAS . INSTRUCCION
+   40 FUNCION: TIPO id parA LPARAMETROS parC illave SENTENCIAS . fllave
+
+    id            shift, and go to state 168
+    fllave        shift, and go to state 218
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    imprimir      shift, and go to state 169
+    concatenar    shift, and go to state 170
+    este          shift, and go to state 171
+    retornar      shift, and go to state 172
+
+    IMPRIMIR          go to state 173
+    CONCATENAR        go to state 174
+    INSTRUCCION       go to state 209
+    RETORNO           go to state 177
+    ASIGNACION        go to state 178
+    DECLARACION       go to state 179
+    DECLARACIONARRAY  go to state 180
+    TIPO              go to state 181
+
+
+State 186
+
+   65 DIMENSIONES: iCor EXPL fCor .
+
+    $default  reduce using rule 65 (DIMENSIONES)
+
+
+State 187
+
+   64 DIMENSIONES: DIMENSIONES . iCor EXPL fCor
+  116 ACCESO: punto id DIMENSIONES .
+
+    iCor  shift, and go to state 147
+
+    $default  reduce using rule 116 (ACCESO)
+
+
+State 188
+
+   64 DIMENSIONES: DIMENSIONES iCor EXPL . fCor
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    fCor  shift, and go to state 219
+    o     shift, and go to state 120
+    y     shift, and go to state 121
+
+
+State 189
+
+  113 ACCESO: ACCESO punto id .
+  114       | ACCESO punto id . DIMENSIONES
+
+    iCor  shift, and go to state 110
+
+    $default  reduce using rule 113 (ACCESO)
+
+    DIMENSIONES  go to state 220
+
+
+State 190
+
+  109 EXPA: convertirAcadena parA EXPL parC .
+
+    $default  reduce using rule 109 (EXPA)
+
+
+State 191
+
+  110 EXPA: convertirAentero parA EXPL parC .
+
+    $default  reduce using rule 110 (EXPA)
+
+
+State 192
+
+   78 SENTSELEC: EXPL interrogacion EXPL dosP . EXPL
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 221
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 193
+
+   39 FUNCION: TIPO DIMS id parA LPARAMETROS parC illave . SENTENCIAS fllave
+
+    id            shift, and go to state 168
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    imprimir      shift, and go to state 169
+    concatenar    shift, and go to state 170
+    este          shift, and go to state 171
+    retornar      shift, and go to state 172
+
+    IMPRIMIR          go to state 173
+    CONCATENAR        go to state 174
+    SENTENCIAS        go to state 222
+    INSTRUCCION       go to state 176
+    RETORNO           go to state 177
+    ASIGNACION        go to state 178
+    DECLARACION       go to state 179
+    DECLARACIONARRAY  go to state 180
+    TIPO              go to state 181
+
+
+State 194
+
+   54 TIPOASIG: masigual .
+
+    $default  reduce using rule 54 (TIPOASIG)
+
+
+State 195
+
+   55 TIPOASIG: porigual .
+
+    $default  reduce using rule 55 (TIPOASIG)
+
+
+State 196
+
+   56 TIPOASIG: menosigual .
+
+    $default  reduce using rule 56 (TIPOASIG)
+
+
+State 197
+
+   57 TIPOASIG: divigual .
+
+    $default  reduce using rule 57 (TIPOASIG)
+
+
+State 198
+
+   58 TIPOASIG: igual .
+
+    $default  reduce using rule 58 (TIPOASIG)
+
+
+State 199
+
+   49 ASIGNACION: id TIPOASIG . VALAS
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    VALAS      go to state 223
+    SENTSELEC  go to state 95
+    EXPL       go to state 96
+    EXPR       go to state 97
+    EXPA       go to state 98
+    UNARIOS    go to state 99
+
+
+State 200
+
+   50 ASIGNACION: id DIMENSIONES . TIPOASIG VALAS
+   53           | id DIMENSIONES . ACCESO TIPOASIG VALAS
+   64 DIMENSIONES: DIMENSIONES . iCor EXPL fCor
+
+    iCor        shift, and go to state 147
+    masigual    shift, and go to state 194
+    porigual    shift, and go to state 195
+    menosigual  shift, and go to state 196
+    divigual    shift, and go to state 197
+    igual       shift, and go to state 198
+    punto       shift, and go to state 111
+
+    TIPOASIG  go to state 224
+    ACCESO    go to state 225
+
+
+State 201
+
+   51 ASIGNACION: id ACCESO . TIPOASIG VALAS
+  113 ACCESO: ACCESO . punto id
+  114       | ACCESO . punto id DIMENSIONES
+
+    masigual    shift, and go to state 194
+    porigual    shift, and go to state 195
+    menosigual  shift, and go to state 196
+    divigual    shift, and go to state 197
+    igual       shift, and go to state 198
+    punto       shift, and go to state 149
+
+    TIPOASIG  go to state 226
+
+
+State 202
+
+    6 IMPRIMIR: imprimir parA . EXPL parC
+    7         | imprimir parA . CONCATENAR parC
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    concatenar        shift, and go to state 170
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    CONCATENAR  go to state 227
+    EXPL        go to state 228
+    EXPR        go to state 97
+    EXPA        go to state 98
+    UNARIOS     go to state 99
+
+
+State 203
+
+    8 CONCATENAR: concatenar parA . EXPL coma EXPL parC
+    9           | concatenar parA . EXPL coma EXPL coma EXPL parC
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 229
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 204
+
+   52 ASIGNACION: este ACCESO . TIPOASIG VALAS
+  113 ACCESO: ACCESO . punto id
+  114       | ACCESO . punto id DIMENSIONES
+
+    masigual    shift, and go to state 194
+    porigual    shift, and go to state 195
+    menosigual  shift, and go to state 196
+    divigual    shift, and go to state 197
+    igual       shift, and go to state 198
+    punto       shift, and go to state 149
+
+    TIPOASIG  go to state 230
+
+
+State 205
+
+   24 RETORNO: retornar EXPL .
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    o  shift, and go to state 120
+    y  shift, and go to state 121
+
+    $default  reduce using rule 24 (RETORNO)
+
+
+State 206
+
+   22 INSTRUCCION: IMPRIMIR puntoComa .
+
+    $default  reduce using rule 22 (INSTRUCCION)
+
+
+State 207
+
+   21 INSTRUCCION: CONCATENAR puntoComa .
+
+    $default  reduce using rule 21 (INSTRUCCION)
+
+
+State 208
+
+   41 FUNCION: vacio id parA LPARAMETROS parC illave SENTENCIAS fllave .
+
+    $default  reduce using rule 41 (FUNCION)
+
+
+State 209
+
+   16 SENTENCIAS: SENTENCIAS INSTRUCCION .
+
+    $default  reduce using rule 16 (SENTENCIAS)
+
+
+State 210
+
+   23 INSTRUCCION: RETORNO puntoComa .
+
+    $default  reduce using rule 23 (INSTRUCCION)
+
+
+State 211
+
+   20 INSTRUCCION: ASIGNACION puntoComa .
+
+    $default  reduce using rule 20 (INSTRUCCION)
+
+
+State 212
+
+   18 INSTRUCCION: DECLARACION puntoComa .
+
+    $default  reduce using rule 18 (INSTRUCCION)
+
+
+State 213
+
+   19 INSTRUCCION: DECLARACIONARRAY puntoComa .
+
+    $default  reduce using rule 19 (INSTRUCCION)
+
+
+State 214
+
+   59 DECLARACION: TIPO id .
+   60            | TIPO id . igual VALAS
+   61 DECLARACIONARRAY: TIPO id . DIMENSIONES
+   62                 | TIPO id . DIMENSIONES igual EXPL
+   63                 | TIPO id . DIMENSIONES igual VALORESA
+
+    iCor   shift, and go to state 110
+    igual  shift, and go to state 65
+
+    $default  reduce using rule 59 (DECLARACION)
+
+    DIMENSIONES  go to state 231
+
+
+State 215
+
+   16 SENTENCIAS: SENTENCIAS . INSTRUCCION
+   38 FUNCION: VISIBILIDAD vacio id parA LPARAMETROS parC illave SENTENCIAS . fllave
+
+    id            shift, and go to state 168
+    fllave        shift, and go to state 232
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    imprimir      shift, and go to state 169
+    concatenar    shift, and go to state 170
+    este          shift, and go to state 171
+    retornar      shift, and go to state 172
+
+    IMPRIMIR          go to state 173
+    CONCATENAR        go to state 174
+    INSTRUCCION       go to state 209
+    RETORNO           go to state 177
+    ASIGNACION        go to state 178
+    DECLARACION       go to state 179
+    DECLARACIONARRAY  go to state 180
+    TIPO              go to state 181
+
+
+State 216
+
+   16 SENTENCIAS: SENTENCIAS . INSTRUCCION
+   37 FUNCION: VISIBILIDAD TIPO id parA LPARAMETROS parC illave SENTENCIAS . fllave
+
+    id            shift, and go to state 168
+    fllave        shift, and go to state 233
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    imprimir      shift, and go to state 169
+    concatenar    shift, and go to state 170
+    este          shift, and go to state 171
+    retornar      shift, and go to state 172
+
+    IMPRIMIR          go to state 173
+    CONCATENAR        go to state 174
+    INSTRUCCION       go to state 209
+    RETORNO           go to state 177
+    ASIGNACION        go to state 178
+    DECLARACION       go to state 179
+    DECLARACIONARRAY  go to state 180
+    TIPO              go to state 181
+
+
+State 217
+
+   36 FUNCION: VISIBILIDAD TIPO DIMS id parA LPARAMETROS parC illave . SENTENCIAS fllave
+
+    id            shift, and go to state 168
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    imprimir      shift, and go to state 169
+    concatenar    shift, and go to state 170
+    este          shift, and go to state 171
+    retornar      shift, and go to state 172
+
+    IMPRIMIR          go to state 173
+    CONCATENAR        go to state 174
+    SENTENCIAS        go to state 234
+    INSTRUCCION       go to state 176
+    RETORNO           go to state 177
+    ASIGNACION        go to state 178
+    DECLARACION       go to state 179
+    DECLARACIONARRAY  go to state 180
+    TIPO              go to state 181
+
+
+State 218
+
+   40 FUNCION: TIPO id parA LPARAMETROS parC illave SENTENCIAS fllave .
+
+    $default  reduce using rule 40 (FUNCION)
+
+
+State 219
+
+   64 DIMENSIONES: DIMENSIONES iCor EXPL fCor .
+
+    $default  reduce using rule 64 (DIMENSIONES)
+
+
+State 220
+
+   64 DIMENSIONES: DIMENSIONES . iCor EXPL fCor
+  114 ACCESO: ACCESO punto id DIMENSIONES .
+
+    iCor  shift, and go to state 147
+
+    $default  reduce using rule 114 (ACCESO)
+
+
+State 221
+
+   78 SENTSELEC: EXPL interrogacion EXPL dosP EXPL .
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    o  shift, and go to state 120
+    y  shift, and go to state 121
+
+    $default  reduce using rule 78 (SENTSELEC)
+
+
+State 222
+
+   16 SENTENCIAS: SENTENCIAS . INSTRUCCION
+   39 FUNCION: TIPO DIMS id parA LPARAMETROS parC illave SENTENCIAS . fllave
+
+    id            shift, and go to state 168
+    fllave        shift, and go to state 235
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    imprimir      shift, and go to state 169
+    concatenar    shift, and go to state 170
+    este          shift, and go to state 171
+    retornar      shift, and go to state 172
+
+    IMPRIMIR          go to state 173
+    CONCATENAR        go to state 174
+    INSTRUCCION       go to state 209
+    RETORNO           go to state 177
+    ASIGNACION        go to state 178
+    DECLARACION       go to state 179
+    DECLARACIONARRAY  go to state 180
+    TIPO              go to state 181
+
+
+State 223
+
+   49 ASIGNACION: id TIPOASIG VALAS .
+
+    $default  reduce using rule 49 (ASIGNACION)
+
+
+State 224
+
+   50 ASIGNACION: id DIMENSIONES TIPOASIG . VALAS
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    VALAS      go to state 236
+    SENTSELEC  go to state 95
+    EXPL       go to state 96
+    EXPR       go to state 97
+    EXPA       go to state 98
+    UNARIOS    go to state 99
+
+
+State 225
+
+   53 ASIGNACION: id DIMENSIONES ACCESO . TIPOASIG VALAS
+  113 ACCESO: ACCESO . punto id
+  114       | ACCESO . punto id DIMENSIONES
+
+    masigual    shift, and go to state 194
+    porigual    shift, and go to state 195
+    menosigual  shift, and go to state 196
+    divigual    shift, and go to state 197
+    igual       shift, and go to state 198
+    punto       shift, and go to state 149
+
+    TIPOASIG  go to state 237
+
+
+State 226
+
+   51 ASIGNACION: id ACCESO TIPOASIG . VALAS
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    VALAS      go to state 238
+    SENTSELEC  go to state 95
+    EXPL       go to state 96
+    EXPR       go to state 97
+    EXPA       go to state 98
+    UNARIOS    go to state 99
+
+
+State 227
+
+    7 IMPRIMIR: imprimir parA CONCATENAR . parC
+
+    parC  shift, and go to state 239
+
+
+State 228
+
+    6 IMPRIMIR: imprimir parA EXPL . parC
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    parC  shift, and go to state 240
+    o     shift, and go to state 120
+    y     shift, and go to state 121
+
+
+State 229
+
+    8 CONCATENAR: concatenar parA EXPL . coma EXPL parC
+    9           | concatenar parA EXPL . coma EXPL coma EXPL parC
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    coma  shift, and go to state 241
+    o     shift, and go to state 120
+    y     shift, and go to state 121
+
+
+State 230
+
+   52 ASIGNACION: este ACCESO TIPOASIG . VALAS
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    VALAS      go to state 242
+    SENTSELEC  go to state 95
+    EXPL       go to state 96
+    EXPR       go to state 97
+    EXPA       go to state 98
+    UNARIOS    go to state 99
+
+
+State 231
+
+   61 DECLARACIONARRAY: TIPO id DIMENSIONES .
+   62                 | TIPO id DIMENSIONES . igual EXPL
+   63                 | TIPO id DIMENSIONES . igual VALORESA
+   64 DIMENSIONES: DIMENSIONES . iCor EXPL fCor
+
+    iCor   shift, and go to state 147
+    igual  shift, and go to state 243
+
+    $default  reduce using rule 61 (DECLARACIONARRAY)
+
+
+State 232
+
+   38 FUNCION: VISIBILIDAD vacio id parA LPARAMETROS parC illave SENTENCIAS fllave .
+
+    $default  reduce using rule 38 (FUNCION)
+
+
+State 233
+
+   37 FUNCION: VISIBILIDAD TIPO id parA LPARAMETROS parC illave SENTENCIAS fllave .
+
+    $default  reduce using rule 37 (FUNCION)
+
+
+State 234
+
+   16 SENTENCIAS: SENTENCIAS . INSTRUCCION
+   36 FUNCION: VISIBILIDAD TIPO DIMS id parA LPARAMETROS parC illave SENTENCIAS . fllave
+
+    id            shift, and go to state 168
+    fllave        shift, and go to state 244
+    tipoBooleano  shift, and go to state 23
+    tipoEntero    shift, and go to state 24
+    tipoCaracter  shift, and go to state 25
+    tipoDecimal   shift, and go to state 26
+    imprimir      shift, and go to state 169
+    concatenar    shift, and go to state 170
+    este          shift, and go to state 171
+    retornar      shift, and go to state 172
+
+    IMPRIMIR          go to state 173
+    CONCATENAR        go to state 174
+    INSTRUCCION       go to state 209
+    RETORNO           go to state 177
+    ASIGNACION        go to state 178
+    DECLARACION       go to state 179
+    DECLARACIONARRAY  go to state 180
+    TIPO              go to state 181
+
+
+State 235
+
+   39 FUNCION: TIPO DIMS id parA LPARAMETROS parC illave SENTENCIAS fllave .
+
+    $default  reduce using rule 39 (FUNCION)
+
+
+State 236
+
+   50 ASIGNACION: id DIMENSIONES TIPOASIG VALAS .
+
+    $default  reduce using rule 50 (ASIGNACION)
+
+
+State 237
+
+   53 ASIGNACION: id DIMENSIONES ACCESO TIPOASIG . VALAS
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    VALAS      go to state 245
+    SENTSELEC  go to state 95
+    EXPL       go to state 96
+    EXPR       go to state 97
+    EXPA       go to state 98
+    UNARIOS    go to state 99
+
+
+State 238
+
+   51 ASIGNACION: id ACCESO TIPOASIG VALAS .
+
+    $default  reduce using rule 51 (ASIGNACION)
+
+
+State 239
+
+    7 IMPRIMIR: imprimir parA CONCATENAR parC .
+
+    $default  reduce using rule 7 (IMPRIMIR)
+
+
+State 240
+
+    6 IMPRIMIR: imprimir parA EXPL parC .
+
+    $default  reduce using rule 6 (IMPRIMIR)
+
+
+State 241
+
+    8 CONCATENAR: concatenar parA EXPL coma . EXPL parC
+    9           | concatenar parA EXPL coma . EXPL coma EXPL parC
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 246
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 242
+
+   52 ASIGNACION: este ACCESO TIPOASIG VALAS .
+
+    $default  reduce using rule 52 (ASIGNACION)
+
+
+State 243
+
+   62 DECLARACIONARRAY: TIPO id DIMENSIONES igual . EXPL
+   63                 | TIPO id DIMENSIONES igual . VALORESA
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    illave            shift, and go to state 247
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    VALORESA  go to state 248
+    EXPL      go to state 249
+    EXPR      go to state 97
+    EXPA      go to state 98
+    UNARIOS   go to state 99
+
+
+State 244
+
+   36 FUNCION: VISIBILIDAD TIPO DIMS id parA LPARAMETROS parC illave SENTENCIAS fllave .
+
+    $default  reduce using rule 36 (FUNCION)
+
+
+State 245
+
+   53 ASIGNACION: id DIMENSIONES ACCESO TIPOASIG VALAS .
+
+    $default  reduce using rule 53 (ASIGNACION)
+
+
+State 246
+
+    8 CONCATENAR: concatenar parA EXPL coma EXPL . parC
+    9           | concatenar parA EXPL coma EXPL . coma EXPL parC
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    parC  shift, and go to state 250
+    coma  shift, and go to state 251
+    o     shift, and go to state 120
+    y     shift, and go to state 121
+
+
+State 247
+
+   66 VALORESA: illave . LVALORES fllave
+
+    illave  shift, and go to state 252
+
+    LVALORES  go to state 253
+
+
+State 248
+
+   63 DECLARACIONARRAY: TIPO id DIMENSIONES igual VALORESA .
+
+    $default  reduce using rule 63 (DECLARACIONARRAY)
+
+
+State 249
+
+   62 DECLARACIONARRAY: TIPO id DIMENSIONES igual EXPL .
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    o  shift, and go to state 120
+    y  shift, and go to state 121
+
+    $default  reduce using rule 62 (DECLARACIONARRAY)
+
+
+State 250
+
+    8 CONCATENAR: concatenar parA EXPL coma EXPL parC .
+
+    $default  reduce using rule 8 (CONCATENAR)
+
+
+State 251
+
+    9 CONCATENAR: concatenar parA EXPL coma EXPL coma . EXPL parC
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 254
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 252
+
+   68 LVALORES: illave . VALORES fllave
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    VALORES  go to state 255
+    EXPL     go to state 256
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 253
+
+   66 VALORESA: illave LVALORES . fllave
+   67 LVALORES: LVALORES . coma illave VALORES fllave
+
+    fllave  shift, and go to state 257
+    coma    shift, and go to state 258
+
+
+State 254
+
+    9 CONCATENAR: concatenar parA EXPL coma EXPL coma EXPL . parC
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    parC  shift, and go to state 259
+    o     shift, and go to state 120
+    y     shift, and go to state 121
+
+
+State 255
+
+   68 LVALORES: illave VALORES . fllave
+   69 VALORES: VALORES . coma EXPL
+
+    fllave  shift, and go to state 260
+    coma    shift, and go to state 261
+
+
+State 256
+
+   70 VALORES: EXPL .
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    o  shift, and go to state 120
+    y  shift, and go to state 121
+
+    $default  reduce using rule 70 (VALORES)
+
+
+State 257
+
+   66 VALORESA: illave LVALORES fllave .
+
+    $default  reduce using rule 66 (VALORESA)
+
+
+State 258
+
+   67 LVALORES: LVALORES coma . illave VALORES fllave
+
+    illave  shift, and go to state 262
+
+
+State 259
+
+    9 CONCATENAR: concatenar parA EXPL coma EXPL coma EXPL parC .
+
+    $default  reduce using rule 9 (CONCATENAR)
+
+
+State 260
+
+   68 LVALORES: illave VALORES fllave .
+
+    $default  reduce using rule 68 (LVALORES)
+
+
+State 261
+
+   69 VALORES: VALORES coma . EXPL
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    EXPL     go to state 263
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 262
+
+   67 LVALORES: LVALORES coma illave . VALORES fllave
+
+    entero            shift, and go to state 81
+    decimal           shift, and go to state 82
+    caracter          shift, and go to state 83
+    booleano          shift, and go to state 84
+    cadena            shift, and go to state 85
+    id                shift, and go to state 86
+    parA              shift, and go to state 87
+    menos             shift, and go to state 88
+    no                shift, and go to state 89
+    convertirAcadena  shift, and go to state 90
+    convertirAentero  shift, and go to state 91
+    este              shift, and go to state 92
+    nada              shift, and go to state 93
+
+    VALORES  go to state 264
+    EXPL     go to state 256
+    EXPR     go to state 97
+    EXPA     go to state 98
+    UNARIOS  go to state 99
+
+
+State 263
+
+   69 VALORES: VALORES coma EXPL .
+   79 EXPL: EXPL . y EXPL
+   80     | EXPL . o EXPL
+
+    o  shift, and go to state 120
+    y  shift, and go to state 121
+
+    $default  reduce using rule 69 (VALORES)
+
+
+State 264
+
+   67 LVALORES: LVALORES coma illave VALORES . fllave
+   69 VALORES: VALORES . coma EXPL
+
+    fllave  shift, and go to state 265
+    coma    shift, and go to state 261
+
+
+State 265
+
+   67 LVALORES: LVALORES coma illave VALORES fllave .
+
+    $default  reduce using rule 67 (LVALORES)

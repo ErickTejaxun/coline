@@ -35,4 +35,5 @@ FORMS    += mainwindow.ui \
 DISTFILES += \
     lexico.l \
     sintactico.yy \
-    compilacion.bat
+    compilacion.bat \
+    parser.output

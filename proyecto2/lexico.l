@@ -87,7 +87,7 @@ sinosi ("sino")("si")
 "hereda_de"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return heredade;}
 "retornar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return retornar;}
 "importar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return importar;}
-"@sobreescribir"      {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return sobreescribir;}
+"@sobrescribir"      {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return sobreescribir;}
 "principal"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return principal;}
 "nuevo"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return nuevo;}
 "nada"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return nada; }
