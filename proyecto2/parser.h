@@ -110,7 +110,7 @@ extern int yydebug;
     si = 320,
     sinosi = 321,
     sino = 322,
-    seleccionar = 323,
+    selecciona = 323,
     caso = 324,
     defecto = 325,
     mientras = 326,

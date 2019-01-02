@@ -4,6 +4,7 @@
 #include <QString>
 #include "nodo.h"
 #include <QMessageBox>
+
 extern int yyparse();
 extern nodo *raiz; // Raiz del arbol
 extern int linea; // Linea del token
@@ -45,4 +46,5 @@ void editor::on_botonCompilar_clicked()
         ui->txtConsola->setText("Errores sintacticos en la entrada");
     }
     yy_delete_buffer(buffer);
+
 }

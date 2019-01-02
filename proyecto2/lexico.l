@@ -27,7 +27,7 @@ decimal [0-9]+"."[0-9]+
 caracter "\'"("\\")?({letra}|{numero})"\'"
 iden {letra}({letra}|{numero}|"_")*
 cadena "\""[^"\""]*"\""
-sinosi ("sino")("si")
+sinosi ("sino")[[:blank:]]("si")
 
 
 
@@ -96,7 +96,7 @@ sinosi ("sino")("si")
 "si"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return si; }// IF
 {sinosi}        {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return sinosi; }
 "sino"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return sino; }
-"seleccionar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return seleccionar;}// Switch case
+"selecciona"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return selecciona;}// Switch case
 "caso"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return caso; }
 "defecto"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return defecto; }
 "mientras"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return mientras;}

@@ -102,7 +102,7 @@ class nodo *nodito;
 %token<TEXT> si;
 %token<TEXT> sinosi;
 %token<TEXT> sino;
-%token<TEXT> seleccionar;
+%token<TEXT> selecciona;
 %token<TEXT> caso;
 %token<TEXT> defecto;
 %token<TEXT> mientras;
@@ -169,6 +169,21 @@ class nodo *nodito;
 %type<nodito> RETORNO;
 %type<nodito> DIM; //[]
 %type<nodito> DIMS; //[][][]... para el tipo de función.
+%type<nodito> LLAMADA;
+%type<nodito> LPAR;
+%type<nodito> PRINCIPAL;
+%type<nodito> CONSTRUCTOR;
+%type<nodito> INSTANCIA;
+%type<nodito> MIENTRAS;
+%type<nodito> SI;
+%type<nodito> ELSE;
+%type<nodito> SINOSI;
+%type<nodito> SELECCIONAR;
+%type<nodito> CASO;
+%type<nodito> LCASOS;
+%type<nodito> CASOS;
+%type<nodito> HACER;
+%type<nodito> PARA;
 //LOS NO TERMINALES PUEDEN SER DE DIFERENTE TIPO, LOS TERMINALES SIEMPRE SON STRINGS O NO SE ESPECIFICA TIPO
 //PRECEDENCIA DE LOS OPERADORES PARA QUITAR LA AMBIGUEDAD DEN LA GRAMTICA
 %left suma menos
@@ -252,7 +267,16 @@ ICLASE:
             nodo *sobre = new nodo("sobreescribir","sobreescribir",@1.first_line,@1.first_column);
             $$->hijos.prepend(*sobre);
        } // Estas van en la cabecera. O bien no dentro de algún metodo.
-       |ATRIBUTO{$$=$1;};
+       |ATRIBUTO{$$=$1;}
+       | PRINCIPAL {$$= $1;}
+       | CONSTRUCTOR {$$=$1;}
+       | sobreescribir CONSTRUCTOR
+        {
+             $$=$2;
+             nodo *sobre = new nodo("sobreescribir","sobreescribir",@1.first_line,@1.first_column);
+             $$->hijos.prepend(*sobre);
+        } // Estas van en la cabecera. O bien no dentro de algún metodo.
+        ;
 
 
 SENTENCIAS: SENTENCIAS INSTRUCCION{ $$ = $1; $$->add(*$2);}
@@ -264,8 +288,164 @@ INSTRUCCION:    DECLARACION puntoComa { $$ = $1;}
               | ASIGNACION puntoComa {$$ = $1;}
               | CONCATENAR puntoComa {$$ = $1;}
               | IMPRIMIR puntoComa {$$ = $1;}
-              | RETORNO puntoComa {$$=$1;}
+              | RETORNO puntoComa {$$=$1;}              
+              //| INSTANCIA puntoComa{$$=$1;}
+              | LLAMADA puntoComa {$$=$1;}
+              | MIENTRAS {$$=$1;}
+              | SI {$$=$1;}
+              | UNARIOS puntoComa{$$=$1;}
+              |SELECCIONAR {$$=$1;}
+              | HACER puntoComa {$$=$1;}
+              | PARA {$$=$1;}
+              | detener puntoComa{ $$ = new nodo("detener","detener",@1.first_line,@1.first_column);}
+              | continuar puntoComa{ $$ = new nodo("continuar","continuar",@1.first_line,@1.first_column);}
               ;
+
+//para (entero cuenta = 0; cuenta <= 10; cuenta++) {
+PARA: para parA ASIGNACION puntoComa EXPL puntoComa ASIGNACION parC illave SENTENCIAS fllave
+        {
+            $$ = new nodo("ciclo","para",@1.first_line,@1.first_column);
+            $$->hijos.append(*$3);// Asignacion
+            $$->hijos.append(*$5); // Condicion
+            $$->hijos.append(*$7); // Asignacion
+            $$->hijos.append(*$10); // Sentencias
+        }
+        | para parA DECLARACION puntoComa EXPL puntoComa ASIGNACION parC illave SENTENCIAS fllave
+        {
+            $$ = new nodo("ciclo","para",@1.first_line,@1.first_column);
+            $$->hijos.append(*$3);// Declaracion
+            $$->hijos.append(*$5); // Condicion
+            $$->hijos.append(*$7); // Asignacion
+            $$->hijos.append(*$10); // Sentencias
+        }
+        |para parA ASIGNACION puntoComa EXPL puntoComa UNARIOS parC illave SENTENCIAS fllave
+        {
+            $$ = new nodo("ciclo","para",@1.first_line,@1.first_column);
+            $$->hijos.append(*$3);// Asignacion
+            $$->hijos.append(*$5); // Condicion
+            $$->hijos.append(*$7); // decremento / aumento
+            $$->hijos.append(*$10); // Sentencias
+        }
+        | para parA DECLARACION puntoComa EXPL puntoComa UNARIOS  parC illave SENTENCIAS fllave
+        {
+            $$ = new nodo("ciclo","para",@1.first_line,@1.first_column);
+            $$->hijos.append(*$3);// Declaracion
+            $$->hijos.append(*$5); // Condicion
+            $$->hijos.append(*$7); // Asignacion
+            $$->hijos.append(*$10); // Sentencias
+        }
+        ;
+
+
+HACER: hacer illave SENTENCIAS fllave
+        mientras parA EXPL parC
+        {
+            $$ = new nodo("ciclo","hacer",@1.first_line,@1.first_column);
+            $$->hijos.append(*$3);// sentencias
+            $$->hijos.append(*$7);// condicion;
+        }
+        ;
+
+MIENTRAS:
+//mientras (cuenta <= 10) { si (cuenta == 5) { detener; } cuenta++; }
+         mientras parA EXPL parC illave SENTENCIAS fllave
+         {
+           $$ = new nodo("ciclo","mientrsa",@1.first_line,@1.first_column);
+           $$->hijos.append(*$3); // Condicion
+           $$->hijos.append(*$6);
+         };
+
+
+SI:
+         si parA EXPL parC illave  SENTENCIAS fllave
+         {
+             $$ = new nodo("seleecion","si",@1.first_line,@1.first_column);
+             $$->hijos.append(*$3);// condicion
+             $$->hijos.append(*$6); // Sentencias
+         }
+        |si parA EXPL parC illave  SENTENCIAS fllave ELSE
+         {
+             $$=$8;
+             $$->valor = "si";
+             $$->hijos.prepend(*$6); // Sentencias
+             $$->hijos.prepend(*$3);// condicion
+         }
+         ;
+
+ELSE:
+         SINOSI
+         sino illave SENTENCIAS fllave
+          {
+             $$=$1;
+             $$->hijos.append(*$4);
+          }
+         |SINOSI
+         {
+             $$=$1;
+         }
+         |sino illave SENTENCIAS fllave
+         {
+            $$= $3;
+         }
+         ;
+
+SINOSI: SINOSI sinosi parA EXPL parC illave SENTENCIAS fllave
+         {
+           $$=$1;
+           $$->hijos.append(*$4); // condicion
+           $$->hijos.append(*$7); // Sentenencias
+         }
+        |sinosi parA EXPL parC illave SENTENCIAS fllave
+         {
+           $$= new nodo("seleccion","sinosi",@1.first_line,@1.first_column);
+           $$->hijos.append(*$3); // condicion
+           $$->hijos.append(*$6); // Sentenencias
+         };
+
+
+SELECCIONAR:
+         selecciona parA EXPL parC illave CASOS fllave
+         {
+             $$ = new nodo("seleccionar","$1",@1.first_line,@1.first_column);
+             $$->hijos.append(*$3);
+             $$->hijos.append(*$6);
+         }
+         ;
+CASOS: LCASOS defecto dosP illave SENTENCIAS fllave
+     {
+        $$=$1;
+        nodo *def = new nodo("caso","defecto",@2.first_line,@2.first_column);
+        def->hijos.append(*$5);
+        $$->hijos.append(*def);
+     }
+     |defecto dosP illave SENTENCIAS fllave
+     {
+        $$= new nodo("casos","casos",@1.first_line,@1.first_column);
+        nodo *def = new nodo("caso","defecto",@1.first_line,@1.first_column);
+        def->hijos.append(*$4);
+        $$->hijos.append(*def);
+     }
+     ;
+
+
+LCASOS:   LCASOS CASO
+         {
+             $$=$1;
+             $$->hijos.append(*$2);
+         }
+         |CASO
+         {
+           $$= new nodo("casos","casos",@1.first_line,@1.first_column);
+           $$->hijos.append(*$1);
+         }
+
+CASO: caso EXPL dosP illave SENTENCIAS fllave
+         {
+            $$ = new nodo("caso","caso",@1.first_line,@1.first_column);
+            $$->hijos.append(*$2);
+            $$->hijos.append(*$5);
+         }
+         ;
 
 RETORNO: retornar EXPL
               {
@@ -293,7 +473,19 @@ VISIBILIDAD:
            |privado {$$ = new nodo("visibilidad",$1,@1.first_line, @1.first_column);}
            |protegido{$$ = new nodo("visibilidad",$1,@1.first_line, @1.first_column);}
             ;
-
+INSTANCIA: nuevo id parA LPAR parC
+            {
+                 nodo *cons = new nodo("constructor",$2,@2.first_line,@2.first_column);
+                 cons->hijos.append(*$4); // LISTA DE PARAMETROS
+                 $$ = cons;
+            }
+            |nuevo id parA parC
+            {
+                 nodo *cons = new nodo("constructor",$2,@2.first_line,@2.first_column);
+                 nodo *lpar = new nodo("lpar","lpar",@1.first_line,@1.first_column);
+                 cons->hijos.append(*lpar); // LISTA DE PARAMETROS
+                 $$ = cons;
+            };
 
 // METODOS
 LPARAMETROS: PARAMETROS{$$=$1;}
@@ -330,6 +522,30 @@ PARAMETRO: TIPO id
                 $$->hijos.append(*$3);
             }
             ;
+
+PRINCIPAL: principal parA parC illave SENTENCIAS fllave
+           {
+                $$ = new nodo("principal",$1, @1.first_line, @1.first_column);
+                $$->hijos.append(*$5);
+           };
+
+
+CONSTRUCTOR: VISIBILIDAD id  parA  LPARAMETROS parC illave  SENTENCIAS fllave
+                {
+                    $$ = new nodo("constructor",$2,@1.first_line,@1.first_column);
+                    $$->hijos.append(*$1); // visibilidad
+                    $$->hijos.append(*$4); // parametros
+                    $$->hijos.append(*$7); // instrucciones
+                }
+                |id parA  LPARAMETROS parC illave  SENTENCIAS fllave
+                {
+                    $$ = new nodo("constructor",$1,@1.first_line,@1.first_column);
+                    nodo *vis = new nodo("visibilidad","publico",@1.first_line,@1.first_column);
+                    $$->hijos.append(*vis); // visibilidad
+                    $$->hijos.append(*$3);  // parametros
+                    $$->hijos.append(*$6); // instrucciones
+                }
+                ;
 
 FUNCION: VISIBILIDAD TIPO DIMS id  parA LPARAMETROS parC illave SENTENCIAS fllave
             {
@@ -495,19 +711,26 @@ TIPOASIG:
 DECLARACION:
          TIPO id
          {
-            nodo *nuevo = new nodo("d","d",@1.first_line, @1.first_column);
-            nuevo->add(*$1);
-            nodo *nodoid =  new nodo("id",$2,@2.first_line,@2.first_column);
-            nuevo->add(*nodoid);
+            nodo *nuevo = new nodo("d",$2,@1.first_line, @1.first_column);
+            nuevo->add(*$1); // tipo
             $$ = nuevo;
          }
-        |TIPO id igual VALAS {
-             nodo *nuevo = new nodo("da","da",@1.first_line, @1.first_column);
-             nuevo->add(*$1);
-             nodo *nodoid =  new nodo("id",$2,@2.first_line,@2.first_column);
-             nuevo->add(*nodoid);
-             nuevo->add(*$4);
-             $$ = nuevo;}
+        |TIPO id igual VALAS
+         {
+             nodo *nuevo = new nodo("da",$2,@1.first_line, @1.first_column);
+             nuevo->add(*$1); // tipo
+             nuevo->add(*$4); // valor
+             $$ = nuevo;
+         }
+         /*|TIPO id igual  nuevo id parA LPARAMETROS parC
+         {
+              nodo *nuevo = new nodo("da",$2,@1.first_line, @1.first_column);
+              nuevo->add(*$1); // tipo
+              nodo *cons = new nodo("constructor",$5,@5.first_line,@5.first_column);
+              cons->hijos.append(*$7);
+              nuevo->add(*cons);
+              $$ = nuevo;
+         }*/
         ;
 // dar declarcion array
 // dara declaracion array asignacion --E para cadenas
@@ -579,6 +802,7 @@ VALORES: VALORES coma EXPL {$$=$1; $$->add(*$3);}
 VALAS:
        EXPL {$$=$1;}
        |SENTSELEC{$$=$1;}
+       |INSTANCIA{$$=$1;}
        ;
 
 TIPO: tipoBooleano  {$$= new nodo("tipo",$1,@1.first_line,@1.first_column);}
@@ -656,11 +880,56 @@ EXPA:
             $$ = new nodo("convertaentero","convertaentero",@1.first_line,@1.first_column);
             $$->hijos.append(*$3);
          }                  
+         | LLAMADA
+         {
+             $$=$1;
+         }
          ;
-        // LLAMADAS funciones
-        // ACCESOS a objetos
-         //resultado_op = 5 - (9 + variable)*14;
-        //   vector[4] ,  vector.vad.vector[3]
+        // LLAMADAS funciones        
+
+
+LPAR: LPAR coma EXPL
+     {
+        $$=$1;
+        $$->hijos.append(*$3);
+     }
+     |EXPL
+     {
+        $$ = new nodo("lpar","lpar",@1.first_line,@1.first_column);
+        $$->hijos.append(*$1);
+     }
+     ;
+
+LLAMADA: id parA parC
+         {
+             $$ = new nodo("llamada",$1,@1.first_line,@1.first_column);
+             /*nodo *params = new nodo("lpar","lpar",@2.first_line,@2.first_column);
+             $$->hijos.append(*params);*/
+         }
+         | id parA LPAR parC
+         {
+             $$ = new nodo("llamada",$1,@1.first_line,@1.first_column);
+             for(int i= 0; i<$3->hijos.count(); i++)
+             {
+                $$->hijos.append($3->hijos[i]);
+             }
+         }
+        |id ACCESO parA LPAR parC
+        {
+          $$ = $2;
+          $$->tipo = "llamada";
+          nodo *id = new nodo("id",$1,@1.first_line,@1.first_column);
+          $$->hijos.prepend(*id);
+        }
+        |id ACCESO parA  parC
+         {
+           $$ = $2;
+           $$->tipo = "llamada";
+           nodo *id = new nodo("id",$1,@1.first_line,@1.first_column);
+           $$->hijos.prepend(*id);
+         }
+ ;
+
 
 UNARIOS :
          EXPA aumento {nodo *nod = new nodo("aumento","++",@2.first_line, @2.first_column); nod->add(*$1); $$= nod;}
@@ -680,8 +949,7 @@ ACCESO : ACCESO punto id
             nod->hijos.append(*$4);
             $$->hijos.append(*nod);
          }
-
-        | punto id
+         | punto id
          {
              $$ = new nodo("acceso","acceso",@1.first_line, @1.first_column);
              nodo *nod= new nodo("id",$2,@1.first_line, @1.first_column);
@@ -693,5 +961,5 @@ ACCESO : ACCESO punto id
              nodo *nod= new nodo("idv",$2,@2.first_line, @2.first_column);
              nod->hijos.append(*$3);
              $$->hijos.append(*nod);
-         }
+         };
 %%
