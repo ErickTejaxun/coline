@@ -138,16 +138,6 @@
      <string>Exportar</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="txt3D">
-    <property name="geometry">
-     <rect>
-      <x>800</x>
-      <y>70</y>
-      <width>441</width>
-      <height>421</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QTabWidget" name="tabWidget_2">
     <property name="geometry">
      <rect>
@@ -236,6 +226,29 @@
      </widget>
     </widget>
    </widget>
+   <widget class="QScrollArea" name="scrollArea">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>70</y>
+      <width>431</width>
+      <height>411</height>
+     </rect>
+    </property>
+    <property name="widgetResizable">
+     <bool>true</bool>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>429</width>
+       <height>409</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -243,7 +256,7 @@
      <x>0</x>
      <y>0</y>
      <width>1259</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

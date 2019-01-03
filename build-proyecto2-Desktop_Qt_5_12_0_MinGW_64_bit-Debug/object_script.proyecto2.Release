@@ -6,5 +6,7 @@ release/scanner.o
 release/graficador.o
 release/nodo.o
 release/constantes.o
+release/error.o
+release/interprete.o
 release/moc_mainwindow.o
 release/moc_editor.o

@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     scanner.cpp \
     graficador.cpp \
     nodo.cpp \
-    constantes.cpp
+    constantes.cpp \
+    error.cpp \
+    interprete.cpp
 
 HEADERS  += mainwindow.h \
     editor.h \
@@ -27,7 +29,9 @@ HEADERS  += mainwindow.h \
     parser.h \
     graficador.h \
     nodo.h \
-    constantes.h
+    constantes.h \
+    error.h \
+    interprete.h
 
 FORMS    += mainwindow.ui \
     editor.ui

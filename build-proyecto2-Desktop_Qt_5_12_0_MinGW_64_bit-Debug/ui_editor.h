@@ -16,6 +16,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QScrollArea>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableView>
@@ -39,7 +40,6 @@ public:
     QPushButton *botonSaltar;
     QPushButton *botonAutomatico;
     QPushButton *botonExportar;
-    QTextEdit *txt3D;
     QTabWidget *tabWidget_2;
     QWidget *tab_3;
     QTextEdit *txtConsola;
@@ -51,6 +51,8 @@ public:
     QTableView *tablaStack;
     QWidget *tab_7;
     QTableView *tablaHeap;
+    QScrollArea *scrollArea;
+    QWidget *scrollAreaWidgetContents;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -94,9 +96,6 @@ public:
         botonExportar = new QPushButton(centralwidget);
         botonExportar->setObjectName(QString::fromUtf8("botonExportar"));
         botonExportar->setGeometry(QRect(680, 20, 99, 27));
-        txt3D = new QTextEdit(centralwidget);
-        txt3D->setObjectName(QString::fromUtf8("txt3D"));
-        txt3D->setGeometry(QRect(800, 70, 441, 421));
         tabWidget_2 = new QTabWidget(centralwidget);
         tabWidget_2->setObjectName(QString::fromUtf8("tabWidget_2"));
         tabWidget_2->setGeometry(QRect(10, 500, 1231, 201));
@@ -130,10 +129,18 @@ public:
         tablaHeap->setObjectName(QString::fromUtf8("tablaHeap"));
         tablaHeap->setGeometry(QRect(0, 0, 1221, 171));
         tabWidget_2->addTab(tab_7, QString());
+        scrollArea = new QScrollArea(centralwidget);
+        scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
+        scrollArea->setGeometry(QRect(800, 70, 431, 411));
+        scrollArea->setWidgetResizable(true);
+        scrollAreaWidgetContents = new QWidget();
+        scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 429, 409));
+        scrollArea->setWidget(scrollAreaWidgetContents);
         editor->setCentralWidget(centralwidget);
         menubar = new QMenuBar(editor);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1259, 25));
+        menubar->setGeometry(QRect(0, 0, 1259, 21));
         editor->setMenuBar(menubar);
         statusbar = new QStatusBar(editor);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));

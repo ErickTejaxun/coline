@@ -11,10 +11,13 @@ public:
     nodo();
     nodo(QString tipo);
     nodo(QString tipo, QString valor);
-    nodo(QString etiqueta, QString valor, int linea, int columna);
+    nodo(QString tipo, QString valor, int linea, int columna);
+    nodo(int tipo, QString valor, int linea, int columna);
+    int getTipo();
     void add(nodo nd);
     QList<nodo> hijos;
     QString tipo;
+    int tipo_;
     QString valor;
     QString etiqueta;
     int linea;

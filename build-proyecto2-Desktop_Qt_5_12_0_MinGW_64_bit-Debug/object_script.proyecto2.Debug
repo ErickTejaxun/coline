@@ -6,5 +6,7 @@ debug/scanner.o
 debug/graficador.o
 debug/nodo.o
 debug/constantes.o
+debug/error.o
+debug/interprete.o
 debug/moc_mainwindow.o
 debug/moc_editor.o

@@ -9,6 +9,7 @@ extern int yyparse();
 extern nodo *raiz; // Raiz del arbol
 extern int linea; // Linea del token
 extern int columna; // Columna de los tokens
+extern int yylineno;
 
 #include "parser.h"
 #include "scanner.h"
@@ -30,10 +31,11 @@ void editor::on_botonCompilar_clicked()
 {
     QString texto;
     texto = ui->txtinput->toPlainText();
-    std::cout << texto.toStdString() << std::endl;
+    //std::cout << texto.toStdString() << std::endl;
     YY_BUFFER_STATE buffer = yy_scan_string(texto.toUtf8().constData());
     linea =0;
     columna =0;
+    yylineno = 0;
     if(yyparse()==0)
     {
         ui->txtConsola->setText("Analisis completado.");

@@ -29,9 +29,13 @@ iden {letra}({letra}|{numero}|"_")*
 cadena "\""[^"\""]*"\""
 sinosi ("sino")[[:blank:]]("si")
 
-
+%x COM COMM
 
 %%
+INITIAL
+{
+"//" {  BEGIN COM; }
+"/*" {  BEGIN COMM; }
 {numero}          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return entero;}
 {decimal}          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return decimal;}
 {caracter}          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return caracter;}
@@ -102,16 +106,6 @@ sinosi ("sino")[[:blank:]]("si")
 "mientras"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return mientras;}
 "hacer"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return hacer; }
 "para"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return para; }
-"lista"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return lista; }
-"insertar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return insertar; }
-"obtener"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return obtener; }
-"buscar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return buscar; }
-"pila"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return pila; }
-"apliar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return apilar; }
-"desapilar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return desapilar; }
-"cola"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return cola; }
-"encolar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return encolar; }
-"desencolar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return desencolar; }
 "mostraredd"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return mostraredd; }
 "leer_teclado"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return leer_teclado; }
 {iden}          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return id; }
@@ -124,4 +118,11 @@ sinosi ("sino")[[:blank:]]("si")
                     strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext);
                     std::cout <<yytext <<" Error Lexico en la linea "<< linea << " Columna:"<< columna<<  std::endl;
                 }
+}
+<COMM>"*/" { BEGIN INITIAL; }
+<COMM>"\n" {linea++;};
+<COMM>.;
+<COMM><<EOF>> { yyerror("unclosed comment"); }
+<COM>"\n" { linea++; columna = 0; BEGIN INITIAL; };
+<COM>.;
 %%
