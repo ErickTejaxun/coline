@@ -1,7 +1,7 @@
-#include "error.h"
+#include "errorT.h"
 
 
-Error::Error()
+errorT::errorT()
 {
     tipo = "";
     this->desc="";
@@ -10,7 +10,7 @@ Error::Error()
 }
 
 
-Error::Error(QString tipo, QString desc, int linea, int columna)
+errorT::errorT(QString tipo, QString desc, int linea, int columna)
 {
     this->tipo = tipo;
     this->desc=desc;

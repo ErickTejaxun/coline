@@ -2,11 +2,11 @@
 #define ERROR_H
 #include <QString>
 
-class Error
+class errorT
 {
 public:
-    Error();
-    Error(QString tipo, QString desc, int linea, int columna);
+    errorT();
+    errorT(QString tipo, QString desc, int linea, int columna);
     QString tipo;
     QString desc;
     int linea;

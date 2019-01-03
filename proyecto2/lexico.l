@@ -7,12 +7,15 @@
 #include <stdio.h>
 #include <iostream>
 #include <nodo.h>
+#include "qlist.h"
+#include <errorT.h>
 
 int yylex();
 void yyerror(const char *s);
 int linea=0; // Para contar lineas
 int columna = 1; // para las columnas
 nodo *raiz;
+QList<errorT> *listaErrores = new QList<errorT>();
 %}
 
 %option header-file="scanner.h"

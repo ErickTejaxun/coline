@@ -2,27 +2,30 @@
 #include "scanner.h"//se importa el header del analisis sintactico
 #include <iostream> //libreria para imprimir en cosola de C
 #include <QString> //libreria para manejo de STRINGS de QT
-#include <QList>
 #include "nodo.h"
 #include <QTextEdit> //libreria QTextEdit de QT para poder mostrar el resultado en pantalla
+#include <errorT.h>
+#include "qlist.h"
 
 extern int yylineno; //linea actual donde se encuentra el parser (analisis lexico) lo maneja BISON
 extern int columna; //columna actual donde se encuentra el parser (analisis lexico) lo maneja BISON
 extern char *yytext; //lexema actual donde esta el parser (analisis lexico) lo maneja BISON
 extern nodo *raiz; // Raiz del arbol
-
+extern QList<errorT> *listaErrores;
 int yyerror(const char* mens)
 {
     //metodo que se llama al haber un error sintactico
     //SE IMPRIME EN CONSOLA EL ERROR
     //std::cout <<mens<<"-----"<<yytext<< std::endl;
     std::cout << mens <<"----"<<yytext<< " En la linea:" << yylineno  << "Columna:" << columna<<std::endl;
+    errorT * nuevo = new errorT("Sintactico",mens,yylineno, columna);
+    listaErrores->append(*nuevo);
+    //Error(QString tipo, QString desc, int linea, int columna);
     return 0;
 }
 
 
 QTextEdit * salida;
-
 %}
 //error-verbose si se especifica la opcion los errores sintacticos son especificados por BISON
 %defines "parser.h"
@@ -185,7 +188,7 @@ class nodo *nodito;
 %type<nodito> PARA;
 %type<nodito> DECESTRUCTURAS;
 %type<nodito> LEER;
-%type<nodito> ACC;
+//%type<nodito> ACC;
 //LOS NO TERMINALES PUEDEN SER DE DIFERENTE TIPO, LOS TERMINALES SIEMPRE SON STRINGS O NO SE ESPECIFICA TIPO
 //PRECEDENCIA DE LOS OPERADORES PARA QUITAR LA AMBIGUEDAD DEN LA GRAMTICA
 %left suma menos
@@ -249,16 +252,17 @@ IMPORTAR : importar parA cadena parC
 // Clases----------------------------------------------------------------------
 
 // INSTRUCCIONES DE CLASE
-ICLASES :ICLASES ICLASE
-              {
-                 $$=$1;
-                 $$->hijos.append(*$2);
-              }
+ICLASES :
+        ICLASES ICLASE
+        {
+         $$=$1;
+         $$->hijos.append(*$2);
+        }
         |ICLASE
-              {
-                 $$ = new nodo("instrucciones","instrucciones",@1.first_line,@1.first_column);
-                 $$->hijos.append(*$1);
-              }
+          {
+             $$ = new nodo("instrucciones","instrucciones",@1.first_line,@1.first_column);
+             $$->hijos.append(*$1);
+          }
         ;
 
 ICLASE:
@@ -688,37 +692,35 @@ CLASE: VISIBILIDAD clase id illave ICLASES fllave
 
 ASIGNACION:
               id TIPOASIG VALAS
-                          {
-                            $$=$2;
-                            nodo *idnodo = new nodo("variable",$1,@1.first_line, @1.first_column);
-                            $$->add(*idnodo);
-                            $$->add(*$3);
-                           }
+              {
+                $$=$2;
+                nodo *idnodo = new nodo("variable",$1,@1.first_line, @1.first_column);
+                $$->add(*idnodo);
+                $$->add(*$3);
+              }
               |id  DIMENSIONES TIPOASIG VALAS
-                          {
-                            $$=$3;
-                            $$->tipo= "asiga";
-                            $$->add(*$2);
-                            nodo *idnodo = new nodo("variable",$1,@1.first_line, @1.first_column);
-                            $$->add(*idnodo);
-                            $$->add(*$4);
-                           }
-              |id ACCESO TIPOASIG VALAS
-                          {
-                          $$=$3;
-                          nodo *nod = new nodo("id",$1,@1.first_line, @1.first_column);
-                          $2->hijos.prepend(*nod);
-                          $$->hijos.append(*$2);
-                          $$->hijos.append(*$4);
-                          }
+                {
+                    $$=$3;
+                    $$->tipo= "asiga";
+                    $$->add(*$2);
+                    nodo *idnodo = new nodo("variable",$1,@1.first_line, @1.first_column);
+                    $$->add(*idnodo);
+                    $$->add(*$4);
+                }
+              |LLAMADA TIPOASIG VALAS
+              {
+                  $$=$2;
+                  $$->hijos.append(*$1);
+                  $$->hijos.append(*$3);
+              }
               |este ACCESO TIPOASIG VALAS
-                          {
-                          $$=$3;
-                          nodo *nod = new nodo("id",$1,@1.first_line, @1.first_column);
-                          $2->hijos.prepend(*nod);
-                          $$->hijos.append(*$2);
-                          $$->hijos.append(*$4);
-                          }
+              {
+                  $$=$3;
+                  nodo *nod = new nodo("id",$1,@1.first_line, @1.first_column);
+                  $2->hijos.prepend(*nod);
+                  $$->hijos.append(*$2);
+                  $$->hijos.append(*$4);
+              }
                |id DIMENSIONES ACCESO  TIPOASIG VALAS
                            {
                            $$=$4;
@@ -905,22 +907,18 @@ EXPA:
         |nada { $$ = new nodo("nada",$1,@1.first_line, @1.first_column);}
         |UNARIOS {$$ = $1;}
         |parA EXPL parC{$$=$2;}
-        |id ACCESO {
-                    $$=$2;
-                    nodo *nod = new nodo("id",$1,@1.first_line, @1.first_column);
-                    $$->hijos.prepend(*nod);
-                    }
-         |id DIMENSIONES ACCESO {
-                     $$=$2;
-                     nodo *nod = new nodo("id",$1,@1.first_line, @1.first_column);
-                     $$->hijos.prepend(*nod);
-                     }
-        //----this
-         |este ACCESO {
-                     $$=$2;
-                     nodo *nod = new nodo("id",$1,@1.first_line, @1.first_column);
-                     $$->hijos.prepend(*nod);
-                     }
+         |id DIMENSIONES ACCESO
+         {
+             $$=$2;
+             nodo *nod = new nodo("id",$1,@1.first_line, @1.first_column);
+             $$->hijos.prepend(*nod);
+         }
+         |este ACCESO
+         {
+             $$=$2;
+             nodo *nod = new nodo("id",$1,@1.first_line, @1.first_column);
+             $$->hijos.prepend(*nod);
+         }
          |convertirAcadena parA EXPL parC
          {
             $$ = new nodo("convertacadena","convertacadena",@1.first_line,@1.first_column);
@@ -953,13 +951,14 @@ LPAR: LPAR coma EXPL
      ;
 
 
-LLAMADA: id parA parC
+LLAMADA:
+
+         id parA parC
          {
-             $$ = new nodo("llamada",$1,@1.first_line,@1.first_column);
-             /*nodo *params = new nodo("lpar","lpar",@2.first_line,@2.first_column);
-             $$->hijos.append(*params);*/
+             $$ = new nodo("llamada",$1,@1.first_line,@1.first_column);          
+             //$$->hijos.append(*params);
          }
-         | id parA LPAR parC
+         |id parA LPAR parC
          {
              $$ = new nodo("llamada",$1,@1.first_line,@1.first_column);
              for(int i= 0; i<$3->hijos.count(); i++)
@@ -967,25 +966,26 @@ LLAMADA: id parA parC
                 $$->hijos.append($3->hijos[i]);
              }
          }
-        |id ACCESO parA LPAR parC
-        {
-          $$ = $2;
-          $$->tipo = "llamada";
-          nodo *id = new nodo("id",$1,@1.first_line,@1.first_column);
-          $$->hijos.prepend(*id);
-          for(int i=0; i<$4->hijos.count();i++)
-          {
-              $$->hijos.append($4->hijos[i]);
-          }
-        }
-        |id ACCESO parA  parC
+         |id parA parC ACCESO
          {
-           $$ = $2;
-           $$->tipo = "llamada";
-           nodo *id = new nodo("id",$1,@1.first_line,@1.first_column);
-           $$->hijos.prepend(*id);
+             $$=$4;
+             nodo *f= new nodo("funcion",$1,@1.first_line,@1.first_column);
+             $$->hijos.prepend(*f);
          }
- ;
+         |id parA LPAR parC ACCESO
+         {
+             $$ = $5;
+             nodo *f= new nodo("funcion",$1,@1.first_line,@1.first_column);
+             f->hijos.append(*$3);
+             $$->hijos.prepend(*f);
+         }
+        |id ACCESO
+        {
+             $$ =$2;
+             nodo *f= new nodo("id",$1,@1.first_line,@1.first_column);
+             $$->hijos.prepend(*f);
+        }
+        ;
 
 
 UNARIOS :
@@ -993,10 +993,24 @@ UNARIOS :
         |EXPA decremento {nodo *nod = new nodo("decremento","--",@2.first_line, @2.first_column); nod->add(*$1); $$= nod;};
 
 
+
 ACCESO : ACCESO punto id
          {
              $$ = $1;
              nodo *nod= new nodo("id",$3,@3.first_line, @3.first_column);
+             $$->hijos.append(*nod);
+         }
+        | ACCESO punto id parA parC
+        {
+            $$ = $1;
+            nodo *nod= new nodo("funcion",$3,@3.first_line, @3.first_column);
+            $$->hijos.append(*nod);
+        }
+         | ACCESO punto id parA LPAR parC
+         {
+             $$ = $1;
+             nodo *nod= new nodo("funcion",$3,@3.first_line, @3.first_column);
+             nod->hijos.append(*$5);
              $$->hijos.append(*nod);
          }
          |ACCESO punto id DIMENSIONES
@@ -1012,6 +1026,19 @@ ACCESO : ACCESO punto id
              nodo *nod= new nodo("id",$2,@1.first_line, @1.first_column);
              $$->hijos.append(*nod);
          }
+         | punto id parA parC
+         {
+             $$ = new nodo("acceso","acceso",@1.first_line, @1.first_column);
+             nodo *nod= new nodo("funcion",$2,@1.first_line, @1.first_column);
+             $$->hijos.append(*nod);
+         }
+         | punto id parA LPAR parC
+         {
+             $$ = new nodo("acceso","acceso",@1.first_line, @1.first_column);
+             nodo *nod= new nodo("funcion",$2,@1.first_line, @1.first_column);
+             nod->hijos.append(*$4);
+             $$->hijos.append(*nod);
+         }
         |punto id DIMENSIONES
          {
              $$ = new nodo("acceso","acceso",@1.first_line, @1.first_column);
@@ -1019,66 +1046,4 @@ ACCESO : ACCESO punto id
              nod->hijos.append(*$3);
              $$->hijos.append(*nod);
          };
-
-ACCESO: ACC{ $$=$1;}
-       |ACC punto id
-         {
-             $$=$1;
-             nodo *nod= new nodo("id",$3,@3.first_line, @3.first_column);
-             $$->hijos.append(*nod);
-         }
-         ;
-
-ACC: ACC punto id
-      {
-          $$ = $1;
-          nodo *nod= new nodo("id",$3,@3.first_line, @3.first_column);
-          $$->hijos.append(*nod);
-      }
-    |ACC punto id parA parC
-    {
-        $$ = $1;
-        nodo *nod= new nodo("funcion",$3,@3.first_line, @3.first_column);
-        $$->hijos.append(*nod);
-    }
-    |ACC punto id parA EXPL parC
-    {
-        $$ = $1;
-        nodo *nod= new nodo("funcion",$3,@3.first_line, @3.first_column);
-        nod->hijos.append(*$5);
-        $$->hijos.append(*nod);
-    }
-      |ACC punto id DIMENSIONES
-      {
-         $$ = $1;
-         nodo *nod= new nodo("idv",$3,@3.first_line, @3.first_column);
-         nod->hijos.append(*$4);
-         $$->hijos.append(*nod);
-      }
-      | punto id
-      {
-          $$ = new nodo("acceso","acceso",@1.first_line, @1.first_column);
-          nodo *nod= new nodo("id",$2,@1.first_line, @1.first_column);
-          $$->hijos.append(*nod);
-      }
-     | punto id parA parC
-     {
-         $$ = new nodo("acceso","acceso",@1.first_line, @1.first_column);
-         nodo *nod= new nodo("funcion",$2,@1.first_line, @1.first_column);
-         $$->hijos.append(*nod);
-     }
-     | punto id parA LPAR parC
-     {
-         $$ = new nodo("acceso","acceso",@1.first_line, @1.first_column);
-         nodo *nod= new nodo("funcion",$2,@1.first_line, @1.first_column);
-         nod->hijos.append(*$4);
-         $$->hijos.append(*nod);
-     }
-     |punto id DIMENSIONES
-      {
-          $$ = new nodo("acceso","acceso",@1.first_line, @1.first_column);
-          nodo *nod= new nodo("idv",$2,@2.first_line, @2.first_column);
-          nod->hijos.append(*$3);
-          $$->hijos.append(*nod);
-      };
 %%

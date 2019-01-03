@@ -30,8 +30,8 @@ HEADERS  += mainwindow.h \
     graficador.h \
     nodo.h \
     constantes.h \
-    error.h \
-    interprete.h
+    interprete.h \
+    errorT.h
 
 FORMS    += mainwindow.ui \
     editor.ui
