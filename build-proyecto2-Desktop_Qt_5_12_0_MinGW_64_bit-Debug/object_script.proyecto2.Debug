@@ -7,6 +7,9 @@ debug/graficador.o
 debug/nodo.o
 debug/constantes.o
 debug/error.o
-debug/interprete.o
+debug/clase.o
+debug/atributo.o
+debug/funcion.o
+debug/primerRecorrido.o
 debug/moc_mainwindow.o
 debug/moc_editor.o

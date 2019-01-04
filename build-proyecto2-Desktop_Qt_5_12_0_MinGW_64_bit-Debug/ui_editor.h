@@ -22,12 +22,13 @@
 #include <QtWidgets/QTableView>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QWidget>
+#include <nodo.h>
 
 QT_BEGIN_NAMESPACE
 
 class Ui_editor
 {
-public:
+public:    
     QWidget *centralwidget;
     QPushButton *botonCompilar;
     QTabWidget *contenedorArchivos;
@@ -60,7 +61,7 @@ public:
     {
         if (editor->objectName().isEmpty())
             editor->setObjectName(QString::fromUtf8("editor"));
-        editor->resize(1259, 750);
+        editor->resize(1318, 944);
         centralwidget = new QWidget(editor);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         botonCompilar = new QPushButton(centralwidget);
@@ -68,12 +69,12 @@ public:
         botonCompilar->setGeometry(QRect(50, 20, 99, 27));
         contenedorArchivos = new QTabWidget(centralwidget);
         contenedorArchivos->setObjectName(QString::fromUtf8("contenedorArchivos"));
-        contenedorArchivos->setGeometry(QRect(10, 50, 781, 441));
+        contenedorArchivos->setGeometry(QRect(10, 50, 781, 651));
         tab = new QWidget();
         tab->setObjectName(QString::fromUtf8("tab"));
         txtinput = new QPlainTextEdit(tab);
         txtinput->setObjectName(QString::fromUtf8("txtinput"));
-        txtinput->setGeometry(QRect(10, 10, 751, 381));
+        txtinput->setGeometry(QRect(10, 10, 751, 601));
         contenedorArchivos->addTab(tab, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QString::fromUtf8("tab_2"));
@@ -98,7 +99,7 @@ public:
         botonExportar->setGeometry(QRect(680, 20, 99, 27));
         tabWidget_2 = new QTabWidget(centralwidget);
         tabWidget_2->setObjectName(QString::fromUtf8("tabWidget_2"));
-        tabWidget_2->setGeometry(QRect(10, 500, 1231, 201));
+        tabWidget_2->setGeometry(QRect(10, 700, 1231, 201));
         tab_3 = new QWidget();
         tab_3->setObjectName(QString::fromUtf8("tab_3"));
         txtConsola = new QTextEdit(tab_3);
@@ -131,16 +132,16 @@ public:
         tabWidget_2->addTab(tab_7, QString());
         scrollArea = new QScrollArea(centralwidget);
         scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
-        scrollArea->setGeometry(QRect(800, 70, 431, 411));
+        scrollArea->setGeometry(QRect(800, 70, 431, 631));
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 429, 409));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 429, 629));
         scrollArea->setWidget(scrollAreaWidgetContents);
         editor->setCentralWidget(centralwidget);
         menubar = new QMenuBar(editor);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1259, 21));
+        menubar->setGeometry(QRect(0, 0, 1318, 21));
         editor->setMenuBar(menubar);
         statusbar = new QStatusBar(editor);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));

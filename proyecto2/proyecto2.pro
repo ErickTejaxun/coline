@@ -21,7 +21,10 @@ SOURCES += main.cpp\
     nodo.cpp \
     constantes.cpp \
     error.cpp \
-    interprete.cpp
+    clase.cpp \
+    atributo.cpp \
+    funcion.cpp \
+    primerRecorrido.cpp
 
 HEADERS  += mainwindow.h \
     editor.h \
@@ -30,8 +33,11 @@ HEADERS  += mainwindow.h \
     graficador.h \
     nodo.h \
     constantes.h \
-    interprete.h \
-    errorT.h
+    errorT.h \
+    clase.h \
+    atributo.h \
+    funcion.h \
+    primerRecorrido.h
 
 FORMS    += mainwindow.ui \
     editor.ui

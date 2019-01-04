@@ -119,6 +119,8 @@ INITIAL
 "\n"            {linea++; columna = 0;}
 .               {
                     strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext);
+                    errorT *nuevoE = new errorT("Lexico",yytext,linea, columna);
+                    listaErrores->append(*nuevoE);
                     std::cout <<yytext <<" Error Lexico en la linea "<< linea << " Columna:"<< columna<<  std::endl;
                 }
 }

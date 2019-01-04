@@ -9,6 +9,7 @@
 #include <iostream>
 #include <nodo.h>
 #include <graficador.h>
+#include <errorT.h>
 
 extern int yyrestart(QString codigo);
 extern int yyparse();
@@ -27,9 +28,13 @@ class editor : public QMainWindow
 public:
     explicit editor(QWidget *parent = 0);
     ~editor();
+    void imprimirErrores();
+    QList<nodo> * listaArboles;
 
 private slots:
     void on_botonCompilar_clicked();
+
+    void on_txtinput_selectionChanged();
 
 private:
     Ui::editor *ui;

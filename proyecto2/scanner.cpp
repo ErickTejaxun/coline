@@ -1547,47 +1547,49 @@ YY_RULE_SETUP
 #line 120 "lexico.l"
 {
                     strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext);
+                    errorT *nuevoE = new errorT("Lexico",yytext,linea, columna);
+                    listaErrores->append(*nuevoE);
                     std::cout <<yytext <<" Error Lexico en la linea "<< linea << " Columna:"<< columna<<  std::endl;
                 }
 	YY_BREAK
 
 case 81:
 YY_RULE_SETUP
-#line 125 "lexico.l"
+#line 127 "lexico.l"
 { BEGIN INITIAL; }
 	YY_BREAK
 case 82:
 /* rule 82 can match eol */
 YY_RULE_SETUP
-#line 126 "lexico.l"
+#line 128 "lexico.l"
 {linea++;};
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 127 "lexico.l"
+#line 129 "lexico.l"
 
 	YY_BREAK
 case YY_STATE_EOF(COMM):
-#line 128 "lexico.l"
+#line 130 "lexico.l"
 { yyerror("unclosed comment"); }
 	YY_BREAK
 case 84:
 /* rule 84 can match eol */
 YY_RULE_SETUP
-#line 129 "lexico.l"
+#line 131 "lexico.l"
 { linea++; columna = 0; BEGIN INITIAL; };
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 130 "lexico.l"
+#line 132 "lexico.l"
 
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 131 "lexico.l"
+#line 133 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 1590 "scanner.cpp"
+#line 1592 "scanner.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(COM):
 	yyterminate();
@@ -2564,6 +2566,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 131 "lexico.l"
+#line 133 "lexico.l"
 
 

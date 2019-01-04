@@ -7,6 +7,9 @@ release/graficador.o
 release/nodo.o
 release/constantes.o
 release/error.o
-release/interprete.o
+release/clase.o
+release/atributo.o
+release/funcion.o
+release/primerRecorrido.o
 release/moc_mainwindow.o
 release/moc_editor.o

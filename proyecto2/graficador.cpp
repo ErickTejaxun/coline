@@ -19,7 +19,7 @@ QString graficador::graficar()
 {
     grafo = "digraph G{";
     grafo += "node[shape=\"box\"];";
-    grafo += "nodo0[label=\"" + escapar("[" +raiz->tipo +"," + QString::number(raiz->tipo_)+ "]"+raiz->valor)  + "\"];\n";
+    grafo += "nodo0[label=\"" + escapar("[" +raiz->tipo +"," + QString::number(raiz->tipo_)+ "("+ QString::number(raiz->linea)+","+ QString::number(raiz->columna)+")"+"]"+raiz->valor)  + "\"];\n";
     this->contador = 1;
     recorrerAST("nodo0", raiz);
     grafo += "}";
@@ -42,7 +42,7 @@ void graficador::recorrerAST(QString padre, nodo *hijo)
     {
         nodo nodo = hijo->hijos[x];
         QString nombreHijo = "nodo" +  QString::number(contador);//  this->contador;
-        grafo += nombreHijo + "[label=\"" + escapar("[" +nodo.tipo +"," + QString::number(nodo.tipo_)+ "]"+nodo.valor)  + "\"];\n";
+        grafo += nombreHijo + "[label=\"" + escapar("[" +nodo.tipo +"," + QString::number(nodo.tipo_)+ "("+ QString::number(nodo.linea)+","+ QString::number(nodo.columna)+")"+nodo.valor)  + "\"];\n";
         grafo += padre + "->" + nombreHijo + ";\n";
         contador++;
         recorrerAST(nombreHijo, &nodo);
