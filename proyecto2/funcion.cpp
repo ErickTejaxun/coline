@@ -1,15 +1,16 @@
 #include "funcion.h"
+#include <qdebug.h>
 
-Funcion::Funcion(nodo *raiz)
+Funcion::Funcion(nodo raiz)
 {
     this->raiz = raiz;
-    this->nombre = raiz->valor;
+    this->nombre = raiz.valor;    
     this->id = getId();
 }
 
 QString Funcion::getId()
 {
-    nodo tmp = this->raiz->hijos[2];
+    nodo tmp = raiz.hijos[raiz.hijos.count()-2];
     QString id = "";
     for(int i = 0; i<tmp.hijos.count(); i++)
     {
@@ -22,5 +23,5 @@ QString Funcion::getId()
             id = id + "$" + tmp.hijos[i].tipo;
         }
     }
-    return id;
+    return this->nombre +"$"+id;
 }

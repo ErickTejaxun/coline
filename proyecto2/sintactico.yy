@@ -7,6 +7,7 @@
 #include <errorT.h>
 #include "qlist.h"
 
+
 extern int yylineno; //linea actual donde se encuentra el parser (analisis lexico) lo maneja BISON
 extern int columna; //columna actual donde se encuentra el parser (analisis lexico) lo maneja BISON
 extern char *yytext; //lexema actual donde esta el parser (analisis lexico) lo maneja BISON
@@ -17,7 +18,7 @@ int yyerror(const char* mens)
     //metodo que se llama al haber un error sintactico
     //SE IMPRIME EN CONSOLA EL ERROR
     //std::cout <<mens<<"-----"<<yytext<< std::endl;
-    std::cout << mens <<"----"<<yytext<< " En la linea:" << yylineno  << "Columna:" << columna<<std::endl;
+    std::cout << mens <<"----"<<yytext<< " En la linea:" << yylineno  << "columna:" << columna<<std::endl;
     errorT * nuevo = new errorT("Sintactico",mens,yylineno, columna);
     listaErrores->append(*nuevo);
     //Error(QString tipo, QString desc, int linea, int columna);
@@ -31,6 +32,7 @@ QTextEdit * salida;
 %defines "parser.h"
 %output "parser.cpp"
 %error-verbose
+%locations
 
 %union{
 //se especifican los tipo de valores para los no terminales y lo terminales
@@ -478,6 +480,7 @@ ATRIBUTO:  VISIBILIDAD DECLARACION puntoComa
                 $$ = $2;
                 $$->hijos.prepend(*$1);
                 $$->tipo = "declatrib";
+                $$->tipo_ = $$->getTipo();
             }
         |DECLARACION puntoComa
             {
@@ -485,12 +488,14 @@ ATRIBUTO:  VISIBILIDAD DECLARACION puntoComa
                 nodo *nod = new nodo("publico","publico",yylineno, columna);
                 $$->hijos.prepend(*nod);
                 $$->tipo = "declatrib";
+                $$->tipo_ = $$->getTipo();
             }
          |VISIBILIDAD DECLARACIONARRAY puntoComa
             {
              $$ = $2;
              $$->hijos.prepend(*$1);
              $$->tipo = "declatrib";
+             $$->tipo_ = $$->getTipo();
             }
         |DECLARACIONARRAY puntoComa
         {
@@ -498,6 +503,7 @@ ATRIBUTO:  VISIBILIDAD DECLARACION puntoComa
          nodo *nod = new nodo("publico","publico",yylineno, columna);
          $$->hijos.prepend(*nod);
          $$->tipo = "declatrib";
+         $$->tipo_ = $$->getTipo();
         }
          ;
 
@@ -559,7 +565,11 @@ PARAMETRO: TIPO id
 
 PRINCIPAL: principal parA parC illave SENTENCIAS fllave
            {
-                $$ = new nodo("principal",$1, yylineno, columna);
+                $$ = new nodo("funcion",$1, yylineno, columna);
+                nodo *vis = new nodo("publico","publico",yylineno, columna);
+                $$->hijos.append(*vis);
+                nodo *param = new nodo("parametros","parametros",0,0);
+                $$->hijos.append(*param);
                 $$->hijos.append(*$5);
            };
 
@@ -602,7 +612,7 @@ FUNCION: VISIBILIDAD TIPO DIMS id  parA LPARAMETROS parC illave SENTENCIAS fllav
             {
                 $$ = new nodo("funcion",$3,yylineno,columna);
                 $$->hijos.append(*$1); // visibilidad
-                nodo *tipo = new nodo("tipo",$2,yylineno,columna);
+                nodo *tipo = new nodo("tipo","vacio",yylineno,columna);
                 $$->hijos.append(*tipo); // tipo
                 $$->hijos.append(*$5); // lista de parametros
                 $$->hijos.append(*$8); // lista de instrucciones;
@@ -772,13 +782,17 @@ DECLARACION:
          TIPO id
          {
             nodo *nuevo = new nodo("d",$2,yylineno, columna);
+            nodo *nodoid =  new nodo("id",$2,yylineno,columna);
             nuevo->add(*$1); // tipo
+            nuevo->add(*nodoid);
             $$ = nuevo;
          }
         |TIPO id igual VALAS
          {
              nodo *nuevo = new nodo("da",$2,yylineno, columna);
+             nodo *nodoid =  new nodo("id",$2,yylineno,columna);
              nuevo->add(*$1); // tipo
+             nuevo->add(*nodoid);
              nuevo->add(*$4); // valor
              $$ = nuevo;
          }
@@ -819,6 +833,7 @@ DECLARACIONARRAY:
             nuevo->add(*$1);
             nodo *nodoid =  new nodo("id",$2,yylineno,columna);
             nuevo->add(*nodoid);
+            nuevo->add(*$3);
             $$ = nuevo;
          }
         |TIPO id DIMENSIONES igual EXPL {

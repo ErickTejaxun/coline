@@ -6,7 +6,7 @@ Atributo::Atributo()
 }
 
 
-Atributo::Atributo(QString nombre, nodo * raiz)
+Atributo::Atributo(QString nombre, nodo  raiz)
 {
     this->nombre = nombre;
     this->raiz =raiz;

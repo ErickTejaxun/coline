@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1318</width>
-    <height>944</height>
+    <width>1676</width>
+    <height>1145</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -143,8 +143,8 @@
      <rect>
       <x>10</x>
       <y>700</y>
-      <width>1231</width>
-      <height>201</height>
+      <width>1661</width>
+      <height>421</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -169,13 +169,13 @@
      <attribute name="title">
       <string>Tabla de Simbolos</string>
      </attribute>
-     <widget class="QTableView" name="tablaSimbolos">
+     <widget class="QTableWidget" name="tablaSimbolos">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>0</y>
-        <width>1191</width>
-        <height>161</height>
+        <x>0</x>
+        <y>20</y>
+        <width>1651</width>
+        <height>291</height>
        </rect>
       </property>
      </widget>
@@ -184,13 +184,13 @@
      <attribute name="title">
       <string>Errores</string>
      </attribute>
-     <widget class="QTableView" name="tablaErrores">
+     <widget class="QTableWidget" name="tablaErrores">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>20</x>
         <y>10</y>
-        <width>1221</width>
-        <height>151</height>
+        <width>1191</width>
+        <height>361</height>
        </rect>
       </property>
      </widget>
@@ -255,7 +255,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1318</width>
+     <width>1676</width>
      <height>21</height>
     </rect>
    </property>

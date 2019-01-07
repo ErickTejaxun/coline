@@ -1,0 +1,11 @@
+#ifndef SEGUNDORECORRIDO_H
+#define SEGUNDORECORRIDO_H
+
+
+class generarSimbolos
+{
+public:
+    generarSimbolos();
+};
+
+#endif // SEGUNDORECORRIDO_H

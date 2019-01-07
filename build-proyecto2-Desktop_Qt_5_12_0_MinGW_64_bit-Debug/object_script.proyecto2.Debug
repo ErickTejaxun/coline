@@ -10,6 +10,11 @@ debug/error.o
 debug/clase.o
 debug/atributo.o
 debug/funcion.o
+debug/tablasimbolos.o
+debug/simbolo.o
+debug/principal.o
+debug/simbol.o
+debug/variable.o
 debug/primerRecorrido.o
 debug/moc_mainwindow.o
 debug/moc_editor.o

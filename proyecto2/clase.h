@@ -5,19 +5,18 @@
 #include <nodo.h>
 #include <atributo.h>
 #include <errorT.h>
+#include <funcion.h>
+#include <simbolo.h>
 
-class Clase
+class Clase : public Simbolo
 {
 public:
     Clase();
     Clase(QString nombre, QString visibilidad, QString padre);
-    void addAtributo(nodo *raiz);
-    void addFuncion(nodo *raiz);
-    QString nombre;
-    QString visibilidad;
-    QString padre;
+    void addAtributo(nodo raiz);
+    void addFuncion(nodo raiz);       
     QList<Atributo> listaAtributos;
-    QList<nodo> listaFunciones;
+    QList<Funcion> listaFunciones;
 };
 
 #endif // CLASE_H

@@ -25,6 +25,10 @@ nodo::nodo(QString tipo, QString valor, int linea, int columna)
     this->columna = columna;
     this->linea = linea;
     this->tipo_ = getTipo();
+    if(this->tipo!="cadena")
+    {
+        this->valor = this->valor.toLower();
+    }
 }
 
 nodo::nodo(int tipo, QString valor, int linea, int columna)

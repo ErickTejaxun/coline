@@ -10,6 +10,7 @@
 #include <nodo.h>
 #include <graficador.h>
 #include <errorT.h>
+#include <primerRecorrido.h>
 
 extern int yyrestart(QString codigo);
 extern int yyparse();
@@ -29,6 +30,8 @@ public:
     explicit editor(QWidget *parent = 0);
     ~editor();
     void imprimirErrores();
+    void imprimirTabla();
+    primerRecorrido *recorrido1;
     QList<nodo> * listaArboles;
 
 private slots:

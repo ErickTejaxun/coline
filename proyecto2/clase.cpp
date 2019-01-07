@@ -1,11 +1,12 @@
 #include "clase.h"
 #include "mainwindow.h"
-extern QList<errorT> listaErrores;
+#include <qdebug.h>
+extern QList<errorT> *listaErrores;
 
 
 Clase::Clase()
 {
-
+    this->tipo = "clase";
 }
 
 
@@ -17,9 +18,9 @@ Clase::Clase(QString nombre, QString visibilidad, QString padre)
 }
 
 
-void Clase::addAtributo(nodo *raiz)
+void Clase::addAtributo(nodo raiz)
 {
-    QString nombre = raiz->valor;
+    QString nombre = raiz.valor;
     bool existe = false;
     for(int i = 0 ; i<this->listaAtributos.count(); i++)
     {
@@ -32,8 +33,8 @@ void Clase::addAtributo(nodo *raiz)
     if(existe)
     {
         // Registramos el error
-        errorT *nuevoError = new errorT("Semantico","Atributo " + nombre + " ya existe.",raiz->linea, raiz->columna);
-        listaErrores.append(*nuevoError);
+        errorT *nuevoError = new errorT("Semantico","Atributo " + nombre + " ya existe.",raiz.linea, raiz.columna);
+        listaErrores->append(*nuevoError);
         return;
     }
     Atributo *atrib = new Atributo(nombre, raiz);
@@ -41,13 +42,14 @@ void Clase::addAtributo(nodo *raiz)
 }
 
 
-void Clase::addFuncion(nodo *raiz)
+void Clase::addFuncion(nodo raiz)
 {
-    QString nombre = raiz->valor;
+    Funcion *fun = new Funcion(raiz);  
+    qDebug() << fun->id;
     bool existe = false;
     for(int i = 0 ; i<this->listaFunciones.count(); i++)
     {
-        if(nombre == listaFunciones[i].valor)
+        if(fun->id == listaFunciones[i].id)
         {
             existe = true;
             break;
@@ -56,10 +58,12 @@ void Clase::addFuncion(nodo *raiz)
     if(existe)
     {
         // Registramos el error
-        errorT *nuevoError = new errorT("Semantico"," Funcion " + nombre + " ya existe.",raiz->linea, raiz->columna);
-        listaErrores.append(*nuevoError);
+        errorT *nuevoError = new errorT("Semantico"," Funcion " + fun->nombre + " ya existe.",raiz.linea, raiz.columna);
+        listaErrores->append(*nuevoError);
         return;
     }
-    Atributo *atrib = new Atributo(nombre, raiz);
-    this->listaAtributos.append(*atrib);
+    this->listaFunciones.append(*fun);
 }
+
+
+

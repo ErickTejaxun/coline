@@ -20,15 +20,15 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableView>
+#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QWidget>
-#include <nodo.h>
 
 QT_BEGIN_NAMESPACE
 
 class Ui_editor
 {
-public:    
+public:
     QWidget *centralwidget;
     QPushButton *botonCompilar;
     QTabWidget *contenedorArchivos;
@@ -45,9 +45,9 @@ public:
     QWidget *tab_3;
     QTextEdit *txtConsola;
     QWidget *tab_4;
-    QTableView *tablaSimbolos;
+    QTableWidget *tablaSimbolos;
     QWidget *tab_5;
-    QTableView *tablaErrores;
+    QTableWidget *tablaErrores;
     QWidget *tab_6;
     QTableView *tablaStack;
     QWidget *tab_7;
@@ -61,7 +61,7 @@ public:
     {
         if (editor->objectName().isEmpty())
             editor->setObjectName(QString::fromUtf8("editor"));
-        editor->resize(1318, 944);
+        editor->resize(1676, 1145);
         centralwidget = new QWidget(editor);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         botonCompilar = new QPushButton(centralwidget);
@@ -99,7 +99,7 @@ public:
         botonExportar->setGeometry(QRect(680, 20, 99, 27));
         tabWidget_2 = new QTabWidget(centralwidget);
         tabWidget_2->setObjectName(QString::fromUtf8("tabWidget_2"));
-        tabWidget_2->setGeometry(QRect(10, 700, 1231, 201));
+        tabWidget_2->setGeometry(QRect(10, 700, 1661, 421));
         tab_3 = new QWidget();
         tab_3->setObjectName(QString::fromUtf8("tab_3"));
         txtConsola = new QTextEdit(tab_3);
@@ -108,15 +108,15 @@ public:
         tabWidget_2->addTab(tab_3, QString());
         tab_4 = new QWidget();
         tab_4->setObjectName(QString::fromUtf8("tab_4"));
-        tablaSimbolos = new QTableView(tab_4);
+        tablaSimbolos = new QTableWidget(tab_4);
         tablaSimbolos->setObjectName(QString::fromUtf8("tablaSimbolos"));
-        tablaSimbolos->setGeometry(QRect(20, 0, 1191, 161));
+        tablaSimbolos->setGeometry(QRect(0, 20, 1651, 291));
         tabWidget_2->addTab(tab_4, QString());
         tab_5 = new QWidget();
         tab_5->setObjectName(QString::fromUtf8("tab_5"));
-        tablaErrores = new QTableView(tab_5);
+        tablaErrores = new QTableWidget(tab_5);
         tablaErrores->setObjectName(QString::fromUtf8("tablaErrores"));
-        tablaErrores->setGeometry(QRect(0, 10, 1221, 151));
+        tablaErrores->setGeometry(QRect(20, 10, 1191, 361));
         tabWidget_2->addTab(tab_5, QString());
         tab_6 = new QWidget();
         tab_6->setObjectName(QString::fromUtf8("tab_6"));
@@ -141,7 +141,7 @@ public:
         editor->setCentralWidget(centralwidget);
         menubar = new QMenuBar(editor);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1318, 21));
+        menubar->setGeometry(QRect(0, 0, 1676, 21));
         editor->setMenuBar(menubar);
         statusbar = new QStatusBar(editor);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));

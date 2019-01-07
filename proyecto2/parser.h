@@ -138,7 +138,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 35 "sintactico.yy" /* yacc.c:1913  */
+#line 37 "sintactico.yy" /* yacc.c:1913  */
 
 //se especifican los tipo de valores para los no terminales y lo terminales
 char TEXT [256];
@@ -152,9 +152,23 @@ typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
+/* Location type.  */
+#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
+typedef struct YYLTYPE YYLTYPE;
+struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
+};
+# define YYLTYPE_IS_DECLARED 1
+# define YYLTYPE_IS_TRIVIAL 1
+#endif
+
 
 extern YYSTYPE yylval;
-
+extern YYLTYPE yylloc;
 int yyparse (void);
 
 #endif /* !YY_YY_PARSER_H_INCLUDED  */

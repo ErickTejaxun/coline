@@ -24,6 +24,11 @@ SOURCES += main.cpp\
     clase.cpp \
     atributo.cpp \
     funcion.cpp \
+    tablasimbolos.cpp \
+    simbolo.cpp \
+    principal.cpp \
+    simbol.cpp \
+    variable.cpp \
     primerRecorrido.cpp
 
 HEADERS  += mainwindow.h \
@@ -37,6 +42,11 @@ HEADERS  += mainwindow.h \
     clase.h \
     atributo.h \
     funcion.h \
+    tablasimbolos.h \
+    simbolo.h \
+    principal.h \
+    simbol.h \
+    variable.h \
     primerRecorrido.h
 
 FORMS    += mainwindow.ui \

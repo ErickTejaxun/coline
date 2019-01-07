@@ -10,6 +10,11 @@ release/error.o
 release/clase.o
 release/atributo.o
 release/funcion.o
+release/tablasimbolos.o
+release/simbolo.o
+release/principal.o
+release/simbol.o
+release/variable.o
 release/primerRecorrido.o
 release/moc_mainwindow.o
 release/moc_editor.o

@@ -6,11 +6,11 @@
 class Funcion
 {
 public:
-    Funcion( nodo *raiz);
+    Funcion(nodo raiz);
     QString getId();
     QString nombre;
     QString id;
-    nodo *raiz;
+    nodo raiz;
 };
 
 #endif // FUNCION_H

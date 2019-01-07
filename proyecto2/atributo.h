@@ -8,9 +8,9 @@ class Atributo
 {
 public:
     Atributo();
-    Atributo(QString nombre, nodo *raiz);
+    Atributo(QString nombre, nodo raiz);
     QString nombre;
-    nodo *raiz;
+    nodo raiz;
 };
 
 #endif // ATRIBUTO_H

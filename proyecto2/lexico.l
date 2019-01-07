@@ -9,11 +9,11 @@
 #include <nodo.h>
 #include "qlist.h"
 #include <errorT.h>
-
 int yylex();
 void yyerror(const char *s);
 int linea=0; // Para contar lineas
 int columna = 1; // para las columnas
+int anterior = 0;
 nodo *raiz;
 QList<errorT> *listaErrores = new QList<errorT>();
 %}
@@ -39,86 +39,86 @@ INITIAL
 {
 "//" {  BEGIN COM; }
 "/*" {  BEGIN COMM; }
-{numero}          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return entero;}
-{decimal}          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return decimal;}
-{caracter}          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return caracter;}
-{booleano}          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return booleano;}
-{cadena}          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return cadena;}
-"("          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return parA; }
-")"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return parC; }
-"{"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return illave; }
-"}"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return fllave; }
-"["          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return iCor; }
-"]"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return fCor; }
-":"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return dosP; }
-"."          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return punto; }
-","          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return coma; }
-";"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return puntoComa; }
-"+"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return suma; }
-"-"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return menos; }
-"*"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return multi; }
-"/"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return division; }
-"^"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return potencia; }
-">"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return mayor; }
-"<"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return menor; }
-"="         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return igual; }
-"++"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return aumento;}
-"--"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return decremento;}
-"+="         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return masigual; }
-"*="         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return porigual; }
-"-="         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return menosigual; }
-"/="         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return divigual; }
-">="         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return mayorigual; }
-"<="         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return menorigual; }
-"=="         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return igualigual; }
-"!="         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return desigual; }
-"||"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return o; }
-"&&"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return y; }
-"!"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return no; }
-"?"         {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return interrogacion; }
-"booleano"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return tipoBooleano;}
-"entero"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return tipoEntero; }
-"caracter"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return tipoCaracter; }
-"decimal"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return tipoDecimal; }
-"imprimir"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return imprimir; }
-"concatenar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return concatenar; }
-"tamanio"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return tamanio; }
-"convertiracadena" { strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return convertirAcadena;}
-"convertiraentero" { strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return convertirAentero;}
-"clase"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return clase;}
-"este"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return este;}
-"publico"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return publico;}
-"privado"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return privado;}
-"protegido"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return protegido;}
-"vacio"          { strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return vacio;}
-"hereda_de"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return heredade;}
-"retornar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return retornar;}
-"importar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return importar;}
-"@sobrescribir"      {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return sobreescribir;}
-"principal"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return principal;}
-"nuevo"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return nuevo;}
-"nada"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return nada; }
-"detener"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return detener;}// Sentencias de flujo de control
-"continuar"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return continuar;}
-"si"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return si; }// IF
-{sinosi}        {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return sinosi; }
-"sino"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return sino; }
-"selecciona"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return selecciona;}// Switch case
-"caso"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return caso; }
-"defecto"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return defecto; }
-"mientras"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return mientras;}
-"hacer"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return hacer; }
-"para"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return para; }
-"mostraredd"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return mostraredd; }
-"leer_teclado"          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return leer_teclado; }
-{iden}          {  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return id; }
-"\t"            {
+{numero}          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return entero;}
+{decimal}          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return decimal;}
+{caracter}          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return caracter;}
+{booleano}          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return booleano;}
+{cadena}          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return cadena;}
+"("          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return parA; }
+")"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return parC; }
+"{"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return illave; }
+"}"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return fllave; }
+"["          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return iCor; }
+"]"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return fCor; }
+":"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return dosP; }
+"."          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return punto; }
+","          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return coma; }
+";"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return puntoComa; }
+"+"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return suma; }
+"-"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return menos; }
+"*"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return multi; }
+"/"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return division; }
+"^"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return potencia; }
+">"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return mayor; }
+"<"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return menor; }
+"="         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return igual; }
+"++"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return aumento;}
+"--"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return decremento;}
+"+="         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return masigual; }
+"*="         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return porigual; }
+"-="         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return menosigual; }
+"/="         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return divigual; }
+">="         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return mayorigual; }
+"<="         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return menorigual; }
+"=="         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return igualigual; }
+"!="         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return desigual; }
+"||"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return o; }
+"&&"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return y; }
+"!"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return no; }
+"?"         {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return interrogacion; }
+"booleano"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return tipoBooleano;}
+"entero"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return tipoEntero; }
+"caracter"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return tipoCaracter; }
+"decimal"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return tipoDecimal; }
+"imprimir"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return imprimir; }
+"concatenar"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return concatenar; }
+"tamanio"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return tamanio; }
+"convertiracadena" {  columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return convertirAcadena;}
+"convertiraentero" {  columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return convertirAentero;}
+"clase"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return clase;}
+"este"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return este;}
+"publico"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return publico;}
+"privado"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return privado;}
+"protegido"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return protegido;}
+"vacio"          {  columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return vacio;}
+"hereda_de"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return heredade;}
+"retornar"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return retornar;}
+"importar"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return importar;}
+"@sobrescribir"      {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return sobreescribir;}
+"principal"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return principal;}
+"nuevo"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return nuevo;}
+"nada"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return nada; }
+"detener"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return detener;}// Sentencias de flujo de control
+"continuar"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return continuar;}
+"si"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return si; }// IF
+{sinosi}        {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return sinosi; }
+"sino"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return sino; }
+"selecciona"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return selecciona;}// Switch case
+"caso"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return caso; }
+"defecto"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return defecto; }
+"mientras"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return mientras;}
+"hacer"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return hacer; }
+"para"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return para; }
+"mostraredd"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return mostraredd; }
+"leer_teclado"          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return leer_teclado; }
+{iden}          {   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return id; }
+"\t"            {                    
                     strcpy(yylval.TEXT, yytext); columna=26;
                 }
 [[:blank:]]     { columna++; }
-"\n"            {linea++; columna = 0;}
+"\n"            {linea++; columna = 0; anterior = 0;}
 .               {
-                    strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext);
+                     columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext);
                     errorT *nuevoE = new errorT("Lexico",yytext,linea, columna);
                     listaErrores->append(*nuevoE);
                     std::cout <<yytext <<" Error Lexico en la linea "<< linea << " Columna:"<< columna<<  std::endl;

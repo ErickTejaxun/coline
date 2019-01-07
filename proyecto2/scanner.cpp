@@ -847,11 +847,11 @@ char *yytext;
 #include <nodo.h>
 #include "qlist.h"
 #include <errorT.h>
-
 int yylex();
 void yyerror(const char *s);
 int linea=0; // Para contar lineas
 int columna = 1; // para las columnas
+int anterior = 0;
 nodo *raiz;
 QList<errorT> *listaErrores = new QList<errorT>();
 #line 857 "scanner.cpp"
@@ -1161,373 +1161,373 @@ YY_RULE_SETUP
 case 4:
 YY_RULE_SETUP
 #line 42 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return entero;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return entero;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 43 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return decimal;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return decimal;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 44 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return caracter;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return caracter;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 45 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return booleano;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return booleano;}
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
 #line 46 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return cadena;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return cadena;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 47 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return parA; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return parA; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 48 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return parC; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return parC; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 49 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return illave; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return illave; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 50 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return fllave; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return fllave; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 51 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return iCor; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return iCor; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 52 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return fCor; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return fCor; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 53 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return dosP; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return dosP; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 54 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return punto; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return punto; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 55 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return coma; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return coma; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 56 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return puntoComa; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return puntoComa; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 57 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return suma; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return suma; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 58 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return menos; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return menos; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 59 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return multi; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return multi; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 60 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return division; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return division; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 61 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return potencia; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return potencia; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 62 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return mayor; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return mayor; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 63 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return menor; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return menor; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 64 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return igual; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return igual; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 65 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return aumento;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return aumento;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 66 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return decremento;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return decremento;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 67 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return masigual; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return masigual; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 68 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return porigual; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return porigual; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 69 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return menosigual; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return menosigual; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 70 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return divigual; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return divigual; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 71 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return mayorigual; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return mayorigual; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 72 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return menorigual; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return menorigual; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 73 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return igualigual; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return igualigual; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 74 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return desigual; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return desigual; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 75 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return o; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return o; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 76 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return y; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return y; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 77 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return no; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return no; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 78 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return interrogacion; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return interrogacion; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 79 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return tipoBooleano;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return tipoBooleano;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 80 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return tipoEntero; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return tipoEntero; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 81 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return tipoCaracter; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return tipoCaracter; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 82 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return tipoDecimal; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return tipoDecimal; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 83 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return imprimir; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return imprimir; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 84 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return concatenar; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return concatenar; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 85 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return tamanio; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return tamanio; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 86 "lexico.l"
-{ strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return convertirAcadena;}
+{  columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return convertirAcadena;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 87 "lexico.l"
-{ strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return convertirAentero;}
+{  columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return convertirAentero;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 88 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return clase;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return clase;}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 89 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return este;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return este;}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 90 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return publico;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return publico;}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 91 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return privado;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return privado;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 92 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return protegido;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return protegido;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 93 "lexico.l"
-{ strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return vacio;}
+{  columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return vacio;}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
 #line 94 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return heredade;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return heredade;}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 95 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return retornar;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return retornar;}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 96 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return importar;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return importar;}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
 #line 97 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return sobreescribir;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return sobreescribir;}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
 #line 98 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return principal;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return principal;}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
 #line 99 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return nuevo;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return nuevo;}
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
 #line 100 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return nada; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return nada; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
 #line 101 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return detener;}// Sentencias de flujo de control
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return detener;}// Sentencias de flujo de control
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
 #line 102 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return continuar;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return continuar;}
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
 #line 103 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return si; }// IF
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return si; }// IF
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
 #line 104 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return sinosi; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return sinosi; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
 #line 105 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return sino; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return sino; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
 #line 106 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return selecciona;}// Switch case
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return selecciona;}// Switch case
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
 #line 107 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return caso; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return caso; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
 #line 108 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return defecto; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return defecto; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
 #line 109 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return mientras;}
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return mientras;}
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
 #line 110 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return hacer; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return hacer; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
 #line 111 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return para; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return para; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
 #line 112 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return mostraredd; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return mostraredd; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
 #line 113 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return leer_teclado; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return leer_teclado; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
 #line 114 "lexico.l"
-{  strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext); return id; }
+{   columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext); return id; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
 #line 115 "lexico.l"
-{
+{                    
                     strcpy(yylval.TEXT, yytext); columna=26;
                 }
 	YY_BREAK
@@ -1540,13 +1540,13 @@ case 79:
 /* rule 79 can match eol */
 YY_RULE_SETUP
 #line 119 "lexico.l"
-{linea++; columna = 0;}
+{linea++; columna = 0; anterior = 0;}
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
 #line 120 "lexico.l"
 {
-                    strcpy(yylval.TEXT, yytext); columna=columna+strlen(yytext);
+                     columna=columna+ anterior;  anterior = strlen(yytext);strcpy(yylval.TEXT, yytext);
                     errorT *nuevoE = new errorT("Lexico",yytext,linea, columna);
                     listaErrores->append(*nuevoE);
                     std::cout <<yytext <<" Error Lexico en la linea "<< linea << " Columna:"<< columna<<  std::endl;
