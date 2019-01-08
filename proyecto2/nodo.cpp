@@ -114,6 +114,21 @@ int nodo::getTipo()
     if(this->tipo=="acceso"){return 59;}
     if(this->tipo=="nada"){return 60;}
     if(this->tipo=="sentenciag"){return 61;}
+    if(this->tipo=="+"){return 62;}
+    if(this->tipo=="-"){return 63;}
+    if(this->tipo=="*"){return 64;}
+    if(this->tipo=="/"){return 65;}
+    if(this->tipo=="%"){return 66;}
+    if(this->tipo=="^"){return 67;}
+    if(this->tipo==">"){return 68;}
+    if(this->tipo=="<"){return 69;}
+    if(this->tipo=="<="){return 70;}
+    if(this->tipo==">="){return 71;}
+    if(this->tipo=="=="){return 72;}
+    if(this->tipo=="!="){return 73;}
+    if(this->tipo=="&&"){return 74;}
+    if(this->tipo=="||"){return 75;}
+    if(this->tipo=="no"){return 76;}
      return 0;
 }
 

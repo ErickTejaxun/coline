@@ -31,7 +31,7 @@ public:
     int isArray; // 0 No, 1 yes.
     QString padre;
     int herencia;
-
+    int sobrescrito;
     nodo *raiz;
 };
 

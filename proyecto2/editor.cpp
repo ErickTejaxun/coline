@@ -101,8 +101,8 @@ void editor::imprimirTabla()
             ui->tablaSimbolos->setItem(i+1, 3, new QTableWidgetItem(QString::number(simbolo.dimension),1));
             ui->tablaSimbolos->setItem(i+1, 4, new QTableWidgetItem(QString::number(simbolo.tamano),1));
             ui->tablaSimbolos->setItem(i+1, 5, new QTableWidgetItem(simbolo.rol,1));
-            ui->tablaSimbolos->setItem(i+1, 6, new QTableWidgetItem(simbolo.ambito,4));
-            ui->tablaSimbolos->setItem(i+1, 7, new QTableWidgetItem(QString::number(simbolo.direccionGlobal),1));
+            ui->tablaSimbolos->setItem(i+1, 6, new QTableWidgetItem(simbolo.ambito,4));            
+            ui->tablaSimbolos->setItem(i+1, 7, new QTableWidgetItem(QString::number(simbolo.direccionLocal),1));
             ui->tablaSimbolos->setItem(i+1, 8, new QTableWidgetItem(QString::number(simbolo.direccionGlobal),1));
             ui->tablaSimbolos->setItem(i+1, 9, new QTableWidgetItem(QString::number(simbolo.linea),1));
             ui->tablaSimbolos->setItem(i+1, 10, new QTableWidgetItem(QString::number(simbolo.columna),1));

@@ -18,6 +18,15 @@ primerRecorrido::primerRecorrido()
     ambitoActual = "global";
     contadorSimbolos = 0;
     tamanoActual = 0;
+    contadorClase=0;
+    contadorFuncion=0;
+    contadorIf= 0;
+    contadorWhile=0;
+    contadorElseIf=0;
+    contadorElse = 0;
+    contadorPara=0;
+    contadorDoWhile =0;
+    contadorSeleccionar=0;
 }
 
 QString primerRecorrido::generarTemporal()
@@ -118,7 +127,22 @@ void primerRecorrido:: interpretar(nodo raiz)
         IDV_ = 58,
         ACCESO_ =59,
         NADA_ = 60,
-        SETENTENCIASG = 61 // Setnencias globales. Raiz del archivo
+        SETENTENCIASG = 61, // Setnencias globales. Raiz del archivo
+        SUMA_ = 62,
+        RESTA_ = 63,
+        MULTIPLICACION_ = 64,
+        DIVISION_ = 65,
+        MODULO_ = 66,
+        POTENCIA_ = 67,
+        MAYORQUE_ = 68,
+        MENORQUE_ = 69,
+        MENORIGUAL_ = 70,
+        MAYORIGUAL_ = 71,
+        IGUAL_ = 72,
+        DESIGUAL_ = 73,
+        AND_ = 74,
+        OR_ = 75,
+        NO_ = 76
     };
     // Empezamos a recorrer la lista de arboles.
     for(int i = 0 ; i<raiz.hijos.count(); i++)
@@ -127,7 +151,7 @@ void primerRecorrido:: interpretar(nodo raiz)
         qDebug() << "tipo nodo:" << hijo.tipo_;
         switch (hijo.tipo_)
         {
-            case Choice::IMPORTAR_:
+            case IMPORTAR_:
                 importar(hijo);
                 break;
             case CLASE_:
@@ -136,6 +160,7 @@ void primerRecorrido:: interpretar(nodo raiz)
             case DECLATRIB_:
                 crearVariable(hijo);
                 break;
+
             case CONSTRUCTOR_:
                 crearConstructor(hijo);
                 break;
@@ -145,6 +170,36 @@ void primerRecorrido:: interpretar(nodo raiz)
             case FUNCION_:
                 crearFuncion(hijo);
                 break;
+            case SENTENCIAS_:
+                for(int i = 0 ; i<hijo.hijos.count();i++)
+                {
+                    interpretar(hijo.hijos.value(i));
+                }
+                break;
+            case D_:
+            case DA_:
+                declararVariable(hijo);
+                break;
+            case DARAR_:
+            case DAR_:
+                declararArreglo(hijo);
+                break;
+            case SI_:
+            case SINOSI_:
+                declararSi(hijo);
+                break;
+            case MIENTRAS_:
+                declararMientras(hijo);
+                break;
+            case HACER_:
+                declararHacer(hijo);
+                break;
+            case SELECCIONA_:
+                declararSeleccionar(hijo);
+                break;
+            case PARA_:
+                declararPara(hijo);
+                break;
         }        
     }
 
@@ -152,7 +207,7 @@ void primerRecorrido:: interpretar(nodo raiz)
 
 void primerRecorrido::crearClase(nodo raizActual)
 {    
-
+    contadorClase = 0;
     Clase *nuevaClase = new Clase();
     nuevaClase->nombre = raizActual.valor;        
     nuevaClase->visibilidad = raizActual.hijos[0].tipo;
@@ -164,6 +219,7 @@ void primerRecorrido::crearClase(nodo raizActual)
     nuevaClase->tamano = 1;
     nuevaClase->dimension = 0;
     nuevaClase->direccionGlobal = contadorSimbolos;
+    nuevaClase->direccionLocal = contadorClase;
     int resultado = this->tabla->agregarClase(*nuevaClase, &raizActual);
     if(resultado ==1 ) // Inserción con exito
     {
@@ -187,6 +243,7 @@ void primerRecorrido:: actualizarTamano(Simbolo sim)
                 )
         {
             this->tabla->tabla->replace(i, sim);
+            return;
         }
     }
 }
@@ -202,7 +259,7 @@ void primerRecorrido:: getAmbitoActual()
         }
         else
         {
-            ambitoActual = ambitoActual + "," + this->pilaAmbitos->value(i);
+            ambitoActual = ambitoActual + "$" + this->pilaAmbitos->value(i);
         }
     }
 }
@@ -216,41 +273,73 @@ QString primerRecorrido:: getClaseActual()
 
 void primerRecorrido:: crearFuncion(nodo raizActual)
 {    
-    Simbolo *funcion = new Simbolo();
+    contadorFuncion=0;
+    Simbolo *funcion = new Simbolo();    
     funcion->rol = "metodo";
-    funcion->visibilidad = raizActual.hijos.value(0).valor.toLower();
-    funcion->tipo = raizActual.hijos.value(1).valor.toLower();
-    funcion->nombre = raizActual.valor.toLower();
+    /*sobrescrito*/
+    if(raizActual.hijos.value(0).valor.toLower() != "no"){funcion->sobrescrito = 1;}
+    funcion->visibilidad = raizActual.hijos.value(1).valor.toLower();
+    funcion->tipo = raizActual.hijos.value(2).valor.toLower();
+    funcion->nombre = raizActual.valor.toLower();    
     funcion->linea = raizActual.linea;
     funcion->columna = raizActual.columna;
     funcion->ambito = ambitoActual;
-    funcion->dimension = 0;
+    funcion->dimension = raizActual.hijos.value(3).hijos.count();
     funcion->tamano = 0;
     funcion->direccionGlobal = contadorSimbolos;
+    funcion->direccionLocal = contadorFuncion;
     /*Obtenemos el id según el numero de parametros.*/
     QString id = funcion->nombre;
-    for(int i = 0; i<raizActual.hijos.value(2).hijos.count(); i++)
+    for(int i = 0; i<raizActual.hijos.value(4).hijos.count(); i++)
     {
-        id = id + "$" + raizActual.hijos.value(2).hijos.value(i).tipo.toLower();
+        id = id + "$" + raizActual.hijos.value(4).hijos.value(i).tipo.toLower();
     }
-    funcion->id = id;
+    funcion->id = /*ambitoActual + "$" + */ id;
     int resultado = this->tabla->agregarFuncion(*funcion, &raizActual);
     if(resultado == 1)
     {
-        /*Agregamos los parametros a la tabla de símbolos*/
+
+        /*Agregamos la referencia al objeto (this)*/
         pilaAmbitos->append(funcion->id);
         getAmbitoActual();
-        contadorFuncion = 0;
-        if(raizActual.hijos.count()==4)
-        {
-            crearParametros(raizActual.hijos[2]); // Parametros
-            interpretar(raizActual.hijos[3]);
-        }
-        if(raizActual.hijos.count()==5)
-        {
-            crearParametros(raizActual.hijos[3]); // Parametros
-            interpretar(raizActual.hijos[4]);
-        }
+        Simbolo *este = new Simbolo();
+        este->nombre = "este";
+        este->id = ambitoActual+ "$"+ este->nombre;
+        este->direccionLocal = 0;
+        este->direccionGlobal = contadorSimbolos;
+        este->rol = "variable";
+        este->tamano  = 1;
+        este->ambito = ambitoActual;
+        este->visibilidad = funcion->visibilidad;
+        este->linea = funcion->linea;
+        este->columna = funcion->columna;
+        este->tipo = funcion->tipo;
+        este->dimension = 0;
+        tabla->agregarVariable(*este, &raizActual);
+        /*Actualizar los contadores*/
+        actualizarContadores(1);
+        /*Agregamos el returno*/
+        Simbolo *retorno = new Simbolo();        
+        retorno->nombre = "retorno";
+        retorno->id =ambitoActual+ "$"+  retorno->nombre;
+        retorno->direccionLocal = 1;
+        retorno->direccionGlobal = contadorSimbolos;
+        retorno->rol = "variable";
+        retorno->tamano  = 1;
+        retorno->ambito = ambitoActual;
+        retorno->visibilidad = funcion->visibilidad;
+        retorno->linea = funcion->linea;
+        retorno->columna = funcion->columna;
+        retorno->tipo = funcion->tipo;
+        retorno->dimension = 0;
+        tabla->agregarVariable(*retorno, &raizActual);
+        /*Actualizamos contadores*/
+        actualizarContadores(1);
+        /*Agregamos los parametros a la tabla de símbolos*/
+        getAmbitoActual();        
+        crearParametros(raizActual.hijos[4]); // Parametros
+        interpretar(raizActual.hijos[5]); // Encontrar variables
+        /*Actualizamos el tamano de la funcion*/
         funcion->tamano = contadorFuncion;
         actualizarTamano(*funcion);
         pilaAmbitos->pop_back();
@@ -261,11 +350,10 @@ void primerRecorrido:: crearFuncion(nodo raizActual)
 
 void primerRecorrido:: crearConstructor(nodo raizActual)
 {
-
+    contadorFuncion = 0;
     Simbolo *constructor = new Simbolo();
-    constructor->rol = "metodo";
+    constructor->rol = "constructor";
     constructor->visibilidad = raizActual.hijos.value(0).valor.toLower();
-    constructor->id = raizActual.hijos.value(2).valor.toLower();
     constructor->nombre = raizActual.valor.toLower();
     constructor->tipo =getClaseActual();
     constructor->linea = raizActual.linea;
@@ -273,29 +361,168 @@ void primerRecorrido:: crearConstructor(nodo raizActual)
     constructor->ambito = ambitoActual;
     constructor->dimension = 0;
     constructor->direccionGlobal = contadorSimbolos;
+    constructor->direccionLocal = contadorFuncion;
     /*Obtenemos el id según el numero de parametros.*/
     QString id = constructor->nombre;
     for(int i = 0; i<raizActual.hijos.value(1).hijos.count(); i++)
     {
         id = id + "$" + raizActual.hijos.value(1).hijos.value(i).tipo.toLower();
     }
-    constructor->id = id;
+    constructor->id = /*ambitoActual + "$"  + */id;
     int resultado = this->tabla->agregarFuncion(*constructor, &raizActual);
     if(resultado == 1)
     {
         /*Agregamos los parametros a la tabla de símbolos*/
         pilaAmbitos->append(constructor->id);
         getAmbitoActual();
-        crearParametros(raizActual.hijos[1]); // Parametros
+        /*Agregamos la referencia al objeto (this)*/
+        Simbolo *este = new Simbolo();
+        este->nombre = "este";
+        este->id =ambitoActual;
+        este->direccionLocal = 0;
+        este->direccionGlobal = constructor->direccionGlobal;
+        este->rol = "variable";
+        este->tamano  = 1;
+        este->ambito = ambitoActual  + "$" + este->nombre;
+        este->visibilidad = constructor->visibilidad;
+        este->linea = constructor->linea;
+        este->columna = constructor->columna;
+        este->tipo = constructor->tipo;
+        este->dimension = 0;
+        tabla->agregarVariable(*este, new nodo());
+        /*Actualizar los contadores*/
+        actualizarContadores(1);
+        /*Agregamos el returno*/
+        Simbolo *retorno = new Simbolo();
+        retorno->nombre = "retorno";
+        retorno->id =ambitoActual;
+        retorno->direccionLocal = 1;
+        retorno->direccionGlobal = constructor->direccionGlobal+1;
+        retorno->rol = "variable";
+        retorno->tamano  = 1;
+        retorno->ambito = ambitoActual + "$" + retorno->nombre;
+        retorno->visibilidad = constructor->visibilidad;
+        retorno->linea = constructor->linea;
+        retorno->columna = constructor->columna;
+        retorno->tipo = constructor->tipo;        
+        tabla->agregarVariable(*retorno, new nodo());
+        /*Actualizamos contadores*/
+        actualizarContadores(1);
+        /*Obtenemos los parametros*/
+        crearParametros(raizActual.hijos[1]);
+        /*Obtenemos las variables locales*/
         interpretar(raizActual.hijos[2]);
         constructor->tamano = contadorFuncion;
         actualizarTamano(*constructor);
         pilaAmbitos->pop_back();
         getAmbitoActual();
     }
-
 }
 
+
+void primerRecorrido:: declararSi(nodo raizActual)
+{    
+    pilaAmbitos->append("si"+QString::number(contadorIf));
+    getAmbitoActual();
+    contadorIf++;
+    interpretar(raizActual.hijos.value(1));
+    pilaAmbitos->pop_back();    
+    getAmbitoActual();
+
+    int final = raizActual.hijos.count();
+    int existeSino = 0;
+    if(raizActual.hijos.count()%2 == 1)
+    {
+        final = raizActual.hijos.count() - 1;
+        existeSino  =1;
+    }
+    // Recorremos cada uno de los sino si
+    for(int i = 2; i < final ; i++)
+    {
+        i++;
+        pilaAmbitos->append("sinosi"+QString::number(contadorElseIf));
+        getAmbitoActual();
+        contadorElseIf++;
+        interpretar(raizActual.hijos.value(i));
+        pilaAmbitos->pop_back();
+        getAmbitoActual();
+    }
+    // Si hay un sino
+    if(existeSino==1)
+    {
+        pilaAmbitos->append("sino"+QString::number(contadorElse));
+        getAmbitoActual();
+        contadorElse++;
+        interpretar(raizActual.hijos.value(raizActual.hijos.count()-1));
+        pilaAmbitos->pop_back();
+        getAmbitoActual();
+    }
+}
+
+
+void primerRecorrido:: declararSeleccionar(nodo raizActual)
+{
+    nodo nodocasos = raizActual.hijos.value(1);
+    pilaAmbitos->append("seleccionar"+QString::number(contadorSeleccionar));
+    getAmbitoActual();
+    contadorSeleccionar++;
+    for(int i = 0 ; i < nodocasos.hijos.count(); i++)
+    {        
+        nodo nodocaso = nodocasos.hijos.value(i);
+        if(nodocaso.valor.toLower()=="defecto")
+        {
+            interpretar(nodocaso.hijos.value(0));
+        }
+        else
+        {
+            interpretar(nodocaso.hijos.value(1));
+        }
+
+    }
+    pilaAmbitos->pop_back();
+    getAmbitoActual();
+}
+
+
+void primerRecorrido:: declararHacer(nodo raizActual)
+{
+    //contadorFuncion = 0;
+    pilaAmbitos->append("hacer"+QString::number(contadorDoWhile));
+    contadorDoWhile++;
+    getAmbitoActual();
+    // Vemos si no hay una declaración en la declaración del ciclo
+    interpretar(raizActual.hijos.value(0));
+    // Sentencias
+    interpretar(raizActual.hijos.value(3));
+    pilaAmbitos->pop_back();
+    getAmbitoActual();
+}
+
+void primerRecorrido:: declararMientras(nodo raizActual)
+{
+    //contadorFuncion = 0;
+    pilaAmbitos->append("mientras"+QString::number(contadorWhile));
+    contadorWhile++;
+    getAmbitoActual();
+    interpretar(raizActual.hijos.value(1));
+    pilaAmbitos->pop_back();
+    getAmbitoActual();
+}
+
+void primerRecorrido:: declararPara(nodo raizActual)
+{
+    //contadorFuncion = 0;
+    pilaAmbitos->append("para"+QString::number(contadorPara));
+    contadorPara++;
+    getAmbitoActual();
+    // Inicio
+    interpretar(raizActual);
+    //interpretar(raizActual.hijos.value(0));
+    //Sentencias
+    interpretar(raizActual.hijos.value(3));
+    pilaAmbitos->pop_back();
+    getAmbitoActual();
+}
 
 void primerRecorrido:: crearParametros(nodo raizActual)
 {
@@ -308,31 +535,26 @@ void primerRecorrido:: crearParametros(nodo raizActual)
         parametro->tipo = nodoPar.tipo;
         parametro->rol = "parametro";
         parametro->ambito = ambitoActual;
-        parametro->dimension = nodoPar.hijos.count();
+        parametro->dimension = nodoPar.hijos.value(0).hijos.count();
         parametro->tamano = 1;
         parametro->direccionGlobal = contadorSimbolos;
-        int tamano = 1;
-        for(int j = 0; j<nodoPar.hijos.count(); j++) // para contar las dimensiones.
-        {
-            nodo nodoDim = nodoPar.hijos.value(j);
-            if(nodoDim.hijos.value(0).tipo.toLower() == "entero")
-            {
-                tamano = tamano * nodoDim.hijos.value(0).tipo.toInt();
-            }
-            else
-            {
-                errorT *error = new errorT("Semantico", "Se esperaba un valor entero para esta dimensión.",nodoDim.hijos.value(0).linea,nodoDim.hijos.value(0).columna);
-                listaErrores->append(*error);
-            }
-        }
-        parametro->tamano  = tamano;
+        parametro->direccionLocal = contadorFuncion;
         nodo puntero = raizActual.hijos.value(i);
         nodo *pt = & puntero;
         int resultado = this->tabla->agregarVariable(*parametro, pt);
-        contadorSimbolos++;
-        contadorClase++;
-        contadorFuncion++;
+        if(resultado==1)
+        {
+            actualizarContadores(parametro->tamano);
+        }
+
     }
+}
+
+void primerRecorrido:: actualizarContadores(int tamano)
+{
+    contadorSimbolos+=tamano;
+    contadorClase+=tamano;
+    contadorFuncion+=tamano;
 }
 
 
@@ -340,27 +562,82 @@ void primerRecorrido:: crearVariable(nodo raizActual)
 {
     Simbolo *variable = new Simbolo();
     variable->ambito = ambitoActual;
-    variable->rol = "variable";
-    variable->id = raizActual.hijos.value(2).valor.toLower();
+    variable->rol = "variable";    
     variable->nombre = raizActual.hijos.value(2).valor.toLower();
+    variable->id = ambitoActual + "$" + variable->nombre;
     variable->visibilidad = raizActual.hijos.value(0).valor.toLower();
     variable->tipo = raizActual.hijos.value(1).valor.toLower();
     variable->dimension = 0;
     variable->tamano = 1;
     variable->direccionGlobal = contadorSimbolos;
-    if(raizActual.hijos.count()==4) // Es un array
-    {
-        variable->dimension = raizActual.hijos[3].hijos.count();
-        for(int i=0; i < raizActual.hijos[3].hijos.count(); i++)
-        {
-            variable->tamano = variable->tamano * raizActual.hijos[3].hijos[i].valor.toInt();
-        }
-    }
+    variable->direccionLocal = contadorFuncion;
     int resultado = this->tabla->agregarVariable(*variable, &raizActual);
-    contadorSimbolos++;
-    contadorClase++;
-    contadorFuncion++;
+    if(resultado==1)
+    {
+        actualizarContadores(variable->tamano);
+    }
 }
+
+void primerRecorrido:: declararArreglo(nodo raizActual) // Declaración sin valor
+{
+    Simbolo *variable = new Simbolo();
+    variable->ambito = ambitoActual;
+    variable->rol = "variable";
+    variable->nombre = raizActual.hijos.value(1).valor.toLower();
+    variable->id = ambitoActual + "$" +variable->nombre ;
+    variable->visibilidad = "";
+    variable->tipo = raizActual.hijos.value(0).valor.toLower();
+    variable->dimension = raizActual.hijos.value(2).hijos.count();
+    variable->tamano = 1;
+    variable->direccionGlobal = contadorSimbolos;
+    variable->direccionLocal = contadorFuncion;    
+    int resultado = this->tabla->agregarVariable(*variable, &raizActual);
+    if(resultado==1)
+    {
+        actualizarContadores(variable->tamano);
+    }
+}
+
+void primerRecorrido:: declararParametro(nodo raizActual) // Declaración sin valor
+{
+    Simbolo *variable = new Simbolo();
+    variable->ambito = ambitoActual;
+    variable->rol = "variable";
+    variable->nombre = raizActual.valor.toLower();
+    variable->id = ambitoActual + "$" +variable->nombre ;
+    variable->visibilidad = "";
+    variable->tipo = raizActual.hijos.value(0).valor.toLower();
+    variable->dimension = 0;
+    variable->tamano = 1;
+    variable->direccionGlobal = contadorSimbolos;
+    variable->direccionLocal = contadorFuncion;
+    int resultado = this->tabla->agregarVariable(*variable, &raizActual);
+    if(resultado==1)
+    {
+        actualizarContadores(variable->tamano);
+    }
+}
+
+void primerRecorrido:: declararVariable(nodo raizActual) // Declaración sin valor
+{
+    Simbolo *variable = new Simbolo();
+    variable->ambito = ambitoActual;
+    variable->rol = "variable";
+    variable->nombre = raizActual.valor.toLower();
+    variable->id = ambitoActual + "$" +variable->nombre ;
+    variable->visibilidad = "";
+    variable->tipo = raizActual.hijos.value(0).valor.toLower();
+    variable->dimension = 0;
+    variable->tamano = 1;
+    variable->direccionGlobal = contadorSimbolos;
+    variable->direccionLocal = contadorFuncion;
+    int resultado = this->tabla->agregarVariable(*variable, &raizActual);
+    if(resultado==1)
+    {
+        actualizarContadores(variable->tamano);
+    }
+}
+
 
 
 void primerRecorrido:: importar(nodo raizActual)

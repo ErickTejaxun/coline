@@ -129,7 +129,8 @@ extern int yydebug;
     mostraredd = 339,
     leer_teclado = 340,
     puntoComa = 341,
-    punto = 342
+    punto = 342,
+    modulo = 343
   };
 #endif
 
@@ -144,7 +145,7 @@ union YYSTYPE
 char TEXT [256];
 class nodo *nodito;
 
-#line 148 "parser.h" /* yacc.c:1913  */
+#line 149 "parser.h" /* yacc.c:1913  */
 };
 
 typedef union YYSTYPE YYSTYPE;

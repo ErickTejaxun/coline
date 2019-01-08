@@ -10,6 +10,7 @@ Simbolo::Simbolo()
     this->linea = 0;
     this->columna = 0;
     this->tamano = 0;
+    this->sobrescrito = 0;
 }
 
 Simbolo::Simbolo(QString nombre, QString tipo, QString rol, QString ambito, int direccion, int tamanio, int dim, int ref)

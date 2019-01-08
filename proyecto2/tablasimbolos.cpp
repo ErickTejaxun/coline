@@ -53,7 +53,7 @@ int tablaSimbolos:: agregarVariable(Simbolo variable, nodo * raiz)
            this->tabla->value(i).ambito.toLower() == variable.ambito.toLower()   // entorno
            )
         {
-            addError("Semantico", "La clase "+ variable.nombre+ " ya existe.",raiz->linea,raiz->columna);
+            addError("Semantico", "La variable "+ variable.nombre+ " ya existe.",raiz->linea,raiz->columna);
             return 0;
         }
     }

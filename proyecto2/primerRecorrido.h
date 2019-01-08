@@ -28,12 +28,28 @@ public:
     void crearFuncion(nodo raiz);
     void getAmbitoActual();
     void actualizarTamano(Simbolo sim);
+    void actualizarContadores(int tamano);
+    void declararArreglo(nodo raiz);
+    void declararSi(nodo raiz);
+    void declararSeleccionar(nodo raiz);
+    void declararVariable(nodo raiz);
+    void declararMientras(nodo raiz);
+    void declararHacer(nodo raiz);
+    void declararPara(nodo raiz);
+    void declararParametro(nodo raiz);
     QString getClaseActual();
     QString escapar(QString cadena);
     QList<Clase> *listaClases;
     tablaSimbolos *tabla;  
     QString ambitoActual;
     QList<QString> *pilaAmbitos;
+    int contadorIf;
+    int contadorPara;
+    int contadorElseIf;
+    int contadorElse;
+    int contadorWhile;
+    int contadorDoWhile;
+    int contadorSeleccionar;
     int contadorSimbolos; // para contar los simbolos totales
     int contadorFuncion; // para contar funicon
     int contadorClase; // Tamaño de la clase
