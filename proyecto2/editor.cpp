@@ -7,7 +7,8 @@
 #include <qlist.h>
 #include <primerRecorrido.h>
 #include <qdebug.h>
-
+#include <generadorcodigo.h>
+#include <codigo3d.h>
 extern int yyparse();
 extern nodo *raiz; // Raiz del arbol
 extern int linea; // Linea del token
@@ -19,7 +20,8 @@ tablaSimbolos *tabla;
 #include "parser.h"
 #include "scanner.h"
 #include "primerRecorrido.h"
-
+QString codigo3d = "";
+Codigo3d *code;
 editor::editor(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::editor)
@@ -39,6 +41,7 @@ void editor::on_botonCompilar_clicked()
     ui->tablaSimbolos->setRowCount(10);
     ui->tablaSimbolos->setColumnCount(8);
     this->listaArboles  = new QList<nodo>();
+    listaErrores->empty();
     QString texto;
     texto = ui->txtinput->toPlainText();
     //std::cout << texto.toStdString() << std::endl;
@@ -51,10 +54,16 @@ void editor::on_botonCompilar_clicked()
         ui->txtConsola->setText("Analisis completado.");
         graficador *graf = new graficador(raiz);
         graf->generarImagen();        
+        /*Generamos la tabla de símbolos*/
         recorrido1 = new primerRecorrido();
         this->listaArboles->append(*raiz);
         recorrido1->interpretar(this->listaArboles);
         imprimirTabla();
+        code = new Codigo3d();
+        /*Generamos código*/
+        GeneradorCodigo *generador = new GeneradorCodigo();
+        //generador->Init();
+
     }
     else
     {
@@ -79,7 +88,7 @@ void editor::imprimirTabla()
     {
         ui->tablaSimbolos->clear();
         ui->tablaSimbolos->setColumnCount(12);
-        ui->tablaSimbolos->setRowCount(recorrido1->tabla->tabla->count()+1);
+        ui->tablaSimbolos->setRowCount(recorrido1->tabla->listaSimbolos->count()+1);
         ui->tablaSimbolos->setItem(0, 0, new QTableWidgetItem("Nombre",1));
         ui->tablaSimbolos->setItem(0, 1, new QTableWidgetItem("Id",4));
         ui->tablaSimbolos->setItem(0, 2, new QTableWidgetItem("Tipo",1));
@@ -92,9 +101,9 @@ void editor::imprimirTabla()
         ui->tablaSimbolos->setItem(0, 9, new QTableWidgetItem("Linea",1));
         ui->tablaSimbolos->setItem(0, 10, new QTableWidgetItem("Columna",1));
         ui->tablaSimbolos->setItem(0, 11, new QTableWidgetItem("Herencia",1));
-        for(int i =0; i<recorrido1->tabla->tabla->count();i++)
+        for(int i =0; i<recorrido1->tabla->listaSimbolos->count();i++)
         {
-            Simbolo simbolo =recorrido1->tabla->tabla->value(i);
+            Simbolo simbolo =recorrido1->tabla->listaSimbolos->value(i);
             ui->tablaSimbolos->setItem(i+1, 0, new QTableWidgetItem(simbolo.nombre,1));
             ui->tablaSimbolos->setItem(i+1, 1, new QTableWidgetItem(simbolo.id,4));
             ui->tablaSimbolos->setItem(i+1, 2, new QTableWidgetItem(simbolo.tipo,1));
@@ -123,7 +132,7 @@ void editor::imprimirErrores()
     QString errores = "";
     for(int i =0; i<listaErrores->count(); i++)
     {
-        errorT error = listaErrores->first();        
+        errorT error = listaErrores->value(i);
         ui->tablaErrores->setItem(i+1, 0, new QTableWidgetItem(error.tipo,1));
         ui->tablaErrores->setItem(i+1, 1, new QTableWidgetItem(error.desc,1));
         ui->tablaErrores->setItem(i+1, 2, new QTableWidgetItem(QString::number(error.linea),1));

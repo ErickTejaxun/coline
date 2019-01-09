@@ -54,6 +54,7 @@ public:
     QTableView *tablaHeap;
     QScrollArea *scrollArea;
     QWidget *scrollAreaWidgetContents;
+    QPlainTextEdit *txtCodigo3d;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -61,7 +62,7 @@ public:
     {
         if (editor->objectName().isEmpty())
             editor->setObjectName(QString::fromUtf8("editor"));
-        editor->resize(1676, 1145);
+        editor->resize(1609, 983);
         centralwidget = new QWidget(editor);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         botonCompilar = new QPushButton(centralwidget);
@@ -69,12 +70,12 @@ public:
         botonCompilar->setGeometry(QRect(50, 20, 99, 27));
         contenedorArchivos = new QTabWidget(centralwidget);
         contenedorArchivos->setObjectName(QString::fromUtf8("contenedorArchivos"));
-        contenedorArchivos->setGeometry(QRect(10, 50, 781, 651));
+        contenedorArchivos->setGeometry(QRect(10, 50, 781, 511));
         tab = new QWidget();
         tab->setObjectName(QString::fromUtf8("tab"));
         txtinput = new QPlainTextEdit(tab);
         txtinput->setObjectName(QString::fromUtf8("txtinput"));
-        txtinput->setGeometry(QRect(10, 10, 751, 601));
+        txtinput->setGeometry(QRect(10, 10, 751, 461));
         contenedorArchivos->addTab(tab, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QString::fromUtf8("tab_2"));
@@ -99,7 +100,7 @@ public:
         botonExportar->setGeometry(QRect(680, 20, 99, 27));
         tabWidget_2 = new QTabWidget(centralwidget);
         tabWidget_2->setObjectName(QString::fromUtf8("tabWidget_2"));
-        tabWidget_2->setGeometry(QRect(10, 700, 1661, 421));
+        tabWidget_2->setGeometry(QRect(10, 570, 1571, 351));
         tab_3 = new QWidget();
         tab_3->setObjectName(QString::fromUtf8("tab_3"));
         txtConsola = new QTextEdit(tab_3);
@@ -110,13 +111,13 @@ public:
         tab_4->setObjectName(QString::fromUtf8("tab_4"));
         tablaSimbolos = new QTableWidget(tab_4);
         tablaSimbolos->setObjectName(QString::fromUtf8("tablaSimbolos"));
-        tablaSimbolos->setGeometry(QRect(0, 20, 1651, 291));
+        tablaSimbolos->setGeometry(QRect(0, 20, 1551, 291));
         tabWidget_2->addTab(tab_4, QString());
         tab_5 = new QWidget();
         tab_5->setObjectName(QString::fromUtf8("tab_5"));
         tablaErrores = new QTableWidget(tab_5);
         tablaErrores->setObjectName(QString::fromUtf8("tablaErrores"));
-        tablaErrores->setGeometry(QRect(20, 10, 1191, 361));
+        tablaErrores->setGeometry(QRect(10, 10, 1191, 281));
         tabWidget_2->addTab(tab_5, QString());
         tab_6 = new QWidget();
         tab_6->setObjectName(QString::fromUtf8("tab_6"));
@@ -132,16 +133,19 @@ public:
         tabWidget_2->addTab(tab_7, QString());
         scrollArea = new QScrollArea(centralwidget);
         scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
-        scrollArea->setGeometry(QRect(800, 70, 431, 631));
+        scrollArea->setGeometry(QRect(800, 70, 431, 491));
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 429, 629));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 429, 489));
+        txtCodigo3d = new QPlainTextEdit(scrollAreaWidgetContents);
+        txtCodigo3d->setObjectName(QString::fromUtf8("txtCodigo3d"));
+        txtCodigo3d->setGeometry(QRect(10, 10, 401, 461));
         scrollArea->setWidget(scrollAreaWidgetContents);
         editor->setCentralWidget(centralwidget);
         menubar = new QMenuBar(editor);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1676, 21));
+        menubar->setGeometry(QRect(0, 0, 1609, 21));
         editor->setMenuBar(menubar);
         statusbar = new QStatusBar(editor);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -150,7 +154,7 @@ public:
         retranslateUi(editor);
 
         contenedorArchivos->setCurrentIndex(0);
-        tabWidget_2->setCurrentIndex(1);
+        tabWidget_2->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(editor);

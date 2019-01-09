@@ -5,13 +5,14 @@
 #include <errorT.h>
 #include <parser.h>
 #include <scanner.h>
+#include <qdebug.h>
 
 
 class tablaSimbolos
 {
 public:
     tablaSimbolos();
-    QList<Simbolo> *tabla; // lista de simbolos.
+    QList<Simbolo> *listaSimbolos; // lista de simbolos.
     QList<QString> *ambito; // Pila de ambitos
     int contadorIf;
     int contadorWhile;
@@ -30,6 +31,7 @@ public:
     int agregarClase(Simbolo clase, nodo * raiz);
     int agregarVariable(Simbolo simbolo, nodo * raiz);
     int agregarFuncion(Simbolo constructor, nodo *raiz);
+    int agregarFuncion(Simbolo *constructor, nodo *raiz);
 
 
     void addError(QString tipo, QString desc, int linea, int columna);

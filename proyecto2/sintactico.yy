@@ -746,19 +746,22 @@ ASIGNACION:
               id TIPOASIG VALAS
               {
                 $$=$2;
-                nodo *idnodo = new nodo("variable",$1,yylineno, columna);
-                $$->add(*idnodo);
+                nodo *acceso = new nodo("acceso","acceso",yylineno, columna);
+                nodo *nombre = new nodo("id",$1,yylineno, @1.first_column);
+                acceso->hijos.append(*nombre); // nombre
+                $$->add(*acceso);
                 $$->add(*$3);
               }
               |id  DIMENSIONES TIPOASIG VALAS
-                {
-                    $$=$3;
-                    $$->tipo= "asiga";
-                    $$->add(*$2);
-                    nodo *idnodo = new nodo("variable",$1,yylineno, columna);
-                    $$->add(*idnodo);
-                    $$->add(*$4);
-                }
+               {
+                    $$=$3;                    
+                    nodo *acceso = new nodo("accesoarray","accesoarray",@1.first_line,@1.first_column);
+                    nodo *nombre = new nodo("id",$1,@1.first_line,@1.first_column);
+                    acceso->hijos.append(*nombre);
+                    acceso->hijos.append(*$2);
+                    $$->hijos.append(*acceso);  // Destino
+                    $$->hijos.append(*$4);      // Valor
+               }
               |LLAMADA TIPOASIG VALAS
               {
                   QString tipo = "";
@@ -767,15 +770,18 @@ ASIGNACION:
                   {
                     tipo = $1->hijos[i].tipo;
                   }
-                  if(tipo == "funcion")
+                  if(tipo == "llamada")
                   {
                      std::cout <<"-----------No se puede asignar un valor a una llamada."<<std::endl;
                      errorT *nuevoE = new errorT("Semantico","No se puede asignar un valor a una llamada.",$1->hijos[i-1].linea,$1->hijos[i-1].columna);
                      listaErrores->append(*nuevoE);
                   }
-                  $$=$2;
-                  $$->hijos.append(*$1);
-                  $$->hijos.append(*$3);
+                  else
+                  {
+                        $$=$2; // Tipo asignación
+                        $$->hijos.append(*$1);
+                        $$->hijos.append(*$3);
+                  }
               }
               |este ACCESO TIPOASIG VALAS
               {
@@ -785,27 +791,33 @@ ASIGNACION:
                   {
                     tipo = $2->hijos[i].tipo;
                   }
-                  if(tipo == "funcion")
+                  if(tipo == "llamada")
                   {
                      std::cout <<"No se puede asignar un valor a una llamada."<<std::endl;
                     errorT *nuevoE = new errorT("Semantico","No se puede asignar un valor a una llamada.",$2->hijos[i-1].linea,$2->hijos[i-1].columna);
                     listaErrores->append(*nuevoE);
                   }
-                  $$=$3;
-                  nodo *nod = new nodo("id",$1,yylineno, columna);
-                  $2->hijos.prepend(*nod);
-                  $$->hijos.append(*$2);
-                  $$->hijos.append(*$4);
+                  else
+                  {
+                      $$=$3; // Tipo asignacion
+                      nodo *acceso = new nodo("acceso","acceso",@1.first_line,@1.first_column);
+                      nodo *nombre = new nodo("id","este",@1.first_line,@1.first_column);
+                      acceso->hijos.append(*nombre);
+                      $2->hijos.prepend(*acceso);
+                      $$->hijos.append(*$2); // destino
+                      $$->hijos.append(*$4); // Valor
+                  }
               }
                |id DIMENSIONES ACCESO  TIPOASIG VALAS
-                           {
-                           $$=$4;
-                           nodo *nod = new nodo("id",$1,yylineno, columna);
-                           nod->hijos.append(*$2);
-                           $$->hijos.prepend(*nod);
-                           $$->hijos.append(*$5);
-                           }
-
+                {
+                    $$=$4;
+                    nodo *acceso = new nodo("accesoarray","accesoarray",@1.first_line,@1.first_column);
+                    nodo *nombre = new nodo("id",$1,@1.first_line,@1.first_column);
+                    acceso->hijos.append(*nombre); // id
+                    acceso->hijos.append(*$3);
+                    $$->hijos.append(*acceso);
+                    $$->hijos.append(*$5);
+                }
               ;
 TIPOASIG:
               masigual{$$=new nodo("asig",$1,yylineno, columna);}
@@ -939,11 +951,11 @@ VALAS:
        |INSTANCIA{$$=$1;}
        ;
 
-TIPO: tipoBooleano  {$$= new nodo("tipoboleano",$1,yylineno,columna);}
-    | tipoEntero    {$$= new nodo("tipoentero",$1,yylineno,columna);}
-    | tipoCaracter  {$$= new nodo("tipocaracter",$1,yylineno,columna);}
-    | tipoDecimal   {$$= new nodo("tipodecimal",$1,yylineno,columna);}
-    | id {$$= new nodo("tipoobjeto",$1,yylineno,columna);}
+TIPO: tipoBooleano  {$$= new nodo("boleano",$1,yylineno,columna);}
+    | tipoEntero    {$$= new nodo("entero",$1,yylineno,columna);}
+    | tipoCaracter  {$$= new nodo("caracter",$1,yylineno,columna);}
+    | tipoDecimal   {$$= new nodo("decimal",$1,yylineno,columna);}
+    | id {$$= new nodo("objeto",$1,yylineno,columna);}
     ;
 
 
@@ -979,11 +991,22 @@ EXPA:
         |EXPA potencia EXPA{ nodo *nod = new nodo($2,$2,yylineno, columna); nod->add(*$1);  nod->add(*$3);  $$=nod ;  }
         |EXPA modulo EXPA{ nodo *nod = new nodo($2,$2,yylineno, columna); nod->add(*$1);  nod->add(*$3);  $$=nod ;  }
         |menos EXPA { $$ = new nodo($1,$1,yylineno, columna); $$->add(*$2);}
-        |id { $$ = new nodo("acceso",$1,yylineno, columna);}
-        |id DIMENSIONES{$$ = new nodo("acceso",$1,yylineno,columna); $$->hijos.append(*$2);}
+        |id
+        {
+             $$ = new nodo("acceso","acceso",yylineno, columna);
+             nodo *nombre = new nodo("id",$1,yylineno,columna);
+             $$->hijos.append(*nombre);
+        }
+        |id DIMENSIONES
+        {
+                $$ = new nodo("accesoarray","accesoarray",yylineno,columna);
+                nodo *nombre = new nodo("id",$1,yylineno,columna);
+                $$->hijos.append(*nombre);
+                $$->hijos.append(*$2);
+        }
         |entero { $$ = new nodo("entero",$1,yylineno, columna);}
         |caracter { $$ = new nodo("caracter",$1,yylineno, columna);}
-        |decimal { $$ = new nodo("caracter",$1,yylineno, columna);}
+        |decimal { $$ = new nodo("decimal",$1,yylineno, columna);}
         |booleano { $$ = new nodo("booleano",$1,yylineno, columna);}
         |cadena { $$ = new nodo("cadena",$1,yylineno, columna);}
         |nada { $$ = new nodo("nada",$1,yylineno, columna);}
@@ -992,13 +1015,18 @@ EXPA:
         |id DIMENSIONES ACCESO
          {
              $$=$2;
-             nodo *nod = new nodo("acceso",$1,yylineno, columna);
+             nodo *nod = new nodo("accesoarray","accesoarray",yylineno, columna);
+             nodo *nombre = new nodo("id",$1,@1.first_line,@1.first_column);
+             nod->hijos.append(*nombre);
+             nod->hijos.append(*$2);
              $$->hijos.prepend(*nod);
          }
         |este ACCESO
          {
              $$=$2;
-             nodo *nod = new nodo("id",$1,yylineno, columna);
+             nodo *nod = new nodo("acceso","acceso",yylineno, columna);
+             nodo*nombre = new nodo("id","este",yylineno,columna);
+             nod->hijos.append(*nombre);
              $$->hijos.prepend(*nod);
          }
          |convertirAcadena parA EXPL parC
@@ -1037,34 +1065,44 @@ LLAMADA:
 
          id parA parC
          {
-             $$ = new nodo("llamada",$1,yylineno,columna);
-             //$$->hijos.append(*params);
+             $$ = new nodo("llamada","llamada",yylineno,columna);
+             nodo *nombre = new nodo("id",$1,yylineno, columna);
+             $$->hijos.append(*nombre); // nodo nombre
+             nodo *par = new nodo("lpar","lpar",yylineno,columna);
+             $$->hijos.append(*par);
          }
          |id parA LPAR parC
          {
-             $$ = new nodo("llamada",$1,yylineno,columna);
-             for(int i= 0; i<$3->hijos.count(); i++)
-             {
-                $$->hijos.append($3->hijos[i]);
-             }
+             $$ = new nodo("llamada","llamada",yylineno,columna);
+             nodo * nombre = new nodo("id",$1,@1.first_line,@1.first_column);
+             $$->hijos.append(*nombre);
+             $$->hijos.append(*$3);
          }
          |id parA parC ACCESO
          {
              $$=$4;
-             nodo *f= new nodo("funcion",$1,yylineno,columna);
+             nodo *f= new nodo("llamada","llamada",yylineno,columna);
+             nodo *nombre = new nodo("id",$1,yylineno,columna);
+             f->hijos.append(*nombre); //Nodo id
+             nodo *par = new nodo("lpar","lpar",yylineno,columna);
+             f->hijos.append(*par);
              $$->hijos.prepend(*f);
          }
          |id parA LPAR parC ACCESO
          {
              $$ = $5;
-             nodo *f= new nodo("funcion",$1,yylineno,columna);
-             f->hijos.append(*$3);
+             nodo *f= new nodo("llamada","llamada",yylineno,columna);
+             nodo *nombre = new nodo("id",$1,yylineno, columna);
+             f->hijos.append(*nombre); // Nodo nombre
+             f->hijos.append(*$3);     // Parametors
              $$->hijos.prepend(*f);
          }
         |id ACCESO
         {
-             $$ =$2;
-             nodo *f= new nodo("id",$1,yylineno,columna);
+             $$ =$2;             
+             nodo *f= new nodo("acceso","acceso",yylineno,columna);
+             nodo *id = new nodo("id",$1,yylineno, columna);
+             f->hijos.append(*id);
              $$->hijos.prepend(*f);
         }
         ;
@@ -1079,53 +1117,74 @@ UNARIOS :
 ACCESO : ACCESO punto id
          {
              $$ = $1;
-             nodo *nod= new nodo("id",$3,yylineno, columna);
+             nodo *nod= new nodo("acceso","acceso",yylineno, columna);
+             nodo * nombre = new nodo("id",$2,yylineno, columna);
+             nod->hijos.append(*nombre);
              $$->hijos.append(*nod);
          }
         | ACCESO punto id parA parC
         {
             $$ = $1;
-            nodo *nod= new nodo("funcion",$3,yylineno, columna);
-            $$->hijos.append(*nod);
+            nodo *acceso = new nodo("llamada","llamada",yylineno, columna);
+            nodo *nod= new nodo("id",$3,yylineno, columna);
+            acceso->hijos.append(*nod); // Add nodo con el id
+            nodo *par = new nodo("lpar","lpar",yylineno,columna);
+            acceso->hijos.append(*par); // Add lista parametros
+            $$->hijos.append(*acceso);
         }
          | ACCESO punto id parA LPAR parC
          {
              $$ = $1;
-             nodo *nod= new nodo("funcion",$3,yylineno, columna);
-             nod->hijos.append(*$5);
-             $$->hijos.append(*nod);
+             nodo *acceso = new nodo("llamada","llamada",yylineno, columna);
+             nodo *nod= new nodo("id",$3,yylineno, columna);
+             acceso->hijos.append(*nod); // Add nodo con el id
+             acceso->hijos.append(*$5); // Add lista parametros
+             $$->hijos.append(*acceso);
          }
          |ACCESO punto id DIMENSIONES
          {
             $$ = $1;
-            nodo *nod= new nodo("idv",$3,yylineno, columna);
-            nod->hijos.append(*$4);
-            $$->hijos.append(*nod);
+            nodo *acceso = new nodo("accesoarray","accesoarray",yylineno, columna);
+            nodo *nod= new nodo("id",$3,yylineno, columna);
+            acceso->hijos.append(*nod); // Add nodo con el id
+            acceso->hijos.append(*$4); // Add dimensiones
+            $$->hijos.append(*acceso);
+
          }
          | punto id
          {
-             $$ = new nodo("acceso","acceso",yylineno, columna);
-             nodo *nod= new nodo("id",$2,yylineno, columna);
+             $$ = new nodo("lacceso","lacceso",yylineno, columna);
+             nodo *nod= new nodo("acceso","acceso",yylineno, columna);
+             nodo * nombre = new nodo("id",$2,yylineno, columna);
+             nod->hijos.append(*nombre);
              $$->hijos.append(*nod);
          }
          | punto id parA parC
          {
-             $$ = new nodo("acceso","acceso",yylineno, columna);
-             nodo *nod= new nodo("funcion",$2,yylineno, columna);
-             $$->hijos.append(*nod);
+             $$ = new nodo("lacceso","lacceso",yylineno, columna);
+             nodo *acceso = new nodo("llamada","llamada",yylineno, columna);
+             nodo *nod= new nodo("id",$2,yylineno, columna);
+             acceso->hijos.append(*nod); // Add nodo con el id
+             nodo *par = new nodo("lpar","lpar",yylineno,columna);
+             acceso->hijos.append(*par); // Add lista parametros
+             $$->hijos.append(*acceso);
          }
          | punto id parA LPAR parC
          {
-             $$ = new nodo("acceso","acceso",yylineno, columna);
-             nodo *nod= new nodo("funcion",$2,yylineno, columna);
-             nod->hijos.append(*$4);
-             $$->hijos.append(*nod);
+             $$ = new nodo("lacceso","lacceso",yylineno, columna);
+             nodo *acceso = new nodo("llamada","llamada",yylineno, columna);
+             nodo *nod= new nodo("id",$2,yylineno, columna);
+             acceso->hijos.append(*nod); // Add nodo con el id
+             acceso->hijos.append(*$4); // Add lista parametros
+             $$->hijos.append(*acceso);
          }
         |punto id DIMENSIONES
          {
-             $$ = new nodo("acceso","acceso",yylineno, columna);
-             nodo *nod= new nodo("idv",$2,yylineno, columna);
-             nod->hijos.append(*$3);
-             $$->hijos.append(*nod);
+             $$ = new nodo("lacceso","lacceso",yylineno, columna);
+             nodo *acceso = new nodo("accesoarray","accesoarray",yylineno, columna);
+             nodo *nod= new nodo("id",$2,yylineno, columna);
+             acceso->hijos.append(*nod); // Add nodo con el id
+             acceso->hijos.append(*$3); // Add dimensiones
+             $$->hijos.append(*acceso);
          };
 %%

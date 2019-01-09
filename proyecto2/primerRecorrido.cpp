@@ -1,7 +1,7 @@
 #include "primerRecorrido.h"
 #include <qdebug.h>
 extern QList<nodo> *listaArboles;
-extern QList<errorT> *listaErrores;
+extern QList<errorT> *listaErrores;  //
 /*Elementos del parseo*/
 extern int yyparse();
 extern nodo *raiz; // Raiz del arbol
@@ -46,20 +46,14 @@ QString primerRecorrido::generarEtiqueta()
 
 void primerRecorrido:: interpretar(QList<nodo> * listaArboless)
 {
-    listaArboles = listaArboless;
-    int i =0;
-    QVector<nodo> vector =  listaArboles->toVector();
-    while(!listaArboles->empty())
-    //for(i = 0; i<vector.count();i++)
-    {        
-        //nodo hijo = vector[i];
-        nodo hijo = listaArboles->first();
-        listaArboles->pop_back();
-        interpretar(hijo);
-        //vector =  listaArboles->toVector();
+    listaArboles = listaArboless;    
+    int numeroArboles = listaArboles->count();
+    for(int i = 0 ; i < numeroArboles; i++)
+    {
+        interpretar(listaArboles->value(i));
+        numeroArboles = listaArboles->count();
     }
 }
-
 
 void primerRecorrido:: interpretar(nodo raiz)
 {
@@ -142,13 +136,16 @@ void primerRecorrido:: interpretar(nodo raiz)
         DESIGUAL_ = 73,
         AND_ = 74,
         OR_ = 75,
-        NO_ = 76
+        NO_ = 76,
+        TCADENA_ = 77,
+        TNADA_ = 78,
+        ACCESOARRAY_ = 79,
+        TDECIMAL_ = 80
     };
     // Empezamos a recorrer la lista de arboles.
     for(int i = 0 ; i<raiz.hijos.count(); i++)
     {        
-        nodo hijo = raiz.hijos[i];
-        qDebug() << "tipo nodo:" << hijo.tipo_;
+        nodo hijo = raiz.hijos[i];        
         switch (hijo.tipo_)
         {
             case IMPORTAR_:
@@ -160,7 +157,6 @@ void primerRecorrido:: interpretar(nodo raiz)
             case DECLATRIB_:
                 crearVariable(hijo);
                 break;
-
             case CONSTRUCTOR_:
                 crearConstructor(hijo);
                 break;
@@ -171,10 +167,7 @@ void primerRecorrido:: interpretar(nodo raiz)
                 crearFuncion(hijo);
                 break;
             case SENTENCIAS_:
-                for(int i = 0 ; i<hijo.hijos.count();i++)
-                {
-                    interpretar(hijo.hijos.value(i));
-                }
+                interpretar(hijo);
                 break;
             case D_:
             case DA_:
@@ -236,13 +229,13 @@ void primerRecorrido::crearClase(nodo raizActual)
 
 void primerRecorrido:: actualizarTamano(Simbolo sim)
 {
-    for(int i=0;i<this->tabla->tabla->count(); i++)
+    for(int i=0;i<this->tabla->listaSimbolos->count(); i++)
     {
-        if(this->tabla->tabla->value(i).nombre.toLower() == sim.nombre.toLower()&&
-                this->tabla->tabla->value(i).ambito.toLower() == sim.ambito.toLower()
+        if(this->tabla->listaSimbolos->value(i).id.toLower() == sim.id.toLower()&&
+                this->tabla->listaSimbolos->value(i).ambito.toLower() == sim.ambito.toLower()
                 )
         {
-            this->tabla->tabla->replace(i, sim);
+            this->tabla->listaSimbolos->replace(i, sim);
             return;
         }
     }
@@ -273,6 +266,7 @@ QString primerRecorrido:: getClaseActual()
 
 void primerRecorrido:: crearFuncion(nodo raizActual)
 {    
+    getAmbitoActual();
     contadorFuncion=0;
     Simbolo *funcion = new Simbolo();    
     funcion->rol = "metodo";
@@ -295,7 +289,7 @@ void primerRecorrido:: crearFuncion(nodo raizActual)
         id = id + "$" + raizActual.hijos.value(4).hijos.value(i).tipo.toLower();
     }
     funcion->id = /*ambitoActual + "$" + */ id;
-    int resultado = this->tabla->agregarFuncion(*funcion, &raizActual);
+    int resultado = this->tabla->agregarFuncion(funcion, &raizActual);
     if(resultado == 1)
     {
 
@@ -355,6 +349,14 @@ void primerRecorrido:: crearConstructor(nodo raizActual)
     constructor->rol = "constructor";
     constructor->visibilidad = raizActual.hijos.value(0).valor.toLower();
     constructor->nombre = raizActual.valor.toLower();
+    if(constructor->nombre != getClaseActual())
+    {
+        errorT * error = new errorT("Semantico",
+                                    "No se puede crear un constructor de la clase "+ constructor->nombre + " en la clase " + getClaseActual(),
+                                    raizActual.linea, raizActual.columna);
+        listaErrores->append(*error);
+        return;
+    }
     constructor->tipo =getClaseActual();
     constructor->linea = raizActual.linea;
     constructor->columna = raizActual.columna;
@@ -369,7 +371,7 @@ void primerRecorrido:: crearConstructor(nodo raizActual)
         id = id + "$" + raizActual.hijos.value(1).hijos.value(i).tipo.toLower();
     }
     constructor->id = /*ambitoActual + "$"  + */id;
-    int resultado = this->tabla->agregarFuncion(*constructor, &raizActual);
+    int resultado = this->tabla->agregarFuncion(constructor, &raizActual);
     if(resultado == 1)
     {
         /*Agregamos los parametros a la tabla de símbolos*/
@@ -516,7 +518,9 @@ void primerRecorrido:: declararPara(nodo raizActual)
     contadorPara++;
     getAmbitoActual();
     // Inicio
-    interpretar(raizActual);
+    nodo * auxiliar = new nodo();
+    auxiliar->hijos.append(raizActual.hijos.value(0));
+    interpretar(*auxiliar);
     //interpretar(raizActual.hijos.value(0));
     //Sentencias
     interpretar(raizActual.hijos.value(3));

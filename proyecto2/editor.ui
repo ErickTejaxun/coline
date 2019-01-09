@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1676</width>
-    <height>1145</height>
+    <width>1609</width>
+    <height>983</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,7 +33,7 @@
       <x>10</x>
       <y>50</y>
       <width>781</width>
-      <height>651</height>
+      <height>511</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -49,7 +49,7 @@
         <x>10</x>
         <y>10</y>
         <width>751</width>
-        <height>601</height>
+        <height>461</height>
        </rect>
       </property>
      </widget>
@@ -142,13 +142,13 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>700</y>
-      <width>1661</width>
-      <height>421</height>
+      <y>570</y>
+      <width>1571</width>
+      <height>351</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -174,7 +174,7 @@
        <rect>
         <x>0</x>
         <y>20</y>
-        <width>1651</width>
+        <width>1551</width>
         <height>291</height>
        </rect>
       </property>
@@ -187,10 +187,10 @@
      <widget class="QTableWidget" name="tablaErrores">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>10</y>
         <width>1191</width>
-        <height>361</height>
+        <height>281</height>
        </rect>
       </property>
      </widget>
@@ -232,7 +232,7 @@
       <x>800</x>
       <y>70</y>
       <width>431</width>
-      <height>631</height>
+      <height>491</height>
      </rect>
     </property>
     <property name="widgetResizable">
@@ -244,9 +244,19 @@
        <x>0</x>
        <y>0</y>
        <width>429</width>
-       <height>629</height>
+       <height>489</height>
       </rect>
      </property>
+     <widget class="QPlainTextEdit" name="txtCodigo3d">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>401</width>
+        <height>461</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -255,7 +265,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1676</width>
+     <width>1609</width>
      <height>21</height>
     </rect>
    </property>

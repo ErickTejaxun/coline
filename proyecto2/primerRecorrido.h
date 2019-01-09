@@ -54,7 +54,7 @@ public:
     int contadorFuncion; // para contar funicon
     int contadorClase; // Tamaño de la clase
     int tamanoActual;
-
-};
+}
+;
 
 #endif // INTERPRETE_H

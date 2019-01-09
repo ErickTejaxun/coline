@@ -97,10 +97,10 @@ int nodo::getTipo()
     if(this->tipo=="lvalores"){return 42;}
     if(this->tipo=="valores"){return 43;}
     if(this->tipo=="darar"){return 44;}
-    if(this->tipo=="tipobooleano"){return 45;}
-    if(this->tipo=="tipoentero"){return 46;}
-    if(this->tipo=="tipocaracter"){return 47;}
-    if(this->tipo=="tipoobjeto"){return 48;}
+    if(this->tipo=="booleano"){return 45;}
+    if(this->tipo=="entero"){return 46;}
+    if(this->tipo=="caracter"){return 47;}
+    if(this->tipo=="objeto"){return 48;}
     if(this->tipo=="ss"){return 49;}
     if(this->tipo=="expl"){return 50;}
     if(this->tipo=="expr"){return 51;}
@@ -129,6 +129,10 @@ int nodo::getTipo()
     if(this->tipo=="&&"){return 74;}
     if(this->tipo=="||"){return 75;}
     if(this->tipo=="no"){return 76;}
+    if(this->tipo=="cadena"){return 77;}
+    if(this->tipo=="nada"){return 78;}
+    if(this->tipo=="accesoarray"){return 79;}
+    if(this->tipo=="decimal"){return 80;}
      return 0;
 }
 
