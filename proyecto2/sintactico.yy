@@ -951,7 +951,7 @@ VALAS:
        |INSTANCIA{$$=$1;}
        ;
 
-TIPO: tipoBooleano  {$$= new nodo("boleano",$1,yylineno,columna);}
+TIPO: tipoBooleano  {$$= new nodo("booleano",$1,yylineno,columna);}
     | tipoEntero    {$$= new nodo("entero",$1,yylineno,columna);}
     | tipoCaracter  {$$= new nodo("caracter",$1,yylineno,columna);}
     | tipoDecimal   {$$= new nodo("decimal",$1,yylineno,columna);}

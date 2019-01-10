@@ -154,7 +154,7 @@ public:
         retranslateUi(editor);
 
         contenedorArchivos->setCurrentIndex(0);
-        tabWidget_2->setCurrentIndex(2);
+        tabWidget_2->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(editor);

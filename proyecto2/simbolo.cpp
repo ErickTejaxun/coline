@@ -11,6 +11,7 @@ Simbolo::Simbolo()
     this->columna = 0;
     this->tamano = 0;
     this->sobrescrito = 0;
+    this->dimension = 0;
 }
 
 Simbolo::Simbolo(QString nombre, QString tipo, QString rol, QString ambito, int direccion, int tamanio, int dim, int ref)
@@ -25,7 +26,7 @@ Simbolo::Simbolo(QString nombre, QString tipo, QString rol, QString ambito, int 
     this->referencia = ref;
     this->linea = 0;
     this->columna = 0;
-    this->raiz = 0;
+    //this->raiz = NULL;
     this->isArray = 0;
     this->inicializado =0;
 }
@@ -44,7 +45,7 @@ Simbolo::Simbolo(QString nombre, QString tipo, QString rol, QString ambito, int 
     this->referencia = ref;
     this->linea = linea;
     this->columna = columna;
-    this->raiz = raiz;
+    //this->raiz = raiz;
     this->isArray = 0;
     this->inicializado =inicializacion;
 }

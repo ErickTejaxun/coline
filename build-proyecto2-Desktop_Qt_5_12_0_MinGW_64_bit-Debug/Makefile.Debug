@@ -703,27 +703,6 @@ debug/mainwindow.o: ../proyecto2/mainwindow.cpp ../proyecto2/mainwindow.h \
 		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qtabwidget.h \
 		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qicon.h \
 		ui_mainwindow.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/QVariant \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QApplication \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qapplication.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qcoreapplication.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qeventloop.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qdesktopwidget.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qguiapplication.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qinputmethod.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QMenuBar \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qmenubar.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qmenu.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qaction.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qactiongroup.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QPushButton \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qpushbutton.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qabstractbutton.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QStatusBar \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qstatusbar.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QToolBar \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qtoolbar.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QWidget \
 		../proyecto2/editor.h \
 		../proyecto2/parser.h \
 		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QTextEdit \
@@ -884,54 +863,6 @@ debug/editor.o: ../proyecto2/editor.cpp ../proyecto2/editor.h \
 		../proyecto2/simbolo.h \
 		../proyecto2/tablasimbolos.h \
 		ui_editor.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/QVariant \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QApplication \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qapplication.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qcoreapplication.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qeventloop.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qdesktopwidget.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qguiapplication.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qinputmethod.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QHeaderView \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qheaderview.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qabstractitemview.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qabstractitemmodel.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qitemselectionmodel.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qabstractitemdelegate.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qstyleoption.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qabstractspinbox.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qvalidator.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qregularexpression.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qslider.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qabstractslider.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qstyle.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qtabbar.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qrubberband.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QMenuBar \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qmenubar.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qmenu.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qaction.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qactiongroup.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QPlainTextEdit \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qplaintextedit.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qabstracttextdocumentlayout.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qtextlayout.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qglyphrun.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qrawfont.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtGui/qfontdatabase.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QPushButton \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qpushbutton.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qabstractbutton.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QScrollArea \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qscrollarea.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QStatusBar \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qstatusbar.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QTabWidget \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QTableView \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qtableview.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QTableWidget \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qtablewidget.h \
-		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QWidget \
 		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/QMessageBox \
 		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qmessagebox.h \
 		F:/QT5.12/5.12.0/mingw73_64/include/QtWidgets/qdialog.h \
@@ -1971,7 +1902,30 @@ debug/tablasimbolos.o: ../proyecto2/tablasimbolos.cpp ../proyecto2/tablasimbolos
 		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qstringmatcher.h \
 		../proyecto2/errorT.h \
 		../proyecto2/parser.h \
-		../proyecto2/scanner.h
+		../proyecto2/scanner.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qdebug.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qhash.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qmap.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qtextstream.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qiodevice.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qobject.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qobjectdefs.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qobjectdefs_impl.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qcoreevent.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qscopedpointer.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qmetatype.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qvarlengtharray.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qcontainerfwd.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qobject_impl.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qlocale.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qvariant.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qshareddata.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qvector.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qpoint.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qset.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qcontiguouscache.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qsharedpointer.h \
+		F:/QT5.12/5.12.0/mingw73_64/include/QtCore/qsharedpointer_impl.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\tablasimbolos.o ..\proyecto2\tablasimbolos.cpp
 
 debug/simbolo.o: ../proyecto2/simbolo.cpp ../proyecto2/simbolo.h \

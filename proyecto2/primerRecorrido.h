@@ -16,6 +16,7 @@ public:
     primerRecorrido();
     int contT; // Temporales
     int contE; // Etiquetas
+    tablaSimbolos *tabla;
     void interpretar(QList<nodo> * listaArboles);
     void interpretar(nodo raiz);
     QString generarEtiqueta();
@@ -39,8 +40,7 @@ public:
     void declararParametro(nodo raiz);
     QString getClaseActual();
     QString escapar(QString cadena);
-    QList<Clase> *listaClases;
-    tablaSimbolos *tabla;  
+    QList<Clase> *listaClases;      
     QString ambitoActual;
     QList<QString> *pilaAmbitos;
     int contadorIf;

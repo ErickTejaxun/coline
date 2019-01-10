@@ -3438,7 +3438,7 @@ yyreduce:
 
   case 121:
 #line 954 "sintactico.yy" /* yacc.c:1651  */
-    {(yyval.nodito)= new nodo("boleano",(yyvsp[0].TEXT),yylineno,columna);}
+    {(yyval.nodito)= new nodo("booleano",(yyvsp[0].TEXT),yylineno,columna);}
 #line 3443 "parser.cpp" /* yacc.c:1651  */
     break;
 

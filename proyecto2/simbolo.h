@@ -32,7 +32,7 @@ public:
     QString padre;
     int herencia;
     int sobrescrito;
-    nodo *raiz;
+    nodo raiz;
 };
 
 #endif // SIMBOLO_H

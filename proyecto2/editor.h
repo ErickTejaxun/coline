@@ -30,8 +30,7 @@ public:
     explicit editor(QWidget *parent = 0);
     ~editor();
     void imprimirErrores();
-    void imprimirTabla();
-    primerRecorrido *recorrido1;
+    void imprimirTabla();    
     QList<nodo> * listaArboles;
 
 private slots:

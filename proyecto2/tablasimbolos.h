@@ -28,10 +28,10 @@ public:
     int existeSimbolo(QString nombre, QString ambito, QString tipo);
 
 
-    int agregarClase(Simbolo clase, nodo * raiz);
-    int agregarVariable(Simbolo simbolo, nodo * raiz);
-    int agregarFuncion(Simbolo constructor, nodo *raiz);
-    int agregarFuncion(Simbolo *constructor, nodo *raiz);
+    int agregarClase(Simbolo clase, nodo  raiz);
+    int agregarVariable(Simbolo simbolo, nodo  raiz);
+    int agregarFuncion(Simbolo constructor, nodo raiz);
+    //int agregarFuncion(Simbolo *constructor, nodo raiz);
 
 
     void addError(QString tipo, QString desc, int linea, int columna);

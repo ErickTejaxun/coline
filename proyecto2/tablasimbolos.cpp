@@ -23,28 +23,22 @@ int tablaSimbolos::existeSimbolo(QString nombre, QString ambito, QString tipo)
 }
 
 
-int tablaSimbolos:: agregarClase(Simbolo clase, nodo * raiz)
+int tablaSimbolos:: agregarClase(Simbolo clase, nodo  raiz)
 {
     for(int i =0  ; i<this->listaSimbolos->count(); i++)
     {
         if(this->listaSimbolos->value(i).nombre.toLower() == clase.nombre.toLower())
         {
-            addError("Semantico", "La clase "+ clase.nombre+ " ya existe.",raiz->linea,raiz->columna);
+            addError("Semantico", "La clase "+ clase.nombre+ " ya existe.",raiz.linea,raiz.columna);
             return 0;
         }
-    }
-    // Si no hay error, agregamos la clase.    
+    }  
     this->listaSimbolos->append(clase);
-    /*Agregamos el this
-    clase.id = "este";
-    clase.nombre = "este";
-    this->tabla->append(clase);
-    */
     claseActual = clase.nombre.toLower();
     return 1;
 }
 
-int tablaSimbolos:: agregarVariable(Simbolo variable, nodo * raiz)
+int tablaSimbolos:: agregarVariable(Simbolo variable, nodo  raiz)
 {
     for(int i =0  ; i<this->listaSimbolos->count(); i++)
     {
@@ -52,41 +46,28 @@ int tablaSimbolos:: agregarVariable(Simbolo variable, nodo * raiz)
            this->listaSimbolos->value(i).ambito.toLower() == variable.ambito.toLower()   // entorno
            )
         {
-            addError("Semantico", "La variable "+ variable.nombre+ " ya existe.",raiz->linea,raiz->columna);
+            addError("Semantico", "La variable "+ variable.nombre+ " ya existe.",raiz.linea,raiz.columna);
             return 0;
         }
     }
-    // Si no hay error, agregamos la clase.
-    //this->tabla->append(clase);
     this->listaSimbolos->append(variable);
     return 1;
 }
 
 
-int tablaSimbolos:: agregarFuncion(Simbolo *constructor, nodo *raiz)
+int tablaSimbolos:: agregarFuncion(Simbolo constructor, nodo raiz)
 {
     for(int i =0  ; i<this->listaSimbolos->count(); i++)
     {
-        //qDebug() << this->tabla->value(i).id.toLower() +"===="+ constructor.id.toLower();
-        if(this->listaSimbolos->value(i).id.toLower() == constructor->id.toLower() )
+        if(this->listaSimbolos->value(i).id.toLower() ==constructor.id.toLower() )
         {
-            addError("Semantico", "Error en el constructor. Ya existe uno con el mismo tipo y cantidad de parametros.",raiz->linea,raiz->columna);
+            addError("Semantico", "Error en el constructor. Ya existe uno con el mismo tipo y cantidad de parametros.",raiz.linea,raiz.columna);
             return 0;
         }
     }
-    // Si no hay error, agregamos la clase.
-    this->listaSimbolos->append(*constructor);
+    this->listaSimbolos->append(constructor);
     return 1;
 }
-
-
-
-
-
-
-
-
-
 
 void tablaSimbolos:: addError(QString tipo, QString descripcion, int linea , int columna)
 {

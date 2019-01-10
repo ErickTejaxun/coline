@@ -1,14 +1,13 @@
 #include "generadorcodigo.h"
-#include <tablasimbolos.h>
+#include <primerRecorrido.h>
 #include <qdebug.h>
 #include <codigo3d.h>
-extern tablaSimbolos *tabla;
+extern primerRecorrido *recorrido1;
 extern QList<nodo> * listaArboles;
 extern Codigo3d *code;
 
 GeneradorCodigo::GeneradorCodigo()
-{
-
+{  
 }
 
 void GeneradorCodigo:: Init()
@@ -21,95 +20,13 @@ void GeneradorCodigo:: Init()
 
 void GeneradorCodigo:: generarCodigo(nodo raiz)
 {
-    enum Choice
-    {
-        ID_ = 0 ,
-        SENTENCIAS_ = 1,
-        IMPRIMIR_ = 2,
-        CONCATENAR_ =3,
-        IMPORTAR_ = 4,
-        PATH_ = 5,
-        INSTRUCCIONES_ = 6,
-        SOBRESCRIBIR_ = 7,
-        DETENER_ =8,
-        CONTINUAR_ = 9,
-        MOSTRAREDD_ = 10,
-        LEER_ = 11,
-        PARA_ = 12,
-        HACER_ = 13,
-        MIENTRAS_ = 14,
-        SELECCION_ = 15,
-        SI_ = 16,
-        SINOSI_ = 17,
-        SELECCIONA_ = 18,
-        CASO_ = 19,
-        DEFECTO_ = 20,
-        CASOS_  = 21,
-        RETORNO_ = 22,
-        DECLATRIB_ = 23,
-        PUBLICO_ = 24,
-        PRIVADO_ = 25,
-        PROTEGIDO_ = 26,
-        CONSTRUCTOR_ = 27,
-        LPAR_ = 28,
-        PARAMETROS_ = 29,
-        PRINCIPAL_ = 30,
-        FUNCION_ = 31,
-        DIMS_ = 32,
-        DIM_ = 33,
-        CLASE_ = 34,
-        HERENCIA_ = 35,
-        VARIABLE_ = 36,
-        ASIGA_ = 37,
-        ASIG_ = 38,
-        D_ = 38, // declaración
-        DA_= 39, // declaración con asignacion.
-        DAR_ = 40, // declaración array
-        DARA_ = 41, // declaración array con asignación para cadenas
-        LVALORES_ = 42, // Lista de valores funcion(1,3,4,arg5)
-        VALORES_ = 43,
-        DARAR_ = 44, //  darar declaracion array asignacion -- para arrays
-        TBOOLEANO_ = 45,
-        TENTERO_ = 46,
-        TCARACTER_ = 47,
-        TOBJETO_ = 48,
-        SS_ = 49, //       expl?  valor1:valor2;
-        EXPL_ = 50,
-        EXPR_ = 51,
-        EXPA_ = 52,
-        CONVERTIRACADENA_ = 53,
-        CONVERTIRAENTERO_ = 54,
-        LLAMADA_ = 55,
-        AUMENTO_ = 56,
-        DECREMENTO_ = 57,
-        IDV_ = 58,
-        ACCESO_ =59,
-        NADA_ = 60,
-        SETENTENCIASG = 61, // Setnencias globales. Raiz del archivo
-        SUMA_ = 62,
-        RESTA_ = 63,
-        MULTIPLICACION_ = 64,
-        DIVISION_ = 65,
-        MODULO_ = 66,
-        POTENCIA_ = 67,
-        MAYORQUE_ = 68,
-        MENORQUE_ = 69,
-        MENORIGUAL_ = 70,
-        MAYORIGUAL_ = 71,
-        IGUAL_ = 72,
-        DESIGUAL_ = 73,
-        AND_ = 74,
-        OR_ = 75,
-        NO_ = 76
-    };
 
     for(int i = 0 ; i < raiz.hijos.count(); i++)
     {
         nodo hijo = raiz.hijos[i];
         switch (hijo.tipo_)
         {
-            case CLASE_:
-                qDebug() << "Generando para clase :v" ;
+            case CLASE_:                
                 crearClase(hijo);
                 break;
             case DECLATRIB_:
@@ -158,10 +75,139 @@ void GeneradorCodigo:: generarCodigo(nodo raiz)
 
 
 void GeneradorCodigo::crearClase(nodo raizActual)
-{
+{    
     /*Verificamos que exista un constructor constructor() si no se crea uno.*/
     QString nombrClase = raizActual.valor.toLower();
-    Simbolo constructor = getConstructor(nombrClase);
+    int existeConstr = existeConstructor(nombrClase);
+    if(existeConstr == 0) // Si no existe, nos creamos una.
+    {
+        QList<Simbolo> listaAtributos = obtenerListaAtributos(nombrClase);
+        code->cadena3d += "void " + nombrClase + "(){ // Constructor" + "\n" ;
+        QString direccionThis = generarTemporal();
+        code->cadena3d += direccionThis + " = p + 0;  // Direccion este"+"\n";
+        QString direccionHeap = generarTemporal();
+        code->cadena3d += direccionHeap + " = heap[" + direccionThis +"];  // Direccion del objeto en el heap\n" ;
+        for(int i = 0; i < listaAtributos.count(); i++)
+        {
+            Simbolo atributo = listaAtributos.value(i);
+            if(atributo.raiz.hijos.count()==3) // No se ha definido valor por el usuario y no son array
+            {
+                QString direccionAtributo = generarTemporal();
+                code->cadena3d += direccionAtributo  +  " = " + direccionHeap + " + " + QString::number(i) +"; // Direccion del atributo " + atributo.nombre +"\n";
+                switch (atributo.raiz.hijos.value(1).tipo_)
+                {
+                    case TENTERO_:
+                    {
+                        code->cadena3d += "heap[" + direccionAtributo + "] =  0 ; // Valor por defecto para enteros" +"\n";
+                        break;
+                    }
+                    case TCARACTER_ :
+                    {
+                        code->cadena3d += "heap[" + direccionAtributo + "] =  0 ; // Valor por defecto para caracter\n" ;
+                        break;
+                    }
+                    case TBOOLEANO_ :
+                    {
+                        code->cadena3d += "heap[" + direccionAtributo + "] = 0 ; // Valor por defecto para booleano\n" ;
+                        break;
+                    }
+                    case TCADENA_:
+                    {
+                        code->cadena3d += "heap[" + direccionAtributo + "] =  66666666666666666666 ; // Valor por defecto para cadenas\n" ;
+                        break;
+                    }
+                    case TDECIMAL_:
+                    {
+                        code->cadena3d += "heap[" + direccionAtributo + "] =  0.00 ; // Valor por defecto para decimales\n" ;
+                        break;
+                    }
+                    case TOBJETO_:
+                    {
+                        QString direcionObjeto  = generarTemporal();
+                        code->cadena3d += direcionObjeto +" = " + direccionHeap + "+" + QString::number(listaAtributos.count()) + ";//Direccion del objeto "+atributo.tipo+" en h\n";
+                        code->cadena3d += "heap[" + direccionAtributo + "] = "+direcionObjeto+"  ; // Dirección objeto en el heap \n" ;
+                        break;
+                    }
+                }
+            }
+            if(atributo.raiz.hijos.count()==4) // No se ha definido valor por el usuario y no son array+
+            {
+                QString direccionAtributo = generarTemporal();
+                code->cadena3d += direccionAtributo  +  " = " + direccionHeap + " + " + QString::number(i) +"; // Direccion del atributo " + atributo.nombre +"\n";
+                switch (atributo.raiz.hijos.value(1).tipo_)
+                {
+                    case TENTERO_:
+                    {
+                        code->cadena3d += "heap[" + direccionAtributo + "] =  0 ; // Valor por defecto para enteros" +"\n";
+                        break;
+                    }
+                    case TCARACTER_ :
+                    {
+                        code->cadena3d += "heap[" + direccionAtributo + "] =  0 ; // Valor por defecto para caracter" ;
+                        break;
+                    }
+                    case TBOOLEANO_ :
+                    {
+                        code->cadena3d += "heap[" + direccionAtributo + "] = 0 ; // Valor por defecto para booleano" ;
+                        break;
+                    }
+                    case TCADENA_:
+                    {
+                        code->cadena3d += "heap[" + direccionAtributo + "] =  66666666666666666666 ; // Valor por defecto para cadenas" ;
+                        break;
+                    }
+                    case TOBJETO_:
+                    {
+                        QString direcionObjeto  = generarTemporal();
+                        code->cadena3d += direcionObjeto +" = " + direccionHeap + "+" + QString::number(listaAtributos.count()) + "Direccion para la siguiente instancia.";
+                        code->cadena3d += "heap[" + direccionAtributo + "] = "+direcionObjeto+"  ; // Valor por defecto para cadenas" ;
+                        break;
+                    }
+                }
+            }
+        }
+        code->cadena3d += " } // Fin Constructor\n" ;
+    }
+}
+
+QList<Simbolo> GeneradorCodigo::obtenerListaAtributos(QString nombreClase)
+{
+    QList<Simbolo> *listaAtributos = new QList<Simbolo>();
+    QString claseActual = nombreClase; //
+    tablaSimbolos *tablaActual = recorrido1->tabla;
+    while(claseActual!="nada")
+    {        
+        Simbolo clase = getClase(claseActual);
+        QString ambitoBuscado = "global$"+claseActual;
+        for(int i = 0 ; i < tablaActual->listaSimbolos->count(); i++)
+        {            
+            Simbolo simbolo = tablaActual->listaSimbolos->value(i);
+            if
+            (
+              simbolo.rol == "variable" &&
+              simbolo.ambito == ambitoBuscado
+            )
+            {
+                listaAtributos->append(tablaActual->listaSimbolos->value(i));
+            }
+        }
+        claseActual = clase.padre; // Obtenemos el nombre del padre.
+    }
+    return  *listaAtributos;
+}
+
+Simbolo GeneradorCodigo::getClase(QString nombre)
+{
+    Simbolo simb;
+    for(int i = 0 ; i< recorrido1->tabla->listaSimbolos->count(); i++)
+    {
+        if(nombre== recorrido1->tabla->listaSimbolos->value(i).nombre &&
+           recorrido1->tabla->listaSimbolos->value(i).ambito == "global")
+        {
+            return recorrido1->tabla->listaSimbolos->value(i);
+        }
+    }
+    return simb;
 }
 
 void GeneradorCodigo:: getAmbitoActual()
@@ -269,21 +315,36 @@ QString GeneradorCodigo::escapar(QString cadena)
 }
 QString GeneradorCodigo:: generarEtiqueta()
 {
-    return "L" + code->etiqueta++;
+    return "L" + QString::number(code->etiqueta++);
 }
 
 QString GeneradorCodigo:: generarTemporal()
 {
-    return "t" + code->temporal++;
+    return "t" + QString::number(code->temporal++);
 }
+
+int GeneradorCodigo::existeConstructor(QString nombreClase)
+{
+    Simbolo simb;
+    for(int i = 0; i < recorrido1->tabla->listaSimbolos->count(); i++)
+    {
+        simb = recorrido1->tabla->listaSimbolos->value(i);
+        if(simb.nombre == nombreClase && simb.id == nombreClase)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 
 Simbolo GeneradorCodigo::getConstructor(QString nombreClase)
 {
     Simbolo simb;
-    for(int i = 0; i < tabla->listaSimbolos->count(); i++)
+    for(int i = 0; i < recorrido1->tabla->listaSimbolos->count(); i++)
     {
-        simb = tabla->listaSimbolos->value(i);
-        if(simb.nombre == nombreClase)
+        simb = recorrido1->tabla->listaSimbolos->value(i);
+        if(simb.nombre == nombreClase && simb.id == nombreClase)
         {
             return simb;
         }

@@ -16,11 +16,10 @@ extern int columna; // Columna de los tokens
 extern int yylineno;
 extern QList<errorT> *listaErrores;// = new QList<errorT>();
 QList<nodo> *listaArboles  = new QList<nodo>();
-tablaSimbolos *tabla;
+primerRecorrido *recorrido1;
 #include "parser.h"
 #include "scanner.h"
 #include "primerRecorrido.h"
-QString codigo3d = "";
 Codigo3d *code;
 editor::editor(QWidget *parent) :
     QMainWindow(parent),
@@ -62,8 +61,8 @@ void editor::on_botonCompilar_clicked()
         code = new Codigo3d();
         /*Generamos código*/
         GeneradorCodigo *generador = new GeneradorCodigo();
-        //generador->Init();
-
+        generador->Init();
+        ui->txtCodigo3d->setPlainText(code->cadena3d);
     }
     else
     {
@@ -84,11 +83,12 @@ void editor::on_txtinput_selectionChanged()
 
 void editor::imprimirTabla()
 {
-    if(recorrido1->tabla!=NULL)
+    tablaSimbolos *tablaActual = recorrido1->tabla;
+    if(tablaActual!=NULL)
     {
         ui->tablaSimbolos->clear();
         ui->tablaSimbolos->setColumnCount(12);
-        ui->tablaSimbolos->setRowCount(recorrido1->tabla->listaSimbolos->count()+1);
+        ui->tablaSimbolos->setRowCount(tablaActual->listaSimbolos->count()+1);
         ui->tablaSimbolos->setItem(0, 0, new QTableWidgetItem("Nombre",1));
         ui->tablaSimbolos->setItem(0, 1, new QTableWidgetItem("Id",4));
         ui->tablaSimbolos->setItem(0, 2, new QTableWidgetItem("Tipo",1));
@@ -101,9 +101,9 @@ void editor::imprimirTabla()
         ui->tablaSimbolos->setItem(0, 9, new QTableWidgetItem("Linea",1));
         ui->tablaSimbolos->setItem(0, 10, new QTableWidgetItem("Columna",1));
         ui->tablaSimbolos->setItem(0, 11, new QTableWidgetItem("Herencia",1));
-        for(int i =0; i<recorrido1->tabla->listaSimbolos->count();i++)
+        for(int i =0; i<tablaActual->listaSimbolos->count();i++)
         {
-            Simbolo simbolo =recorrido1->tabla->listaSimbolos->value(i);
+            Simbolo simbolo =tablaActual->listaSimbolos->value(i);
             ui->tablaSimbolos->setItem(i+1, 0, new QTableWidgetItem(simbolo.nombre,1));
             ui->tablaSimbolos->setItem(i+1, 1, new QTableWidgetItem(simbolo.id,4));
             ui->tablaSimbolos->setItem(i+1, 2, new QTableWidgetItem(simbolo.tipo,1));
