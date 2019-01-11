@@ -206,6 +206,7 @@ Makefile: ../proyecto2/proyecto2.pro F:/QT5.12/5.12.0/mingw73_64/mkspecs/win32-g
 		F:/QT5.12/5.12.0/mingw73_64/mkspecs/features/qt_config.prf \
 		F:/QT5.12/5.12.0/mingw73_64/mkspecs/win32-g++/qmake.conf \
 		F:/QT5.12/5.12.0/mingw73_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		F:/QT5.12/5.12.0/mingw73_64/mkspecs/features/exclusive_builds.prf \
 		F:/QT5.12/5.12.0/mingw73_64/mkspecs/features/toolchain.prf \
 		F:/QT5.12/5.12.0/mingw73_64/mkspecs/features/default_pre.prf \
@@ -379,6 +380,7 @@ F:/QT5.12/5.12.0/mingw73_64/mkspecs/features/qt_functions.prf:
 F:/QT5.12/5.12.0/mingw73_64/mkspecs/features/qt_config.prf:
 F:/QT5.12/5.12.0/mingw73_64/mkspecs/win32-g++/qmake.conf:
 F:/QT5.12/5.12.0/mingw73_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 F:/QT5.12/5.12.0/mingw73_64/mkspecs/features/exclusive_builds.prf:
 F:/QT5.12/5.12.0/mingw73_64/mkspecs/features/toolchain.prf:
 F:/QT5.12/5.12.0/mingw73_64/mkspecs/features/default_pre.prf:

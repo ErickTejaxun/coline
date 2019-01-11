@@ -18,5 +18,7 @@ release/variable.o
 release/primerRecorrido.o
 release/generadorcodigo.o
 release/codigo3d.o
+release/resultado.o
+release/operaciones.o
 release/moc_mainwindow.o
 release/moc_editor.o

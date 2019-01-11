@@ -2,9 +2,13 @@
 #include <primerRecorrido.h>
 #include <qdebug.h>
 #include <codigo3d.h>
+#include <operaciones.h>
+#include <resultado.h>
+
 extern primerRecorrido *recorrido1;
 extern QList<nodo> * listaArboles;
 extern Codigo3d *code;
+extern QList<errorT> * listaErrores;
 
 GeneradorCodigo::GeneradorCodigo()
 {  
@@ -27,7 +31,7 @@ void GeneradorCodigo:: generarCodigo(nodo raiz)
         switch (hijo.tipo_)
         {
             case CLASE_:                
-                crearClase(hijo);
+                generarCodigoClase(hijo);
                 break;
             case DECLATRIB_:
                 crearVariable(hijo);
@@ -74,7 +78,7 @@ void GeneradorCodigo:: generarCodigo(nodo raiz)
 }
 
 
-void GeneradorCodigo::crearClase(nodo raizActual)
+void GeneradorCodigo::generarCodigoClase(nodo raizActual)
 {    
     /*Verificamos que exista un constructor constructor() si no se crea uno.*/
     QString nombrClase = raizActual.valor.toLower();
@@ -86,7 +90,7 @@ void GeneradorCodigo::crearClase(nodo raizActual)
         QString direccionThis = generarTemporal();
         code->cadena3d += direccionThis + " = p + 0;  // Direccion este"+"\n";
         QString direccionHeap = generarTemporal();
-        code->cadena3d += direccionHeap + " = heap[" + direccionThis +"];  // Direccion del objeto en el heap\n" ;
+        code->cadena3d += direccionHeap + " = stack[" + direccionThis +"];  // Direccion del objeto en el heap\n" ;
         for(int i = 0; i < listaAtributos.count(); i++)
         {
             Simbolo atributo = listaAtributos.value(i);
@@ -130,68 +134,133 @@ void GeneradorCodigo::crearClase(nodo raizActual)
                     }
                 }
             }
-            if(atributo.raiz.hijos.count()==4) // No se ha definido valor por el usuario y no son array+
+            if((atributo.raiz.hijos.count()==4) && (atributo.raiz.hijos.value(3).tipo!="dim")) // No se ha definido valor por el usuario y no son array
             {
                 QString direccionAtributo = generarTemporal();
                 code->cadena3d += direccionAtributo  +  " = " + direccionHeap + " + " + QString::number(i) +"; // Direccion del atributo " + atributo.nombre +"\n";
-                switch (atributo.raiz.hijos.value(1).tipo_)
+                Operaciones *operacion = new Operaciones();
+                nodo nodoRaiz = atributo.raiz.hijos.value(3);
+                Resultado *resultado = operacion->aritmetica(&nodoRaiz);
+
+                if(
+                    atributo.tipo==resultado->tipo
+                 ||(atributo.tipo == "entero" && resultado->tipo == "booleano")
+                 ||(atributo.tipo == "entero" && resultado->tipo == "caracter")
+                 ||(atributo.tipo == "decimal" && resultado->tipo == "entero")
+                 )
                 {
-                    case TENTERO_:
-                    {
-                        code->cadena3d += "heap[" + direccionAtributo + "] =  0 ; // Valor por defecto para enteros" +"\n";
-                        break;
-                    }
-                    case TCARACTER_ :
-                    {
-                        code->cadena3d += "heap[" + direccionAtributo + "] =  0 ; // Valor por defecto para caracter" ;
-                        break;
-                    }
-                    case TBOOLEANO_ :
-                    {
-                        code->cadena3d += "heap[" + direccionAtributo + "] = 0 ; // Valor por defecto para booleano" ;
-                        break;
-                    }
-                    case TCADENA_:
-                    {
-                        code->cadena3d += "heap[" + direccionAtributo + "] =  66666666666666666666 ; // Valor por defecto para cadenas" ;
-                        break;
-                    }
-                    case TOBJETO_:
-                    {
-                        QString direcionObjeto  = generarTemporal();
-                        code->cadena3d += direcionObjeto +" = " + direccionHeap + "+" + QString::number(listaAtributos.count()) + "Direccion para la siguiente instancia.";
-                        code->cadena3d += "heap[" + direccionAtributo + "] = "+direcionObjeto+"  ; // Valor por defecto para cadenas" ;
-                        break;
-                    }
+                    code->cadena3d += "heap["+ direccionAtributo+ "] = " + resultado->valor +"; //Asignando valor inicial variable "+atributo.nombre+"\n";
+                }
+                else if(atributo.tipo =="entero" && resultado->tipo =="decimal")
+                {
+                    // Hacer casteo implicito.
+                    QString valorResiduo = generarTemporal();
+                    code->cadena3d += valorResiduo + " = "+resultado->valor + " %  1 ; // Residuo: double % 1 \n";
+                    QString valorCasteado = generarTemporal();
+                    code->cadena3d += valorCasteado + " = " + resultado->valor + " - " + valorResiduo +";// Valor - residuo = entero \n";
+                    code->cadena3d += "heap["+ direccionAtributo+ "] = " + valorCasteado +"; //Asignando valor inicial variable "+atributo.nombre+"\n";
+                }
+                else if(atributo.tipo == "booleano"  && resultado->tipo =="entero")
+                {
+                    QString etiquetaVerdadera1 = generarEtiqueta(); // Etiqueta de error
+                    QString etiquetaFalsa1 = generarEtiqueta(); // Etiqueta de verdadero
+                    code->cadena3d += "if(" + resultado->valor + "<=2) goto " + etiquetaVerdadera1 +" ;// Verificar que el valor esté entre 0 y 1\n";
+                    code->cadena3d += "goto " + etiquetaFalsa1 + "\n";
+                    code->cadena3d +=  etiquetaVerdadera1 + ":\n ";
+                    QString etiquetaFalsa2 = generarEtiqueta(); // Etiqueta de error
+                    QString etiquetaVerdadera2 = generarEtiqueta(); // Etiqueta de verdadero
+                    code->cadena3d += "if(" + resultado->valor + ">=0) goto " + etiquetaVerdadera2 +" ;// Verificar que el valor esté entre 0 y 1\n";
+                    code->cadena3d += "goto " + etiquetaFalsa2 + "\n";
+                    code->cadena3d +=  etiquetaVerdadera2 + ":\n ";
+                    code->cadena3d += "heap["+ direccionAtributo+ "] = " + resultado->valor +"; //Asignando valor inicial variable "+atributo.nombre+"\n";
+                    code->cadena3d += etiquetaFalsa1 + ","+etiquetaFalsa2+ ":\n ";
+                }
+                else if(atributo.tipo == "booleano"  && resultado->tipo =="decimal")
+                {
+                    QString etiquetaVerdadera1 = generarEtiqueta(); // Etiqueta de verdadero
+                    QString etiquetaFalsa1 = generarEtiqueta(); // Etiqueta de error
+                    code->cadena3d += "if(" + resultado->valor + "<=2) goto " + etiquetaVerdadera1 +" ;// Verificar que el valor esté entre 0 y 1\n";
+                    code->cadena3d += "goto " + etiquetaFalsa1 + "\n";
+                    code->cadena3d +=  etiquetaVerdadera1 + ":\n ";
+                    QString etiquetaFalsa2 = generarEtiqueta(); // Etiqueta de error
+                    QString etiquetaVerdadera2 = generarEtiqueta(); // Etiqueta de verdadero
+                    code->cadena3d += "if(" + resultado->valor + ">=0) goto " + etiquetaVerdadera2 +" ;// Verificar que el valor esté entre 0 y 1\n";
+                    code->cadena3d += "goto " + etiquetaFalsa2 + "\n";
+                    code->cadena3d +=  etiquetaVerdadera2 + ":\n ";
+                    QString valorResiduo = generarTemporal();
+                    code->cadena3d += valorResiduo + " = "+resultado->valor + " %  1 ; // Residuo: double % 1 \n";
+                    QString valorCasteado = generarTemporal();
+                    code->cadena3d += valorCasteado + " = " + resultado->valor + " - " + valorResiduo +";// Valor - residuo = entero \n";
+                    code->cadena3d += "heap["+ direccionAtributo+ "] = " + resultado->valor +"; //Asignando valor inicial variable "+atributo.nombre+"\n";
+                    code->cadena3d += etiquetaFalsa1 + ","+etiquetaFalsa2+ ":\n ";                    
+                }
+                else
+                {
+                    errorT *error = new errorT("Semantico","No se puede asignar un valor " + resultado->tipo + " a una variable de tipo "+ atributo.nombre,
+                                               atributo.linea, atributo.columna);
+                    listaErrores->append(*error);
                 }
             }
         }
-        code->cadena3d += " } // Fin Constructor\n" ;
+        code->cadena3d += "} // Fin Constructor\n" ;
     }
 }
+
+
 
 QList<Simbolo> GeneradorCodigo::obtenerListaAtributos(QString nombreClase)
 {
     QList<Simbolo> *listaAtributos = new QList<Simbolo>();
     QString claseActual = nombreClase; //
     tablaSimbolos *tablaActual = recorrido1->tabla;
-    while(claseActual!="nada")
+    int linea = 0, columna = 0;
+    while(claseActual!="nada" && claseActual!="")
     {        
-        Simbolo clase = getClase(claseActual);
-        QString ambitoBuscado = "global$"+claseActual;
-        for(int i = 0 ; i < tablaActual->listaSimbolos->count(); i++)
-        {            
-            Simbolo simbolo = tablaActual->listaSimbolos->value(i);
-            if
-            (
-              simbolo.rol == "variable" &&
-              simbolo.ambito == ambitoBuscado
-            )
+        if(tablaActual->existeClase(claseActual))
+        {
+            /*Buscamos la clase*/
+            Simbolo clase = getClase(claseActual);
+            linea = clase.linea;
+            columna = clase.columna;
+            QString ambitoBuscado = "global$"+claseActual;
+            for(int i = 0 ; i < tablaActual->listaSimbolos->count(); i++)
             {
-                listaAtributos->append(tablaActual->listaSimbolos->value(i));
+                Simbolo simbolo = tablaActual->listaSimbolos->value(i);
+                if
+                (
+                  simbolo.rol == "variable" &&
+                  simbolo.ambito == ambitoBuscado
+                )
+                {
+                    int flag = 0;
+                    for(int j = 0 ; j < listaAtributos->count(); j++)
+                    {
+                        if(listaAtributos->value(j).nombre == tablaActual->listaSimbolos->value(i).nombre)
+                        {
+                            flag =1;
+                            break;
+                        }
+                    }
+                    if(!flag)
+                    {
+                        listaAtributos->append(tablaActual->listaSimbolos->value(i));
+                    }
+                    else
+                    {
+                        errorT *error = new errorT("Advertencia ", "El atributo " + simbolo.nombre + " de la clase "+ claseActual+" se ha refenido en la clase hija " + nombreClase
+                                                   , simbolo.linea, simbolo.columna);
+                        listaErrores->append(*error);
+                    }
+                }
             }
+            claseActual = clase.padre; // Obtenemos el nombre del padre.
         }
-        claseActual = clase.padre; // Obtenemos el nombre del padre.
+        else
+        {
+            errorT * error = new errorT("Semantico","No existe la clase "+claseActual,linea, columna);
+            listaErrores->append(*error);
+            break;
+        }
     }
     return  *listaAtributos;
 }
@@ -204,7 +273,7 @@ Simbolo GeneradorCodigo::getClase(QString nombre)
         if(nombre== recorrido1->tabla->listaSimbolos->value(i).nombre &&
            recorrido1->tabla->listaSimbolos->value(i).ambito == "global")
         {
-            return recorrido1->tabla->listaSimbolos->value(i);
+            simb = recorrido1->tabla->listaSimbolos->value(i);
         }
     }
     return simb;

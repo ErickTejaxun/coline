@@ -11,17 +11,22 @@ int tablaSimbolos::existeSimbolo(QString nombre, QString ambito, QString tipo)
     Simbolo  sim;
     for(int i =0 ; i<this->listaSimbolos->count();i++)
     {
-         sim = this->listaSimbolos->takeAt(i);
+         sim = this->listaSimbolos->value(i);
          if
-         (sim.id ==  nombre &&
-          sim.tipo == ambito &&
+         (sim.nombre ==  nombre &&
+          sim.ambito == ambito &&
           sim.rol == tipo)
          {
-            return 0;
+            return 1;
          }
     }
+    return 0 ;
 }
 
+int tablaSimbolos::existeClase(QString nombreClase)
+{
+    return existeSimbolo(nombreClase, "global","clase");
+}
 
 int tablaSimbolos:: agregarClase(Simbolo clase, nodo  raiz)
 {
@@ -52,6 +57,12 @@ int tablaSimbolos:: agregarVariable(Simbolo variable, nodo  raiz)
     }
     this->listaSimbolos->append(variable);
     return 1;
+}
+
+
+int tablaSimbolos:: getTamanoAmbitoActual(QString ambitoActual)
+{
+
 }
 
 

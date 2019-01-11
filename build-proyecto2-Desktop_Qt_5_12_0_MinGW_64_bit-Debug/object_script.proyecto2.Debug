@@ -18,5 +18,7 @@ debug/variable.o
 debug/primerRecorrido.o
 debug/generadorcodigo.o
 debug/codigo3d.o
+debug/resultado.o
+debug/operaciones.o
 debug/moc_mainwindow.o
 debug/moc_editor.o

@@ -26,10 +26,12 @@ public:
     int addSimbolo(Simbolo simbolo);
     int existeSimbolo(Simbolo simbolo);
     int existeSimbolo(QString nombre, QString ambito, QString tipo);
+    int existeClase(QString nombreClase);
 
 
     int agregarClase(Simbolo clase, nodo  raiz);
     int agregarVariable(Simbolo simbolo, nodo  raiz);
+    int getTamanoAmbitoActual(QString ambitoActual);
     int agregarFuncion(Simbolo constructor, nodo raiz);
     //int agregarFuncion(Simbolo *constructor, nodo raiz);
 

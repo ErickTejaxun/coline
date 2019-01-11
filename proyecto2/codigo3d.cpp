@@ -9,11 +9,11 @@ Codigo3d::Codigo3d()
 
 QString Codigo3d::genEti()
 {
-    return "L" + etiqueta++;
+    return "L" + QString::number(etiqueta++);
 }
 
 QString Codigo3d:: genTemp()
 {
-    return "t" +temporal++;
+    return "t" +QString::number(temporal++);
 }
 

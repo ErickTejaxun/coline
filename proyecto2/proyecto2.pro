@@ -31,7 +31,9 @@ SOURCES += main.cpp\
     variable.cpp \
     primerRecorrido.cpp \
     generadorcodigo.cpp \
-    codigo3d.cpp
+    codigo3d.cpp \
+    resultado.cpp \
+    operaciones.cpp
 
 HEADERS  += mainwindow.h \
     editor.h \
@@ -51,7 +53,9 @@ HEADERS  += mainwindow.h \
     variable.h \
     primerRecorrido.h \
     generadorcodigo.h \
-    codigo3d.h
+    codigo3d.h \
+    resultado.h \
+    operaciones.h
 
 FORMS    += mainwindow.ui \
     editor.ui

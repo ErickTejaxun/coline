@@ -1031,12 +1031,12 @@ EXPA:
          }
          |convertirAcadena parA EXPL parC
          {
-            $$ = new nodo("convertacadena","convertacadena",yylineno,columna);
+            $$ = new nodo("convertiracadena","convertiracadena",yylineno,columna);
             $$->hijos.append(*$3);
          }
          |convertirAentero parA EXPL parC
          {
-            $$ = new nodo("convertaentero","convertaentero",yylineno,columna);
+            $$ = new nodo("convertiraentero","convertiraentero",yylineno,columna);
             $$->hijos.append(*$3);
          }
          | LLAMADA

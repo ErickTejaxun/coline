@@ -3682,7 +3682,7 @@ yyreduce:
   case 157:
 #line 1033 "sintactico.yy" /* yacc.c:1651  */
     {
-            (yyval.nodito) = new nodo("convertacadena","convertacadena",yylineno,columna);
+            (yyval.nodito) = new nodo("convertiracadena","convertiracadena",yylineno,columna);
             (yyval.nodito)->hijos.append(*(yyvsp[-1].nodito));
          }
 #line 3689 "parser.cpp" /* yacc.c:1651  */
@@ -3691,7 +3691,7 @@ yyreduce:
   case 158:
 #line 1038 "sintactico.yy" /* yacc.c:1651  */
     {
-            (yyval.nodito) = new nodo("convertaentero","convertaentero",yylineno,columna);
+            (yyval.nodito) = new nodo("convertiraentero","convertiraentero",yylineno,columna);
             (yyval.nodito)->hijos.append(*(yyvsp[-1].nodito));
          }
 #line 3698 "parser.cpp" /* yacc.c:1651  */

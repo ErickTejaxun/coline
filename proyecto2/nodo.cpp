@@ -1,5 +1,5 @@
 #include "nodo.h"
-
+#include <qdebug.h>
 
 nodo::nodo()
 {        
@@ -24,8 +24,8 @@ nodo::nodo(QString tipo, QString valor, int linea, int columna)
     this->valor = valor;
     this->columna = columna;
     this->linea = linea;
-    this->tipo_ = getTipo();
-    if(this->tipo!="cadena")
+    this->tipo_ = getTipo();    
+    if(this->tipo!="cadena" && this->tipo!="caracter")
     {
         this->valor = this->valor.toLower();
     }

@@ -99,7 +99,7 @@ public:
     QString generarTemporal();
     Simbolo getConstructor(QString id);
     int existeConstructor(QString nombreClase);
-    void crearClase(nodo raiz);
+    void generarCodigoClase(nodo raiz);
     void crearVariable(nodo raiz);
     void crearConstructor(nodo raiz);
     void crearParametros(nodo raiz);
