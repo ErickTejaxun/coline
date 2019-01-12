@@ -119,7 +119,9 @@ public:
     QString escapar(QString cadena);
     QString ambitoActual;
     QList<Simbolo> obtenerListaAtributos(QString nombreClase);
+    QList<Simbolo> getListaFunciones(QString nombreFunciones);
     Simbolo getClase(QString nombre);
+    Simbolo getMetodo(QString nombre);
     QList<QString> *pilaAmbitos;
     int contadorIf;
     int contadorPara;

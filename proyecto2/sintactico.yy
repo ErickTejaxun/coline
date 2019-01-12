@@ -521,13 +521,13 @@ VISIBILIDAD:
             ;
 INSTANCIA: nuevo id parA LPAR parC
             {
-                 nodo *cons = new nodo("constructor",$2,yylineno,columna);
+                 nodo *cons = new nodo("llamada",$2,yylineno,columna);
                  cons->hijos.append(*$4); // LISTA DE PARAMETROS
                  $$ = cons;
             }
             |nuevo id parA parC
             {
-                 nodo *cons = new nodo("constructor",$2,yylineno,columna);
+                 nodo *cons = new nodo("llamada",$2,yylineno,columna);
                  nodo *lpar = new nodo("lpar","lpar",yylineno,columna);
                  cons->hijos.append(*lpar); // LISTA DE PARAMETROS
                  $$ = cons;
@@ -948,7 +948,6 @@ VALORES: VALORES coma EXPL {$$=$1; $$->add(*$3);}
 VALAS:
        EXPL {$$=$1;}
        |SENTSELEC{$$=$1;}
-       |INSTANCIA{$$=$1;}
        ;
 
 TIPO: tipoBooleano  {$$= new nodo("booleano",$1,yylineno,columna);}
@@ -1004,6 +1003,14 @@ EXPA:
                 $$->hijos.append(*nombre);
                 $$->hijos.append(*$2);
         }
+         |INSTANCIA{$$=$1;}
+         |INSTANCIA ACCESO
+         {
+              $$=$2;
+              nodo *nod = new nodo("acceso","acceso",yylineno, columna);
+              nod->hijos.append(*$1);
+              $$->hijos.prepend(*nod);
+         }
         |entero { $$ = new nodo("entero",$1,yylineno, columna);}
         |caracter { $$ = new nodo("caracter",$1,yylineno, columna);}
         |decimal { $$ = new nodo("decimal",$1,yylineno, columna);}

@@ -125,16 +125,16 @@ void editor::imprimirErrores()
     ui->tablaErrores->clear();
     ui->tablaErrores->setColumnCount(4);
     ui->tablaErrores->setRowCount(listaErrores->count()+1);
-    ui->tablaErrores->setItem(0, 0, new QTableWidgetItem("Tipo",1));
-    ui->tablaErrores->setItem(0, 1, new QTableWidgetItem("Descripcion",1));
+    ui->tablaErrores->setItem(0, 0, new QTableWidgetItem("Tipo",10));
+    ui->tablaErrores->setItem(0, 1, new QTableWidgetItem("Descripcion",10));
     ui->tablaErrores->setItem(0, 2, new QTableWidgetItem("Linea",1));
     ui->tablaErrores->setItem(0, 3, new QTableWidgetItem("Columna",1));
     QString errores = "";
     for(int i =0; i<listaErrores->count(); i++)
     {
         errorT error = listaErrores->value(i);
-        ui->tablaErrores->setItem(i+1, 0, new QTableWidgetItem(error.tipo,1));
-        ui->tablaErrores->setItem(i+1, 1, new QTableWidgetItem(error.desc,1));
+        ui->tablaErrores->setItem(i+1, 0, new QTableWidgetItem(error.tipo,10));
+        ui->tablaErrores->setItem(i+1, 1, new QTableWidgetItem(error.desc,10));
         ui->tablaErrores->setItem(i+1, 2, new QTableWidgetItem(QString::number(error.linea),1));
         ui->tablaErrores->setItem(i+1, 3, new QTableWidgetItem(QString::number(error.columna),1));
     }

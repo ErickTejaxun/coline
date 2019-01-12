@@ -225,8 +225,35 @@ void primerRecorrido::crearClase(nodo raizActual)
         interpretar(raizActual.hijos[2]);
         nuevaClase->tamano = contadorClase;
         actualizarTamano(*nuevaClase);
+
+        /*Buscamos si se definió el constructor() por el usuario*/
+        int existeConstructor = 0;
+        for(int i = 0; i < this->tabla->listaSimbolos->count();i++)
+        {
+            Simbolo simbolo = this->tabla->listaSimbolos->value(i);
+            if(simbolo.nombre == nuevaClase->nombre
+             &&simbolo.id == nuevaClase->nombre
+             &&simbolo.rol == "constructor"
+             )
+            {
+                existeConstructor = 1;
+                break;
+            }
+        }
+        if(!existeConstructor)
+        {
+            nodo * nodoConstructor = new nodo("constructor",nuevaClase->nombre,0,0);
+            nodo * nodoVisibilidad = new nodo("visibilidad","publico",0,0);
+            nodo * nodoParametros = new nodo("parametros","parametros",0,0);
+            nodo * nodoSentencias  = new nodo("sentencias","sentencias",0,0);
+            nodoConstructor->hijos.append(*nodoVisibilidad);
+            nodoConstructor->hijos.append(*nodoParametros);
+            nodoConstructor->hijos.append(*nodoSentencias);
+            crearConstructor(*nodoConstructor);
+        }
+
         pilaAmbitos->pop_back();
-        getAmbitoActual();
+        getAmbitoActual();                
     }
 }
 

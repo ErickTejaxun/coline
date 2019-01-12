@@ -65,6 +65,18 @@ int tablaSimbolos:: getTamanoAmbitoActual(QString ambitoActual)
 
 }
 
+void tablaSimbolos:: actualiarTamanoArray(QString idObjeto, QString valor)
+{
+    for(int i = 0; i< this->listaSimbolos->count();i++)
+    {
+        if(listaSimbolos->value(i).id == idObjeto)
+        {
+            listaSimbolos->value(i).listaDimensiones.append(valor);
+            return;
+        }
+    }
+}
+
 
 int tablaSimbolos:: agregarFuncion(Simbolo constructor, nodo raiz)
 {

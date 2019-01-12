@@ -9,8 +9,16 @@ public:
     QString cadena3d;
     int etiqueta;
     int temporal;
+    QString metodoActual;
+    QList<QString> *pilaAmbitos;
+    /*Metodos*/
+    void apilarMetodo(QString nombreMetodo);
+    void desapilarMetodo();
     QString genTemp();
-    QString genEti();
+    QString genEti();        
+    QString getAmbitoActual();
+    int getTamanoAmbitoActual();
+    QString getMetodoActual();
 };
 
 #endif // CODIGO3D_H

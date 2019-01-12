@@ -33,6 +33,7 @@ public:
     int herencia;
     int sobrescrito;
     nodo raiz;
+    QList<QString> listaDimensiones;
 };
 
 #endif // SIMBOLO_H

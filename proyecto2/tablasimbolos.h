@@ -33,12 +33,13 @@ public:
     int agregarVariable(Simbolo simbolo, nodo  raiz);
     int getTamanoAmbitoActual(QString ambitoActual);
     int agregarFuncion(Simbolo constructor, nodo raiz);
+    void actualiarTamanoArray(QString idObjeto, QString valor);
     //int agregarFuncion(Simbolo *constructor, nodo raiz);
 
 
     void addError(QString tipo, QString desc, int linea, int columna);
 
-    QList<QString> *listaCodigo;
+    //QList<QString> *listaCodigo;
     QString claseActual;
     QString metodoActual;
     //QList<errorT> *listaErrores;
