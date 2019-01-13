@@ -116,12 +116,14 @@ public:
     void declararPara(nodo raiz);
     void declararParametro(nodo raiz);
     QString getClaseActual();
+    void generarFuncion(nodo raizActual);
     QString escapar(QString cadena);
     QString ambitoActual;
     QList<Simbolo> obtenerListaAtributos(QString nombreClase);
     QList<Simbolo> getListaFunciones(QString nombreFunciones);
     Simbolo getClase(QString nombre);
     Simbolo getMetodo(QString nombre);
+    int existeMetodo(QString idMetodo);
     QList<QString> *pilaAmbitos;
     int contadorIf;
     int contadorPara;

@@ -44,7 +44,7 @@ void GeneradorCodigo:: generarCodigo(nodo raiz)
                 crearParametros(hijo);
                 break;
             case FUNCION_:
-                crearFuncion(hijo);
+                generarFuncion(hijo);
                 break;
             case SENTENCIAS_:
                 generarCodigo(hijo);
@@ -75,17 +75,22 @@ void GeneradorCodigo:: generarCodigo(nodo raiz)
                 break;
         }
     }
-
 }
-
-
 void GeneradorCodigo::generarCodigoClase(nodo raizActual)
 {    
+    QString nombreClase = raizActual.valor.toLower();
+    code->apilarMetodo(nombreClase);
+    generarCodigo(raizActual.hijos.value(2)); //
+    code->desapilarMetodo();
+}
+
+void GeneradorCodigo::generarFuncion(nodo raizActual)
+{
     /*Verificamos que exista un constructor constructor() si no se crea uno.*/
     QString nombreClase = raizActual.valor.toLower();
     code->apilarMetodo(nombreClase);
-    int existeConstr = existeConstructor(nombreClase);
-    if(existeConstr == 0) // Si no existe, nos creamos una.
+    int existeConstr = existeConstructor(nombreClase); // Constructor inicial, constructor sin parametros
+    if(existeConstr == 1)
     {
         QList<Simbolo> listaAtributos = obtenerListaAtributos(nombreClase);
         code->cadena3d += "void " + nombreClase + "(){ // Constructor" + "\n" ;
@@ -245,25 +250,25 @@ void GeneradorCodigo::generarCodigoClase(nodo raizActual)
                 code->cadena3d += direccionAtributo  +  " = " + direccionHeap + " + " + QString::number(i) +"; // Direccion del atributo " + atributo.nombre +"\n";
                 code->cadena3d += "heap["+direccionAtributo+"] = h; // Asigna el puntero hacia el heap\n";
                 /*Generamos el id $ + <<tipo de parametros>>*/
-                QString nombreFuncion = atributo.raiz.hijos.value(3).valor;
+                QString nombreFuncion = atributo.raiz.hijos.value(3).hijos.value(0).valor;
                 QString idMetodoBuscado = nombreFuncion;
                 for(int i = 0; i < atributo.raiz.hijos.value(3).hijos.value(0).hijos.count(); i++)
                 {
                     idMetodoBuscado += "$" + atributo.raiz.hijos.value(3).hijos.value(1).hijos.value(i).tipo;
                 }
-                Simbolo metodo = getMetodo(idMetodoBuscado);
+                int existe = existeMetodo(idMetodoBuscado);
                 QList<Simbolo> listaFunciones = getListaFunciones(nombreClase);
-                if( metodo.ambito =="" && listaFunciones.count()==0) // Se ha devuelto un objeto vacío
+                if( existe == 0 && listaFunciones.count()==0) // Se ha devuelto un objeto vacío
                 {
                     errorT * error = new errorT("Semantico","No se ha encontrado la función " + nombreFuncion ,
                                                 atributo.raiz.hijos.value(0).linea, atributo.raiz.hijos.value(0).columna);
                     listaErrores->append(*error);
                     break;
                 }
-                if(metodo.ambito =="") // Si se encontró la función exacta---
+                if(existe == 1) // Si se encontró la función exacta---
                 {
                     code->cadena3d += "p = p + "+ QString::number(code->getTamanoAmbitoActual()) + " ; // Cambio de ambito\n";
-                    code->cadena3d += metodo.nombre + "(); // Llamar a función\n";
+                    code->cadena3d += idMetodoBuscado + "(); // Llamar a función\n";
                     code->cadena3d += "p = p - "+ QString::number(code->getTamanoAmbitoActual()) + " ; // Cambio de ambito\n";
                 }
                 /*Ahora calculamos el valor de cada uno de los parametros a pasar.*/
@@ -279,10 +284,13 @@ void GeneradorCodigo::generarCodigoClase(nodo raizActual)
                 code->cadena3d += "stack[" + temporalPosicionEste + "] = h ; // Pasamos el parametro por referencia\n";
                 code->cadena3d +=*/
             }
-        }        
+        }
         code->cadena3d += "} // Fin Constructor\n" ;
     }
+
+    code->desapilarMetodo();// Desapilamos El ambito
 }
+
 
 
 QList<Simbolo> GeneradorCodigo :: getListaFunciones(QString nombreFuncion)
@@ -400,6 +408,28 @@ Simbolo GeneradorCodigo::getMetodo(QString idMetodo)
     }
     return simb;
 }
+
+int GeneradorCodigo:: existeMetodo(QString idMetodo)
+{
+    ambitoActual = code->getAmbitoActual();
+    for(int i = 0 ; i< recorrido1->tabla->listaSimbolos->count(); i++)
+    {
+        if(
+           idMetodo == recorrido1->tabla->listaSimbolos->value(i).id &&
+           recorrido1->tabla->listaSimbolos->value(i).ambito == ambitoActual   &&
+            (
+                    recorrido1->tabla->listaSimbolos->value(i).rol == "metodo" ||
+                    recorrido1->tabla->listaSimbolos->value(i).rol == "funcion" ||
+                    recorrido1->tabla->listaSimbolos->value(i).rol == "constructor"
+            )
+           )
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 
 void GeneradorCodigo:: getAmbitoActual()
 {

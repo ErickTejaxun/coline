@@ -18,6 +18,7 @@ public:
     QString genEti();        
     QString getAmbitoActual();
     int getTamanoAmbitoActual();
+    int getTamanoAmbitoActual(QString actual);
     QString getMetodoActual();
 };
 

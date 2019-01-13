@@ -58,7 +58,7 @@ int Codigo3d:: getTamanoAmbitoActual()
 {
     QString actual = getAmbitoActual();
     int contador  = 0;
-    for(int i = 0 ; i < recorrido1->tabla->listaCodigo->count(); i++)
+    for(int i = 0 ; i < recorrido1->tabla->listaSimbolos->count(); i++)
     {
         if(actual == recorrido1->tabla->listaSimbolos->value(i).ambito)
         {
@@ -67,3 +67,17 @@ int Codigo3d:: getTamanoAmbitoActual()
     }
     return contador;
 }
+
+int Codigo3d:: getTamanoAmbitoActual(QString actual)
+{
+    int contador  = 0;
+    for(int i = 0 ; i < recorrido1->tabla->listaSimbolos->count(); i++)
+    {
+        if(actual == recorrido1->tabla->listaSimbolos->value(i).ambito)
+        {
+            contador++;
+        }
+    }
+    return contador;
+}
+

@@ -226,7 +226,7 @@ void primerRecorrido::crearClase(nodo raizActual)
         nuevaClase->tamano = contadorClase;
         actualizarTamano(*nuevaClase);
 
-        /*Buscamos si se definió el constructor() por el usuario*/
+        /*Buscamos si se definió el constructor() por el usuario
         int existeConstructor = 0;
         for(int i = 0; i < this->tabla->listaSimbolos->count();i++)
         {
@@ -251,7 +251,7 @@ void primerRecorrido::crearClase(nodo raizActual)
             nodoConstructor->hijos.append(*nodoSentencias);
             crearConstructor(*nodoConstructor);
         }
-
+        */
         pilaAmbitos->pop_back();
         getAmbitoActual();                
     }
