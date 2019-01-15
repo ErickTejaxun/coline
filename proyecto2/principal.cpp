@@ -13,6 +13,6 @@ Principal::Principal()
 }
 Principal:: Principal(nodo * raiz)
 {
-    Principal(); // :v
+    Principal();
     this->raiz = raiz;
 }

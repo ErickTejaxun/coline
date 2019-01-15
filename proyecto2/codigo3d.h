@@ -1,6 +1,7 @@
 #ifndef CODIGO3D_H
 #define CODIGO3D_H
 #include <QString>
+#include <simbolo.h>
 
 class Codigo3d
 {
@@ -19,7 +20,10 @@ public:
     QString getAmbitoActual();
     int getTamanoAmbitoActual();
     int getTamanoAmbitoActual(QString actual);
+    Simbolo getSimboloPorId(QString id);
+    Simbolo getSimboloPorNombre(QString nombre);
     QString getMetodoActual();
+    int NADA_;
 };
 
 #endif // CODIGO3D_H

@@ -133,6 +133,7 @@ int nodo::getTipo()
     if(this->tipo=="nada"){return 78;}
     if(this->tipo=="accesoarray"){return 79;}
     if(this->tipo=="decimal"){return 80;}
+    if(this->tipo=="lacceso"){return 81;}
      return 0;
 }
 

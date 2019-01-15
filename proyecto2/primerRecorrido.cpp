@@ -289,7 +289,7 @@ void primerRecorrido:: getAmbitoActual()
 
 QString primerRecorrido:: getClaseActual()
 {
-    return this->pilaAmbitos->value(this->pilaAmbitos->count()-1);
+    return this->pilaAmbitos->value(this->pilaAmbitos->count()-1);    
 }
 
 
@@ -338,7 +338,7 @@ void primerRecorrido:: crearFuncion(nodo raizActual)
         este->visibilidad = funcion->visibilidad;
         este->linea = funcion->linea;
         este->columna = funcion->columna;
-        este->tipo = funcion->tipo;
+        este->tipo = "entero";
         este->dimension = 0;
         this->tabla->agregarVariable(*este, raizActual);
         /*Actualizar los contadores*/
@@ -355,7 +355,7 @@ void primerRecorrido:: crearFuncion(nodo raizActual)
         retorno->visibilidad = funcion->visibilidad;
         retorno->linea = funcion->linea;
         retorno->columna = funcion->columna;
-        retorno->tipo = funcion->tipo;
+        retorno->tipo = "entero";
         retorno->dimension = 0;
         this->tabla->agregarVariable(*retorno, raizActual);
         /*Actualizamos contadores*/
@@ -379,7 +379,7 @@ void primerRecorrido:: crearConstructor(nodo raizActual)
     Simbolo *constructor = new Simbolo();
     constructor->raiz = raizActual;
     constructor->rol = "constructor";
-    constructor->visibilidad = raizActual.hijos.value(0).valor.toLower();
+    constructor->visibilidad = raizActual.hijos.value(1).valor.toLower();
     constructor->nombre = raizActual.valor.toLower();
     if(constructor->nombre != getClaseActual())
     {
@@ -398,9 +398,13 @@ void primerRecorrido:: crearConstructor(nodo raizActual)
     constructor->direccionLocal = contadorFuncion;
     /*Obtenemos el id según el numero de parametros.*/
     QString id = constructor->nombre;
-    for(int i = 0; i<raizActual.hijos.value(1).hijos.count(); i++)
+    for(int i = 0; i<raizActual.hijos.value(4).hijos.count(); i++)
     {
-        id = id + "$" + raizActual.hijos.value(1).hijos.value(i).tipo.toLower();
+        id = id + "$" + raizActual.hijos.value(4).hijos.value(i).tipo.toLower();
+        for(int j  = 0 ; j< raizActual.hijos.value(4).hijos.value(i).hijos.count(); j++)
+        {
+            id = id + "[]";
+        }
     }
     constructor->id = /*ambitoActual + "$"  + */id;
     int resultado = this->tabla->agregarFuncion(*constructor, raizActual);
@@ -412,12 +416,12 @@ void primerRecorrido:: crearConstructor(nodo raizActual)
         /*Agregamos la referencia al objeto (this)*/
         Simbolo *este = new Simbolo();
         este->nombre = "este";
-        este->id =ambitoActual;
+        este->id = ambitoActual  + "$" + este->nombre;
         este->direccionLocal = 0;
         este->direccionGlobal = constructor->direccionGlobal;
         este->rol = "variable";
         este->tamano  = 1;
-        este->ambito = ambitoActual  + "$" + este->nombre;
+        este->ambito =ambitoActual;
         este->visibilidad = constructor->visibilidad;
         este->linea = constructor->linea;
         este->columna = constructor->columna;
@@ -430,12 +434,12 @@ void primerRecorrido:: crearConstructor(nodo raizActual)
         /*Agregamos el returno*/
         Simbolo *retorno = new Simbolo();
         retorno->nombre = "retorno";
-        retorno->id =ambitoActual;
+        retorno->id =ambitoActual + "$" + retorno->nombre;
         retorno->direccionLocal = 1;
         retorno->direccionGlobal = constructor->direccionGlobal+1;
         retorno->rol = "variable";
         retorno->tamano  = 1;
-        retorno->ambito = ambitoActual + "$" + retorno->nombre;
+        retorno->ambito = ambitoActual;
         retorno->visibilidad = constructor->visibilidad;
         retorno->linea = constructor->linea;
         retorno->columna = constructor->columna;
@@ -444,9 +448,8 @@ void primerRecorrido:: crearConstructor(nodo raizActual)
         /*Actualizamos contadores*/
         actualizarContadores(1);
         /*Obtenemos los parametros*/
-        crearParametros(raizActual.hijos[1]);
-        /*Obtenemos las variables locales*/
-        interpretar(raizActual.hijos[2]);
+        crearParametros(raizActual.hijos[4]); // Parametros
+        interpretar(raizActual.hijos[5]); // Encontrar variables
         constructor->tamano = contadorFuncion;
         actualizarTamano(*constructor);
         pilaAmbitos->pop_back();

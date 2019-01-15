@@ -527,7 +527,7 @@ VISIBILIDAD:
 INSTANCIA: nuevo id parA LPAR parC
             {
                  nodo *nodoA = new nodo("acceso","acceso",@1.first_line,@1.first_column);
-                 nodo *cons = new nodo("llamada",$2,yylineno,columna);
+                 nodo *cons = new nodo("constructor",$2,yylineno,columna);
                  nodo *nombre = new nodo("id",$2,@2.first_line,@2.first_column);
                  cons->hijos.append(*nombre);
                  cons->hijos.append(*$4); // LISTA DE PARAMETROS
@@ -537,7 +537,7 @@ INSTANCIA: nuevo id parA LPAR parC
             |nuevo id parA parC
             {
                  nodo *nodoA = new nodo("acceso","acceso",@1.first_line,@1.first_column);
-                 nodo *cons = new nodo("llamada",$2,yylineno,columna);
+                 nodo *cons = new nodo("constructor",$2,yylineno,columna);
                  nodo *nombre = new nodo("id",$2,@2.first_line,@2.first_column);
                  cons->hijos.append(*nombre);
                  nodo *lpar = new nodo("lpar","lpar",yylineno,columna);
@@ -618,7 +618,7 @@ PRINCIPAL: principal parA parC illave SENTENCIAS fllave
 
 CONSTRUCTOR: VISIBILIDAD id  parA  LPARAMETROS parC illave  SENTENCIAS fllave
                 {
-                    $$ = new nodo("funcion",$2,yylineno,columna);
+                    $$ = new nodo("constructor",$2,yylineno,columna);
                     $$->hijos.append(*$1); // visibilidad
                     nodo *tipo = new nodo("tipo",$2,@2.first_line,@2.first_column);
                     $$->hijos.append(*tipo);// tipo
@@ -629,7 +629,7 @@ CONSTRUCTOR: VISIBILIDAD id  parA  LPARAMETROS parC illave  SENTENCIAS fllave
                 }
                 |id parA  LPARAMETROS parC illave  SENTENCIAS fllave
                 {
-                    $$ = new nodo("funcion",$1,yylineno,columna);
+                    $$ = new nodo("constructor",$1,yylineno,columna);
                     nodo *vis = new nodo("visibilidad","publico",yylineno,columna);
                     $$->hijos.append(*vis); // visibilidad
                     nodo *tipo = new nodo("tipo",$1,@1.first_line,@1.first_column);
@@ -754,11 +754,18 @@ CLASE: VISIBILIDAD clase id illave ICLASES fllave
                   qDebug()<<"Resultado de la búsqueda " << QString::number(existeConstructor);
                   if(existeConstructor==0)
                   {
-                      nodo * nodoConstructor = new nodo("constructor",$$->valor,0,0);
-                      nodo * nodoVisibilidad = new nodo("visibilidad","publico",0,0);
-                      nodo * nodoParametros = new nodo("parametros","parametros",0,0);
-                      nodo * nodoSentencias  = new nodo("sentencias","sentencias",0,0);
+                      nodo * nodoConstructor = new nodo("constructor",$$->valor,@1.first_line,@1.first_column);
+                      /*hijos*/
+                      nodo * nodoSobrescribir = new nodo("sobrescribir","",@1.first_line,@1.first_column);
+                      nodo * nodoVisibilidad = new nodo("visibilidad","publico",@1.first_line,@1.first_column);
+                      nodo * nodoTipo = new nodo("tipo",$$->valor,@1.first_line,@1.first_column);
+                      nodo * nodoDims = new nodo("dims","dims",@1.first_column, @1.first_column);
+                      nodo * nodoParametros = new nodo("parametros","parametros",@1.first_line,@1.first_column);
+                      nodo * nodoSentencias  = new nodo("sentencias","sentencias",@1.first_line,@1.first_column);
+                      nodoConstructor->hijos.append(*nodoSobrescribir);
                       nodoConstructor->hijos.append(*nodoVisibilidad);
+                      nodoConstructor->hijos.append(*nodoTipo);
+                      nodoConstructor->hijos.append(*nodoDims);
                       nodoConstructor->hijos.append(*nodoParametros);
                       nodoConstructor->hijos.append(*nodoSentencias);
                       $5->hijos.append(*nodoConstructor);
@@ -795,11 +802,18 @@ CLASE: VISIBILIDAD clase id illave ICLASES fllave
                   qDebug()<<"Resultado de la búsqueda " << QString::number(existeConstructor);
                   if(existeConstructor==0)
                   {
-                      nodo * nodoConstructor = new nodo("constructor",$$->valor,0,0);
-                      nodo * nodoVisibilidad = new nodo("visibilidad","publico",0,0);
-                      nodo * nodoParametros = new nodo("parametros","parametros",0,0);
-                      nodo * nodoSentencias  = new nodo("sentencias","sentencias",0,0);
+                      nodo * nodoConstructor = new nodo("constructor",$$->valor,@1.first_line,@1.first_column);
+                      /*hijos*/
+                      nodo * nodoSobrescribir = new nodo("sobrescribir","",@1.first_line,@1.first_column);
+                      nodo * nodoVisibilidad = new nodo("visibilidad","publico",@1.first_line,@1.first_column);
+                      nodo * nodoTipo = new nodo("tipo",$$->valor,@1.first_line,@1.first_column);
+                      nodo * nodoDims = new nodo("dims","dims",@1.first_column, @1.first_column);
+                      nodo * nodoParametros = new nodo("parametros","parametros",@1.first_line,@1.first_column);
+                      nodo * nodoSentencias  = new nodo("sentencias","sentencias",@1.first_line,@1.first_column);
+                      nodoConstructor->hijos.append(*nodoSobrescribir);
                       nodoConstructor->hijos.append(*nodoVisibilidad);
+                      nodoConstructor->hijos.append(*nodoTipo);
+                      nodoConstructor->hijos.append(*nodoDims);
                       nodoConstructor->hijos.append(*nodoParametros);
                       nodoConstructor->hijos.append(*nodoSentencias);
                       $4->hijos.append(*nodoConstructor);
@@ -836,11 +850,18 @@ CLASE: VISIBILIDAD clase id illave ICLASES fllave
                   qDebug()<<"Resultado de la búsqueda " << QString::number(existeConstructor);
                   if(existeConstructor==0)
                   {
-                      nodo * nodoConstructor = new nodo("constructor",$$->valor,0,0);
-                      nodo * nodoVisibilidad = new nodo("visibilidad","publico",0,0);
-                      nodo * nodoParametros = new nodo("parametros","parametros",0,0);
-                      nodo * nodoSentencias  = new nodo("sentencias","sentencias",0,0);
+                      nodo * nodoConstructor = new nodo("constructor",$$->valor,@1.first_line,@1.first_column);
+                      /*hijos*/
+                      nodo * nodoSobrescribir = new nodo("sobrescribir","",@1.first_line,@1.first_column);
+                      nodo * nodoVisibilidad = new nodo("visibilidad","publico",@1.first_line,@1.first_column);
+                      nodo * nodoTipo = new nodo("tipo",$$->valor,@1.first_line,@1.first_column);
+                      nodo * nodoDims = new nodo("dims","dims",@1.first_column, @1.first_column);
+                      nodo * nodoParametros = new nodo("parametros","parametros",@1.first_line,@1.first_column);
+                      nodo * nodoSentencias  = new nodo("sentencias","sentencias",@1.first_line,@1.first_column);
+                      nodoConstructor->hijos.append(*nodoSobrescribir);
                       nodoConstructor->hijos.append(*nodoVisibilidad);
+                      nodoConstructor->hijos.append(*nodoTipo);
+                      nodoConstructor->hijos.append(*nodoDims);
                       nodoConstructor->hijos.append(*nodoParametros);
                       nodoConstructor->hijos.append(*nodoSentencias);
                       $7->hijos.append(*nodoConstructor);
@@ -877,11 +898,18 @@ CLASE: VISIBILIDAD clase id illave ICLASES fllave
                   qDebug()<<"Resultado de la búsqueda " << QString::number(existeConstructor);
                   if(existeConstructor==0)
                   {
-                      nodo * nodoConstructor = new nodo("constructor",$$->valor,0,0);
-                      nodo * nodoVisibilidad = new nodo("visibilidad","publico",0,0);
-                      nodo * nodoParametros = new nodo("parametros","parametros",0,0);
-                      nodo * nodoSentencias  = new nodo("sentencias","sentencias",0,0);
+                      nodo * nodoConstructor = new nodo("constructor",$$->valor,@1.first_line,@1.first_column);
+                      /*hijos*/
+                      nodo * nodoSobrescribir = new nodo("sobrescribir","",@1.first_line,@1.first_column);
+                      nodo * nodoVisibilidad = new nodo("visibilidad","publico",@1.first_line,@1.first_column);
+                      nodo * nodoTipo = new nodo("tipo",$$->valor,@1.first_line,@1.first_column);
+                      nodo * nodoDims = new nodo("dims","dims",@1.first_column, @1.first_column);
+                      nodo * nodoParametros = new nodo("parametros","parametros",@1.first_line,@1.first_column);
+                      nodo * nodoSentencias  = new nodo("sentencias","sentencias",@1.first_line,@1.first_column);
+                      nodoConstructor->hijos.append(*nodoSobrescribir);
                       nodoConstructor->hijos.append(*nodoVisibilidad);
+                      nodoConstructor->hijos.append(*nodoTipo);
+                      nodoConstructor->hijos.append(*nodoDims);
                       nodoConstructor->hijos.append(*nodoParametros);
                       nodoConstructor->hijos.append(*nodoSentencias);
                       $6->hijos.append(*nodoConstructor);
@@ -950,7 +978,7 @@ ASIGNACION:
                   else
                   {
                       $$=$3; // Tipo asignacion
-                      nodo *acceso = new nodo("acceso","acceso",@1.first_line,@1.first_column);
+                      nodo *acceso = new nodo("accesoeste","accesoeste",@1.first_line,@1.first_column);
                       nodo *nombre = new nodo("id","este",@1.first_line,@1.first_column);
                       acceso->hijos.append(*nombre);
                       $2->hijos.prepend(*acceso);
@@ -1142,16 +1170,22 @@ EXPA:
         |menos EXPA { $$ = new nodo($1,$1,yylineno, columna); $$->add(*$2);}
         |id
         {
-             $$ = new nodo("acceso","acceso",yylineno, columna);
+             nodo *nodoA = new nodo("acceso","acceso",yylineno, columna);
              nodo *nombre = new nodo("id",$1,yylineno,columna);
-             $$->hijos.append(*nombre);
+             nodoA->hijos.append(*nombre);
+             nodo * lista = new nodo("lacceso","lacceso",@1.first_line,@1.first_column);
+             lista->hijos.append(*nodoA);
+             $$= lista;
         }
         |id DIMENSIONES
         {
-                $$ = new nodo("accesoarray","accesoarray",yylineno,columna);
-                nodo *nombre = new nodo("id",$1,yylineno,columna);
-                $$->hijos.append(*nombre);
-                $$->hijos.append(*$2);
+             nodo *nodoA = new nodo("accesoarray","accesoarray",yylineno, columna);
+             nodo *nombre = new nodo("id",$1,yylineno,columna);
+             nodoA->hijos.append(*nombre);
+             nodoA->hijos.append(*$2);
+             nodo * lista = new nodo("lacceso","lacceso",@1.first_line,@1.first_column);
+             lista->hijos.append(*nodoA);
+             $$= lista;
         }
          |INSTANCIA{$$=$1;}
          |INSTANCIA ACCESO
@@ -1181,7 +1215,7 @@ EXPA:
         |este ACCESO
          {
              $$=$2;
-             nodo *nod = new nodo("acceso","acceso",yylineno, columna);
+             nodo *nod = new nodo("accesoeste","accesoeste",yylineno, columna);
              nodo*nombre = new nodo("id","este",yylineno,columna);
              nod->hijos.append(*nombre);
              $$->hijos.prepend(*nod);
@@ -1229,7 +1263,9 @@ LLAMADA:
              nodo *par = new nodo("lpar","lpar",yylineno,columna);
              nodollamada->hijos.append(*par);
              nodoA->hijos.append(*nodollamada);
-             $$ = nodoA;
+             nodo * lista = new nodo("lacceso","lacceso",@1.first_line,@1.first_column);
+             $$= lista;
+             $$->hijos.append(*nodoA);
          }
          |id parA LPAR parC
          {
@@ -1237,11 +1273,13 @@ LLAMADA:
              nodo *nodollamada = new nodo("llamada","llamada",yylineno,columna);
              nodo *nombre = new nodo("id",$1,yylineno, columna);
              nodollamada->hijos.append(*nombre); // nodo nombre
-             nodo *par = new nodo("lpar","lpar",yylineno,columna);
-             par->hijos.append(*$3);
-             nodollamada->hijos.append(*par);
+             /*nodo *par = new nodo("lpar","lpar",yylineno,columna);
+             par->hijos.append(*$3);*/
+             nodollamada->hijos.append(*$3);
              nodoA->hijos.append(*nodollamada);
-             $$ = nodoA;
+             nodo * lista = new nodo("lacceso","lacceso",@1.first_line,@1.first_column);
+             $$= lista;
+             $$->hijos.append(*nodoA);
          }
          |id parA parC ACCESO
          {
@@ -1283,7 +1321,7 @@ ACCESO : ACCESO punto id
          {
              $$ = $1;
              nodo *nod= new nodo("acceso","acceso",yylineno, columna);
-             nodo * nombre = new nodo("id",$2,yylineno, columna);
+             nodo * nombre = new nodo("id",$3,yylineno, columna);
              nod->hijos.append(*nombre);
              $$->hijos.append(*nod);
          }

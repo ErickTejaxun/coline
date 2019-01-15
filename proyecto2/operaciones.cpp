@@ -949,10 +949,12 @@ QString Operaciones::almacenarCadena(QString cadena)
 {
     cadena=cadena.replace("\"","");
     QString temp1=code->genTemp();
-    code->cadena3d+=temp1+"=s;//posicion de la cadena\n";
+    code->cadena3d+=temp1+"=s;//posicion de la cadena\n";       
+    std::string arrayChar = cadena.toStdString();
     for(int i=0;i<cadena.length();i++)
-    {
-        code->cadena3d+="pool[s]="+cadena[i]+";//"+cadena[i]+"\n";
+    {                
+        char c = arrayChar[i];
+        code->cadena3d+="pool[s]="+ QString::number(c) +";//"+cadena[i]+"\n";
         code->cadena3d+="s=s+1;\n";
     }
     code->cadena3d+="pool[s]=0;\n";

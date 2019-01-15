@@ -87,6 +87,7 @@ enum Choice
     TNADA_ = 78,
     ACCESOARRAY_ = 79,
     TDECIMAL_ = 80,
+    LACCESO_ = 81,
 };
 
 class GeneradorCodigo
@@ -100,7 +101,7 @@ public:
     Simbolo getConstructor(QString id);
     int existeConstructor(QString nombreClase);
     void generarCodigoClase(nodo raiz);
-    void crearVariable(nodo raiz);
+    void crearAtributo(nodo raiz);
     void crearConstructor(nodo raiz);
     void crearParametros(nodo raiz);
     void crearFuncion(nodo raiz);
@@ -115,12 +116,16 @@ public:
     void declararHacer(nodo raiz);
     void declararPara(nodo raiz);
     void declararParametro(nodo raiz);
+    void generarCodigoLlamadaAConstructor(QString direccionHeap, int i, Simbolo atributo);
     QString getClaseActual();
+    void generarConstructor(nodo raizActual);
+    QString obtenerIdMetodo(nodo raizActual);
+    void generarLlamada(nodo raizActual);
     void generarFuncion(nodo raizActual);
     QString escapar(QString cadena);
     QString ambitoActual;
     QList<Simbolo> obtenerListaAtributos(QString nombreClase);
-    QList<Simbolo> getListaFunciones(QString nombreFunciones);
+    QList<Simbolo> getListaConstructores(QString nombreFunciones);
     Simbolo getClase(QString nombre);
     Simbolo getMetodo(QString nombre);
     int existeMetodo(QString idMetodo);
