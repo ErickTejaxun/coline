@@ -60,20 +60,6 @@ QString Codigo3d:: getMetodoActual()
 int Codigo3d:: getTamanoAmbitoActual()
 {
     QString actual = getAmbitoActual();
-    /*Generamos el ambito actual
-    QString actual = "";
-    for(int i = 0; this->pilaAmbitos->count()-1; i++)
-    {
-        if(i==0)
-        {
-            actual = this->pilaAmbitos->value(i);
-        }
-        else
-        {
-            actual += "$" + this->pilaAmbitos->value(i);
-        }
-    }
-    */
     int contador  = 0;
     for(int i = 0 ; i < recorrido1->tabla->listaSimbolos->count(); i++)
     {
@@ -126,4 +112,8 @@ Simbolo Codigo3d::getSimboloPorNombre(QString nombre)
     }
     return simbolo;
 }
+
+
+
+
 

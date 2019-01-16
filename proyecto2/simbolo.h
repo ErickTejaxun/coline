@@ -34,6 +34,7 @@ public:
     int sobrescrito;
     nodo raiz;
     QList<QString> listaDimensiones;
+    int getTipo();
 };
 
 #endif // SIMBOLO_H

@@ -65,3 +65,5 @@ void Simbolo:: setValores(QString nombre, QString id, QString ambito, QString ni
 }
 
 
+
+
