@@ -117,6 +117,8 @@ public:
     void declararPara(nodo raiz);
     void declararParametro(nodo raiz);
     void generarCodigoLlamadaAConstructor(QString direccionHeap, int i, Simbolo atributo);
+    void generarCodigoAcceso(QString direccionHeap, int indice, Simbolo atributo);
+    void generarCodigoDeclaracion(nodo raizActual);
     QString getClaseActual();
     void generarConstructor(nodo raizActual);
     QString obtenerIdMetodo(nodo raizActual);

@@ -38,7 +38,7 @@ void GeneradorCodigo:: generarCodigo(nodo raiz)
                 generarConstructor(hijo);
                 break;
             case DECLATRIB_:
-                //crearAtributo(hijo);
+                crearAtributo(hijo);
                 break;
             case PARAMETROS_:
                 crearParametros(hijo);
@@ -73,6 +73,9 @@ void GeneradorCodigo:: generarCodigo(nodo raiz)
             case PARA_:
                 declararPara(hijo);
                 break;
+            case 99:
+                //generarCodigoAsignacion(hijo);
+                break;
         }
     }
 }
@@ -103,6 +106,7 @@ QString GeneradorCodigo:: obtenerIdMetodo(nodo raizActual)
     }
     return id;
 }
+
 
 void GeneradorCodigo::generarFuncion(nodo raizActual)
 {
@@ -144,7 +148,10 @@ void GeneradorCodigo::generarFuncion(nodo raizActual)
                     break;
                 }
                 case TCADENA_:
-                {
+                {                    
+                    QString direccionPuntero = generarTemporal();
+                    code->cadena3d += direccionPuntero + " =  h ; // Dirección del puntero hacia la cadena \n";
+                    code->cadena3d += "heap["+direccionAtributo+"] = "+direccionPuntero+";// Puntero hacia la posición de la cadena.\n";
                     code->cadena3d += "heap[" + direccionAtributo + "] =  "+QString::number(code->NADA_)+" ; // Valor por defecto para cadenas\n" ;
                     break;
                 }
@@ -155,9 +162,11 @@ void GeneradorCodigo::generarFuncion(nodo raizActual)
                 }
                 case TOBJETO_:
                 {
-                    //QString direcionObjeto  = generarTemporal();
-                    //code->cadena3d += direcionObjeto +" = " + direccionHeap + "+" + QString::number(listaAtributos.count()) + ";//Direccion del objeto "+atributo.tipo+" en h\n";
-                    code->cadena3d += "heap[" + direccionAtributo + "] = "+QString::number(code->NADA_)+"  ; // Objeto nulo \n" ;
+                    QString direccionPuntero = generarTemporal();
+                    code->cadena3d += direccionPuntero + " =  h ; // Dirección del puntero hacia el objeto \n";
+                    code->cadena3d += "heap["+direccionAtributo+"] = "+direccionPuntero+";// Puntero hacia la posición del objeto.\n";
+                    code->cadena3d += "heap[" + direccionAtributo + "] =  "+QString::number(code->NADA_)+" ; // Valor por defecto para cadenas\n" ;
+                    //code->cadena3d += "heap[" + direccionAtributo + "] = "+QString::number(code->NADA_)+"  ; // Objeto nulo \n" ;
                     break;
                 }
             }
@@ -303,11 +312,12 @@ void GeneradorCodigo::generarFuncion(nodo raizActual)
                     }
 
                 }
-    }
+    }//--Fin de inicilización de atributos
+    // Recorrido y generación de código de las instrucciones
+    generarCodigo(raizActual.hijos.value(5));
     code->cadena3d += "} // Fin Constructor\n" ;
     code->desapilarMetodo();// Desapilamos El ambito
 }
-
 
 void GeneradorCodigo::generarConstructor(nodo raizActual)
 {       
@@ -350,7 +360,11 @@ void GeneradorCodigo::generarConstructor(nodo raizActual)
                 }
                 case TCADENA_:
                 {
-                    code->cadena3d += "heap[" + direccionAtributo + "] =  "+QString::number(code->NADA_)+" ; // Valor por defecto para cadenas\n" ;
+                    QString direccionPuntero = generarTemporal();
+                    code->cadena3d += direccionPuntero + " =  h ; // Dirección del puntero hacia la cadena \n";
+                    code->cadena3d += "h  = h + 1 ; // Se reserva espacio para el puntero \n";
+                    code->cadena3d += "heap["+direccionAtributo+"] = "+direccionPuntero+";// Puntero hacia la posición de la cadena.\n";
+                    code->cadena3d += "heap[" + direccionPuntero + "] =  "+QString::number(code->NADA_)+" ; // Valor por defecto para cadenas\n" ;
                     break;
                 }
                 case TDECIMAL_:
@@ -360,9 +374,11 @@ void GeneradorCodigo::generarConstructor(nodo raizActual)
                 }
                 case TOBJETO_:
                 {
-                    //QString direcionObjeto  = generarTemporal();
-                    //code->cadena3d += direcionObjeto +" = " + direccionHeap + "+" + QString::number(listaAtributos.count()) + ";//Direccion del objeto "+atributo.tipo+" en h\n";
-                    code->cadena3d += "heap[" + direccionAtributo + "] = "+QString::number(code->NADA_)+"  ; // Objeto nulo \n" ;
+                    QString direccionPuntero = generarTemporal();
+                    code->cadena3d += direccionPuntero + " =  h ; // Dirección del puntero hacia el objeto \n";
+                    code->cadena3d += "h  = h + 1 ; // Se reserva espacio para el puntero \n";
+                    code->cadena3d += "heap["+direccionAtributo+"] = "+direccionPuntero+";// Puntero hacia la posición del objeto.\n";
+                    code->cadena3d += "heap[" + direccionPuntero + "] =  "+QString::number(code->NADA_)+" ; // Valor por defecto para cadenas\n" ;
                     break;
                 }
             }
@@ -377,7 +393,8 @@ void GeneradorCodigo::generarConstructor(nodo raizActual)
                     nodo nodoRaiz = atributo.raiz.hijos.value(3);
                     Resultado *resultado = operacion->aritmetica(&nodoRaiz);
 
-                    if(
+                    if
+                     (
                         atributo.tipo==resultado->tipo
                      ||(atributo.tipo == "entero" && resultado->tipo == "booleano")
                      ||(atributo.tipo == "entero" && resultado->tipo == "caracter")
@@ -407,9 +424,21 @@ void GeneradorCodigo::generarConstructor(nodo raizActual)
                         code->cadena3d += valorCasteado + " = " + resultado->valor + " - " + valorResiduo +";// Valor - residuo = entero \n";
                         code->cadena3d += "heap["+ direccionAtributo+ "] = " + resultado->valor +"; //Asignando valor inicial variable "+atributo.nombre+"\n";
                     }
-                    else if(atributo.tipo == "objeto" && resultado->tipo=="nada")
+                    else if(resultado->tipo=="nada")
                     {
-                        code->cadena3d += "heap["+ direccionAtributo+ "] = " + QString::number(code->NADA_) +"; //Asignando valor inicial variable "+atributo.nombre+"\n";
+                        QString direccionPuntero = generarTemporal();
+                        code->cadena3d += direccionPuntero + " =  h ; // Dirección del puntero hacia el objeto \n";
+                        code->cadena3d += "h  = h + 1 ; // Se reserva espacio para el puntero \n";
+                        code->cadena3d += "heap["+direccionAtributo+"] = "+direccionPuntero+";// Puntero hacia la posición del objeto.\n";
+                        code->cadena3d += "heap[" + direccionPuntero + "] =  "+QString::number(code->NADA_)+" ; // Valor por defecto para cadenas\n" ;
+                    }
+                    else if(atributo.tipo == resultado->tipo)
+                    {
+                        QString direccionPuntero = generarTemporal();
+                        code->cadena3d += direccionPuntero + " =  h ; // Dirección del puntero hacia el objeto \n";
+                        code->cadena3d += "h  = h + 1 ; // Se reserva espacio para el puntero \n";
+                        code->cadena3d += "heap["+direccionAtributo+"] = "+direccionPuntero+";// Puntero hacia la posición del objeto.\n";
+                        code->cadena3d += "heap[" + direccionPuntero + "] =  "+resultado->valor+" ; // Valor por defecto para cadenas\n" ;
                     }
                     else
                     {
@@ -423,8 +452,11 @@ void GeneradorCodigo::generarConstructor(nodo raizActual)
                 if((atributo.raiz.hijos.count()==4) && (atributo.raiz.hijos.value(3).tipo=="dim"))
                 {
                     QString direccionAtributo = generarTemporal();
+                    QString direccionPuntero = generarTemporal();
                     code->cadena3d += direccionAtributo  +  " = " + direccionHeap + " + " + QString::number(i) +"; // Direccion del atributo " + atributo.nombre +"\n";
                     code->cadena3d += "heap["+direccionAtributo+"] = h; // Asigna el puntero hacia el heap\n";
+                    code->cadena3d += "h = h + 1; // Se reserva espacio en el heap para el puntero.\n";
+                    code->cadena3d += "heap["+direccionPuntero+"] = "+direccionAtributo+"; // Puntero hacia el valor del objeto.\n";
                     QString temporalTamano = generarTemporal();
                     code->cadena3d += temporalTamano +" = 1 ; // Tamano inicial del arreglo\n";
                     for(int j = 0 ; j<atributo.raiz.hijos.value(3).hijos.count(); j++)
@@ -439,10 +471,8 @@ void GeneradorCodigo::generarConstructor(nodo raizActual)
                         {
                             case TENTERO_:
                             case TBOOLEANO_:
-                            case TDECIMAL_ :
-                            case TCARACTER_:
-                            {
-                                //code->cadena3d += generarEtiqueta() + ": \n";
+                            case TDECIMAL_ :                                                        
+                            {                                
                                 QString temporalDecimal = generarTemporal();
                                 code->cadena3d += temporalDecimal + " = " + valorDimensionProvisional + " % 1 ; // Obtenemos la parte decimal\n";
                                 QString temporalEntero = generarTemporal();
@@ -450,7 +480,11 @@ void GeneradorCodigo::generarConstructor(nodo raizActual)
                                 QString etqTamano = generarTemporal();
                                 code->cadena3d += etqTamano + " = " +  temporalTamano +" * " +temporalEntero +";// Se actualiza el tamaño total del array\n" ;
                                 temporalTamano = etqTamano;
-                            break;
+                                break;
+                            }
+                            case TCARACTER_:
+                            {
+
                             }
                             default: // Error
                             {
@@ -460,6 +494,19 @@ void GeneradorCodigo::generarConstructor(nodo raizActual)
                             }
                         }
                     }
+                    /*Ponemos los valores por defeto*/
+                    QString etiquetaCiclo = generarEtiqueta();
+                    QString etiquetaFinCiclo = generarEtiqueta();
+                    QString etiquetaSetear = generarEtiqueta();
+                    QString temporalContador = generarTemporal();
+                    code->cadena3d += temporalContador +" = 0 ; // Inicio del contador\n";
+                    code->cadena3d += etiquetaCiclo +": // Ciclo de llenado de array.\n";
+                    code->cadena3d += "if("+temporalTamano+"<"+temporalTamano+") goto " + etiquetaSetear + "; // \n";
+                    code->cadena3d += "goto " + etiquetaFinCiclo + "; \n";
+                    code->cadena3d += "";
+
+
+
                     code->cadena3d += "h = h + " + temporalTamano + "; // Reservamos el tamaño del array en el heap.\n" ;
                 }
                 else
@@ -475,9 +522,17 @@ void GeneradorCodigo::generarConstructor(nodo raizActual)
                             {
                                 generarCodigoLlamadaAConstructor(direccionHeap, indice,atributo);
                             }
-                            case ACCESO_:
+                            default:
                             {
 
+                                QString direccionAtributo = generarTemporal();
+                                code->cadena3d += direccionAtributo  +  " = " + direccionHeap + " + " + QString::number(indice) +"; // Direccion del atributo " + atributo.nombre +"\n";
+                                code->cadena3d += "heap["+direccionAtributo+"] = h; // Asigna el puntero hacia el heap\n";
+                                /*Generar código de operación*/
+                                Operaciones * operacion = new Operaciones();
+                                nodo nodo = atributo.raiz.hijos.value(3);
+                                Resultado *resultado = operacion->aritmetica(&nodo);
+                                generarCodigoAcceso(direccionHeap, indice,atributo);
                             }
                         }
                     }
@@ -487,6 +542,15 @@ void GeneradorCodigo::generarConstructor(nodo raizActual)
     code->desapilarMetodo();// Desapilamos El ambito    
 }
 
+
+void GeneradorCodigo:: generarCodigoAcceso(QString direccionHeap, int indiceAcceso, Simbolo atributo)
+{
+    QString direccionAtributo = generarTemporal();
+    code->cadena3d += direccionAtributo  +  " = " + direccionHeap + " + " + QString::number(indiceAcceso) +"; // Direccion del atributo " + atributo.nombre +"\n";
+    code->cadena3d += "heap["+direccionAtributo+"] = h; // Asigna el puntero hacia el heap\n";
+    /*Pasamos cada uno de los parametros*/
+    code->cadena3d += generarTemporal() + "= p + "+QString::number(indiceAcceso)+"; \n";
+}
 
 
 void GeneradorCodigo:: generarCodigoLlamadaAConstructor(QString direccionHeap, int indiceAcceso, Simbolo atributo)
@@ -612,11 +676,6 @@ void GeneradorCodigo:: generarCodigoLlamadaAConstructor(QString direccionHeap, i
 }
 
 
-void GeneradorCodigo:: generarLlamada(nodo raiz)
-{
-
-}
-
 
 QList<Simbolo> GeneradorCodigo :: getListaConstructores(QString nombreFuncion)
 {
@@ -638,6 +697,8 @@ QList<Simbolo> GeneradorCodigo :: getListaConstructores(QString nombreFuncion)
     }    
     return  *listaFunciones;
 }
+
+
 
 
 
