@@ -23,11 +23,13 @@ public:
     void crearFuncion(nodo raiz);
     void getAmbitoActual();
     void actualizarTamano(Simbolo sim);
-    void actualizarContadores(int tamano);
-    void declararArreglo(nodo raiz);
+    void actualizarContadores(int tamano);    
     void declararSi(nodo raiz);
     void declararSeleccionar(nodo raiz);
+    void declararVariableAsignacion(nodo raiz);
+    void declararArregloAsignar(nodo raizActual);
     void declararVariable(nodo raiz);
+    void declararArreglo(nodo raiz);
     void declararMientras(nodo raiz);
     void declararHacer(nodo raiz);
     void declararPara(nodo raiz);
@@ -35,6 +37,8 @@ public:
     void generarCodigoLlamadaAConstructor(QString direccionHeap, int i, Simbolo atributo);
     void generarCodigoAcceso(QString direccionHeap, int indice, Simbolo atributo);
     void generarCodigoDeclaracion(nodo raizActual);
+    void generarCodigoAtributos(nodo raizActual);
+    void generarCodigoInstrucciones(nodo raizActual);
     QString getClaseActual();
     void generarConstructor(nodo raizActual);
     QString obtenerIdMetodo(nodo raizActual);

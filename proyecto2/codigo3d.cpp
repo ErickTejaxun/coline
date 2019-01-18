@@ -1,7 +1,9 @@
 #include "codigo3d.h"
 #include <QList>
 #include <primerRecorrido.h>
+#include <resultado.h>
 extern  primerRecorrido *recorrido1;
+extern QList<errorT> *listaErrores;
 Codigo3d::Codigo3d()
 {
     this->cadena3d ="";
@@ -100,19 +102,77 @@ Simbolo Codigo3d:: getSimboloPorId(QString id)
 Simbolo Codigo3d::getSimboloPorNombre(QString nombre)
 {
     Simbolo simbolo ;
+    Simbolo simaux ;
     tablaSimbolos * tabla = recorrido1->tabla;
     QString ambito = getAmbitoActual();    
     for(int i = 0 ; i< recorrido1->tabla->listaSimbolos->count(); i++)
     {
-        if(recorrido1->tabla->listaSimbolos->value(i).nombre ==nombre&&
-           recorrido1->tabla->listaSimbolos->value(i).ambito == ambito)
+        simaux = tabla->listaSimbolos->value(i);
+        qDebug() << "------------------------------";
+        qDebug() << nombre << "==="<< simaux.nombre;
+        qDebug() << ambito  << "==="<<simaux.ambito;
+        if(
+           simaux.nombre ==nombre&&
+           simaux.ambito == ambito)
         {
-            return recorrido1->tabla->listaSimbolos->value(i);
+            /*qDebug() << "Encontatrado en "<< i;
+            simbolo.id = simaux.id;
+            simbolo.nombre = simaux.nombre;
+            simbolo.direccionLocal = simaux.direccionLocal;
+            simbolo.direccionGlobal = simaux.direccionGlobal;
+            simbolo.ambito = simaux.ambito;
+            simbolo.raiz = simaux.raiz;*/
+            return simaux;
         }
     }
     return simbolo;
 }
 
+Simbolo Codigo3d:: getSimboloDeclaracion(QString nombre)
+/*Este metodo sirve para cuando se instancia algún objeto dentro de un método.
+Para asignaciones
+*/
+{    
+    QList<QString> *pilaAuxiliar  =  new QList<QString>();
+    for(int i = 0; i< this->pilaAmbitos->count(); i++)
+    {
+        pilaAuxiliar->append(pilaAmbitos->value(i));
+    }
+
+    int encontrado = 0;    
+    Simbolo simboloBuscado;
+    while(!encontrado)
+    {
+        simboloBuscado = getSimboloPorNombre(nombre);
+        if(simboloBuscado.id !="")
+        {
+            /*Limpiamos la pila*/
+            this->pilaAmbitos->clear();
+            for(int j = 0 ; j < pilaAuxiliar->count(); j++)
+            {
+                this->pilaAmbitos->append(pilaAuxiliar->value(j));
+            }
+            encontrado = 1;
+            return  simboloBuscado;
+        }
+        if(getAmbitoActual()=="global")
+        {
+            /*Limpiamos la pila*/
+            this->pilaAmbitos->clear();
+            for(int j = 0 ; j < pilaAuxiliar->count(); j++)
+            {
+                this->pilaAmbitos->append(pilaAuxiliar->value(j));
+            }
+            errorT * error = new errorT("Semantico", "No se ha encontrado la variable o atributo "+ nombre , 0,0);
+
+            break;
+        }else
+        {
+         this->desapilarMetodo();
+        }
+    }
+    return simboloBuscado;
+}
 
 
 

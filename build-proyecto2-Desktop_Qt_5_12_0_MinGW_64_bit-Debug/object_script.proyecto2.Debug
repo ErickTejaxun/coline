@@ -20,5 +20,6 @@ debug/generadorcodigo.o
 debug/codigo3d.o
 debug/resultado.o
 debug/operaciones.o
+debug/nativas3d.o
 debug/moc_mainwindow.o
 debug/moc_editor.o

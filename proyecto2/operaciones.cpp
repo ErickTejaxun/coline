@@ -1081,7 +1081,7 @@ Resultado *Operaciones::relacional(nodo *raiz,int flag)
 
     switch (resultado1->tipo_) {
         case TENTERO_:
-           {
+    {
                 switch (resultado2->tipo_) {
                     case TENTERO_:
                        {

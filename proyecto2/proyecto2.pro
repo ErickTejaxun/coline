@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     generadorcodigo.cpp \
     codigo3d.cpp \
     resultado.cpp \
-    operaciones.cpp
+    operaciones.cpp \
+    nativas3d.cpp
 
 HEADERS  += mainwindow.h \
     editor.h \
@@ -55,7 +56,8 @@ HEADERS  += mainwindow.h \
     generadorcodigo.h \
     codigo3d.h \
     resultado.h \
-    operaciones.h
+    operaciones.h \
+    nativas3d.h
 
 FORMS    += mainwindow.ui \
     editor.ui

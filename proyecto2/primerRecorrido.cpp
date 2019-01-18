@@ -181,6 +181,7 @@ void primerRecorrido:: interpretar(nodo raiz)
                 break;
             case DARAR_:
             case DAR_:
+            case DARA_:
                 declararArreglo(hijo);
                 break;
             case SI_:
@@ -222,7 +223,7 @@ void primerRecorrido::crearClase(nodo raizActual)
     nuevaClase->direccionLocal = contadorClase;
     nuevaClase->id = ambitoActual + "$" + nuevaClase->nombre;
     int resultado = this->tabla->agregarClase(*nuevaClase, raizActual);
-    if(resultado ==1 ) // Inserción con exito
+    if(resultado ==1 )
     {
         pilaAmbitos->append(nuevaClase->nombre);        
         getAmbitoActual();
@@ -230,33 +231,6 @@ void primerRecorrido::crearClase(nodo raizActual)
         interpretar(raizActual.hijos[2]);
         nuevaClase->tamano = contadorClase;
         actualizarTamano(*nuevaClase);
-
-        /*Buscamos si se definió el constructor() por el usuario
-        int existeConstructor = 0;
-        for(int i = 0; i < this->tabla->listaSimbolos->count();i++)
-        {
-            Simbolo simbolo = this->tabla->listaSimbolos->value(i);
-            if(simbolo.nombre == nuevaClase->nombre
-             &&simbolo.id == nuevaClase->nombre
-             &&simbolo.rol == "constructor"
-             )
-            {
-                existeConstructor = 1;
-                break;
-            }
-        }
-        if(!existeConstructor)
-        {
-            nodo * nodoConstructor = new nodo("constructor",nuevaClase->nombre,0,0);
-            nodo * nodoVisibilidad = new nodo("visibilidad","publico",0,0);
-            nodo * nodoParametros = new nodo("parametros","parametros",0,0);
-            nodo * nodoSentencias  = new nodo("sentencias","sentencias",0,0);
-            nodoConstructor->hijos.append(*nodoVisibilidad);
-            nodoConstructor->hijos.append(*nodoParametros);
-            nodoConstructor->hijos.append(*nodoSentencias);
-            crearConstructor(*nodoConstructor);
-        }
-        */
         pilaAmbitos->pop_back();
         getAmbitoActual();                
     }
@@ -321,9 +295,16 @@ void primerRecorrido:: crearFuncion(nodo raizActual)
     /*Obtenemos el id según el numero de parametros.*/
     QString id = funcion->nombre;
     for(int i = 0; i<raizActual.hijos.value(4).hijos.count(); i++)
-    {
+    {        
         id = id + "$" + raizActual.hijos.value(4).hijos.value(i).tipo.toLower();
+        for(int j  = 0 ; j< raizActual.hijos.value(4).hijos.value(i).hijos.count(); j++)
+        {
+            id = id + "[]";
+        }
     }
+
+
+
     funcion->id = /*ambitoActual + "$" + */ id;
     int resultado = this->tabla->agregarFuncion(*funcion, raizActual);
     if(resultado == 1)
@@ -614,10 +595,10 @@ void primerRecorrido:: crearVariable(nodo raizActual)
     variable->id = ambitoActual + "$" + variable->nombre;
     variable->visibilidad = raizActual.hijos.value(0).valor.toLower();
     variable->tipo = raizActual.hijos.value(1).valor.toLower();
-    variable->dimension = 0;
+    variable->dimension = raizActual.hijos.value(3).hijos.count();
     variable->tamano = 1;
     variable->direccionGlobal = contadorSimbolos;
-    variable->direccionLocal = contadorFuncion;
+    variable->direccionLocal = contadorClase;
     int resultado = this->tabla->agregarVariable(*variable, raizActual);
     if(resultado==1)
     {

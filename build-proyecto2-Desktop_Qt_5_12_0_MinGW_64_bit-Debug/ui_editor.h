@@ -105,7 +105,7 @@ public:
         tab_3->setObjectName(QString::fromUtf8("tab_3"));
         txtConsola = new QTextEdit(tab_3);
         txtConsola->setObjectName(QString::fromUtf8("txtConsola"));
-        txtConsola->setGeometry(QRect(20, 10, 1461, 151));
+        txtConsola->setGeometry(QRect(20, 10, 1461, 291));
         tabWidget_2->addTab(tab_3, QString());
         tab_4 = new QWidget();
         tab_4->setObjectName(QString::fromUtf8("tab_4"));
