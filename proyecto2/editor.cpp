@@ -87,7 +87,7 @@ void editor::imprimirTabla()
     if(tablaActual!=NULL)
     {
         ui->tablaSimbolos->clear();
-        ui->tablaSimbolos->setColumnCount(12);
+        ui->tablaSimbolos->setColumnCount(13);
         ui->tablaSimbolos->setRowCount(tablaActual->listaSimbolos->count()+1);
         ui->tablaSimbolos->setItem(0, 0, new QTableWidgetItem("Nombre",1));
         ui->tablaSimbolos->setItem(0, 1, new QTableWidgetItem("Id",4));
@@ -101,6 +101,7 @@ void editor::imprimirTabla()
         ui->tablaSimbolos->setItem(0, 9, new QTableWidgetItem("Linea",1));
         ui->tablaSimbolos->setItem(0, 10, new QTableWidgetItem("Columna",1));
         ui->tablaSimbolos->setItem(0, 11, new QTableWidgetItem("Herencia",1));
+        ui->tablaSimbolos->setItem(0, 12, new QTableWidgetItem("Dimensionales",1));
         for(int i =0; i<tablaActual->listaSimbolos->count();i++)
         {
             Simbolo simbolo =tablaActual->listaSimbolos->value(i);
@@ -116,6 +117,9 @@ void editor::imprimirTabla()
             ui->tablaSimbolos->setItem(i+1, 9, new QTableWidgetItem(QString::number(simbolo.linea),1));
             ui->tablaSimbolos->setItem(i+1, 10, new QTableWidgetItem(QString::number(simbolo.columna),1));
             ui->tablaSimbolos->setItem(i+1, 11, new QTableWidgetItem(simbolo.padre,1));
+            QString tamanos = "";
+            for(int i = 0 ; i <simbolo.listaDimensiones->count(); i++){ tamanos += "$" + simbolo.listaDimensiones->value(i);}
+            ui->tablaSimbolos->setItem(i+1, 12, new QTableWidgetItem(tamanos,1));
         }
     }
 }

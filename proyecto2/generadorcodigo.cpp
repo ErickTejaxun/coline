@@ -101,7 +101,19 @@ extern QList<errorT> * listaErrores;
 
 GeneradorCodigo::GeneradorCodigo()
 {  
-    this->pilaAmbitos = new QList<QString>();    
+    this->pilaAmbitos = new QList<QString>();
+    contadorSimbolos = 0;
+    tamanoActual = 0;
+    contadorClase=0;
+    contadorFuncion=0;
+    contadorIf= 0;
+    contadorWhile=0;
+    contadorElseIf=0;
+    contadorElse = 0;
+    contadorPara=0;
+    contadorDoWhile =0;
+    contadorSeleccionar=0;
+    copiaPilaActual = code->pilaAmbitos;
 }
 
 void GeneradorCodigo:: Init()
@@ -155,7 +167,7 @@ void GeneradorCodigo:: generarCodigo(nodo raiz)
                 break;
             case SI_:
             case SINOSI_:
-                //declararSi(hijo);
+                generarCodigoIf(hijo);
                 break;
             case MIENTRAS_:
                 //declararMientras(hijo);
@@ -180,6 +192,7 @@ void GeneradorCodigo:: generarCodigo(nodo raiz)
 
 void GeneradorCodigo::generarCodigoClase(nodo raizActual)
 {    
+    QList<QString> *pilaAmbitosActual = code->pilaAmbitos;
     QString nombreClase = raizActual.valor.toLower();
     code->apilarMetodo(nombreClase);
     generarCodigo(raizActual.hijos.value(2)); //
@@ -218,7 +231,7 @@ void GeneradorCodigo::generarFuncion(nodo raizActual)
 
 void GeneradorCodigo::generarConstructor(nodo raizActual)
 {       
-   /*Primero ponemos valores por default a los atributos de la clase.*/
+   /*Primero ponemos valores por default a los atributos de la clase.*/    
     generarCodigoAtributos(raizActual);
    /*Ahora Generamos el código de las instrucciones*/
     QString nombreFuncion = raizActual.valor.toLower();
@@ -235,6 +248,116 @@ void GeneradorCodigo::generarCodigoInstrucciones(nodo raizActual)
     QString nombreClase = raizActual.valor.toLower();          
     generarCodigo(raizActual);
 }
+
+
+void GeneradorCodigo::  generarCodigoIf(nodo raizActual)
+{
+    int numeroNodos = raizActual.hijos.count();
+    int haveElse = 0;
+    int numeroIteraciones = numeroNodos;
+    /*Operacion y resultado*/
+    Operaciones *operacion = new Operaciones();
+    Resultado * resultado = new Resultado;
+    nodo nodito;// = raizActual.hijos.value(numeroNodos);    
+    if((numeroNodos % 2)==1)
+    {
+        haveElse = true;
+        numeroIteraciones -= 1;
+    }
+    for(int i = 0 ;  i < numeroIteraciones; i++)
+    {
+        nodito = raizActual.hijos.value(i);
+        resultado = operacion->logica(&nodito);
+        if(resultado->etiF == "" && resultado->etiV=="")
+        {
+            switch (resultado->tipo_)
+            {
+                case TENTERO_:
+                case TBOOLEANO_:
+                case TCARACTER_:
+                case TDECIMAL_:
+                {
+                    QString valorDecimal = generarTemporal();
+                    QString valorCasteado = generarTemporal();
+                    QString etiquetaVerdadera = generarEtiqueta();
+                    QString etiquetaFalsa = generarEtiqueta();
+                    QString etiquetaSalida = generarEtiqueta();
+                    code->cadena3d += valorDecimal + " = "+ resultado->valor + " % 1 ; // Parte decimal \n ";
+                    code->cadena3d += valorCasteado + " = " + resultado->valor + " - " +valorDecimal + "; // Casteo implicito \n" ;
+                    code->cadena3d += "if("+valorCasteado +"!= 0) goto " + etiquetaVerdadera + "; // Etiqueta verdadera\n";
+                    code->cadena3d += "goto " + etiquetaFalsa + "; // Etiqueta falsa \n";
+                    //Si(EPXL)
+                    if(i == 0)
+                    {
+                        code->cadena3d += etiquetaVerdadera  +": // Verdadero \n";
+                        code->apilarMetodo("if"+QString::number(contadorIf));
+                        generarCodigo(raizActual.hijos.value(i+1));
+                        code->desapilarMetodo();
+                        code->cadena3d += "goto " + etiquetaSalida + "; Salida del if\n";
+                        contadorIf++;
+                        i++;
+                    }
+                    // Si no si (ExpL)
+                    else
+                    {
+                        code->cadena3d += etiquetaVerdadera  +": // Verdadero \n";
+                        code->apilarMetodo("sino"+QString::number(contadorElseIf));
+                        generarCodigo(raizActual.hijos.value(i+1));
+                        code->desapilarMetodo();
+                        code->cadena3d += "goto " + etiquetaSalida + "; Salida del if\n";
+                        contadorElseIf++;
+                        i++;
+                    }
+                }
+                default:
+                {
+                    errorT * error = new errorT("Semantico","Operación lógica invalidad", nodito.linea, nodito.columna);
+                    listaErrores->append(*error);
+                }
+            }
+        }
+        else
+        {
+            if(i == 0)
+            {
+                QString etiquetaSalida = generarTemporal();
+                code->cadena3d += resultado->etiV + ": //\n";
+                code->apilarMetodo("if"+QString::number(contadorIf));
+                generarCodigo(raizActual.hijos.value(i+1));
+                code->desapilarMetodo();
+                code->cadena3d += "goto " + etiquetaSalida + "; Salida del if\n";
+                code->cadena3d += resultado->etiF + ": //\n";
+                contadorIf++;
+                i++;
+            }
+            // Si no si (ExpL)
+            else
+            {
+                QString etiquetaSalida = generarTemporal();
+                code->cadena3d += resultado->etiV + ": //\n";
+                code->apilarMetodo("sino"+QString::number(contadorElseIf));
+                generarCodigo(raizActual.hijos.value(i+1));
+                code->desapilarMetodo();
+                code->cadena3d += "goto " + etiquetaSalida + "; Salida del if\n";
+                code->cadena3d += resultado->etiF + ": //\n";
+                contadorElseIf++;
+                i++;
+            }
+        }
+    }// Fin recorrido para if y else if
+    // Verificamos si hay Sino
+    if(haveElse)
+    {
+        nodito = raizActual.hijos.value(numeroNodos-1);
+        code->apilarMetodo("sino"+QString::number(contadorElse));
+        resultado = operacion->logica(&nodito);
+        code->desapilarMetodo();
+        contadorElse++;
+    }
+    contadorIf++;
+}
+
+
 
 void GeneradorCodigo:: generarCodigoAtributos(nodo raizActual)
 {
@@ -300,7 +423,7 @@ void GeneradorCodigo:: generarCodigoAtributos(nodo raizActual)
             code->cadena3d += direccionAtributo  +  " = " + direccionHeap + " + " + QString::number(i) +"; // Direccion del atributo " + atributo.nombre +"\n";
             Operaciones *operacion = new Operaciones();
             nodo nodoRaiz = atributo.raiz.hijos.value(3);
-            Resultado *resultado = operacion->logica(&nodoRaiz,0);
+            Resultado *resultado = operacion->logica(&nodoRaiz);
             QString etiquetaContinuar = generarEtiqueta();
             if(resultado->tipo_ ==TBOOLEANO_)
             {
@@ -373,53 +496,41 @@ void GeneradorCodigo:: generarCodigoAtributos(nodo raizActual)
             }
         }
         else
-        //Declaracion de arrays. sin asignación---------------------------------------------------------------------------------------------------------------------------------------------
+        //Declaracion de arrays. sin asignación------------------------------------------------------------------------------------------------------------------------------------
         if((atributo.raiz.hijos.count()==4) && (atributo.raiz.hijos.value(3).tipo=="dim"))
-        {
+        {            
             QString direccionAtributo = generarTemporal();
-            QString direccionPuntero = generarTemporal();
-            QString inicioArray = generarTemporal();
-            code->cadena3d += direccionAtributo  +  " = " + direccionHeap + " + " + QString::number(i) +"; // Direccion del atributo " + atributo.nombre +"\n";
-            code->cadena3d += direccionPuntero  + " =  h ; //Direccion real del inicio del array. \n" ;
-            code->cadena3d += "h = h + 1; // Se reserva espacio en el heap para el puntero.\n";
-            code->cadena3d += "heap["+direccionAtributo+"] = "+direccionPuntero+"; // Asigna el puntero hacia el heap\n";
-            code->cadena3d += inicioArray + " = h; // Asigna el puntero hacia el inicio del array\n";
-            code->cadena3d += "h = h + 1; // Se reserva espacio en el heap para el puntero.\n";
-            code->cadena3d += "heap["+direccionPuntero+"] = "+inicioArray+"; // Puntero hacia el valor del objeto.\n";
             QString temporalTamano = generarTemporal();
-            code->cadena3d += temporalTamano +" = 1 ; // Tamano inicial del arreglo\n";
+            QString valorDimensionProvisional = generarTemporal();
+
+            code->cadena3d += direccionAtributo  +  " = " + direccionHeap + " + " + QString::number(i) +"; // Direccion del atributo " + atributo.nombre +"\n";            
+            code->cadena3d += temporalTamano + " =  1 ; // Tamano inicial del arreglo.\n";
             for(int j = 0 ; j<atributo.raiz.hijos.value(3).hijos.count(); j++)
             {
                 Operaciones *operacion = new Operaciones();
                 nodo nodoRaiz = atributo.raiz.hijos.value(3).hijos.value(j);
                 Resultado *resultado = operacion->aritmetica(&nodoRaiz);
-                /*Comprobamos el tipo del resultado*/
-                QString valorDimensionProvisional = generarTemporal();
+                /*Comprobamos el tipo del resultado*/                
                 code->cadena3d += valorDimensionProvisional + " = " + resultado->valor + " ; //\n";
                 switch (resultado->tipo_)
                 {
                     case TENTERO_:
                     case TBOOLEANO_:
                     case TDECIMAL_ :
-                    {
-                        QString temporalDecimal = generarTemporal();
-                        code->cadena3d += temporalDecimal + " = " + valorDimensionProvisional + " % 1 ; // Obtenemos la parte decimal\n";
-                        QString temporalEntero = generarTemporal();
-                        code->cadena3d += temporalEntero + " = " + valorDimensionProvisional  + "-" + temporalDecimal + "; // Casteo Implicito.\n";                        
-                        QString etqTamano = generarTemporal();
-                        code->cadena3d += etqTamano + " = " +  temporalTamano +" * " +temporalEntero +";// Se actualiza el tamaño total del array\n" ;
-                        temporalTamano = etqTamano;
-                        break;
-                    }
                     case TCARACTER_:
                     {
                         QString temporalDecimal = generarTemporal();
-                        code->cadena3d += temporalDecimal + " = " + valorDimensionProvisional + " % 1 ; // Obtenemos la parte decimal\n";
                         QString temporalEntero = generarTemporal();
-                        code->cadena3d += temporalEntero + " = " + valorDimensionProvisional  + "-" + temporalDecimal + "; // Casteo Implicito.\n";
                         QString etqTamano = generarTemporal();
+                        QString tamanoDimension = generarTemporal();
+                        code->cadena3d += temporalDecimal + " = " + valorDimensionProvisional + " % 1 ; // Obtenemos la parte decimal\n";                        
+                        code->cadena3d += temporalEntero + " = " + valorDimensionProvisional  + "-" + temporalDecimal + "; // Casteo Implicito.\n";                                                
                         code->cadena3d += etqTamano + " = " +  temporalTamano +" * " +temporalEntero +";// Se actualiza el tamaño total del array\n" ;
-                        temporalTamano = etqTamano;
+                        temporalTamano = etqTamano;                        
+                        code->cadena3d +=  tamanoDimension + " = h; // Posicion donde guardar la "+QString::number(j)+" dimensión del array\n";
+                        code->cadena3d += " h = h +1 ; // Reserva tamaño para .\n";
+                        code->cadena3d += "heap["+tamanoDimension + "] = " + temporalEntero + "; // Guardar tamano de la dimensión " +QString::number(j) + "-esima\n";
+                        break;
                     }
                     default: // Error
                     {
@@ -431,47 +542,43 @@ void GeneradorCodigo:: generarCodigoAtributos(nodo raizActual)
             }
             /*Ponemos los valores por defeto*/
             //if(atributo.tipo != "caracter")
-            if(1)
+            QString etiquetaCiclo = generarEtiqueta();
+            QString etiquetaFinCiclo = generarEtiqueta();
+            QString etiquetaSetear = generarEtiqueta();
+            QString temporalContador = generarTemporal();
+            QString posicionRelativa = generarTemporal();
+            code->cadena3d += temporalContador +" = 0 ; // Inicio del contador\n";
+            code->cadena3d += etiquetaCiclo +": // Ciclo de llenado de array.\n";
+            code->cadena3d += "if("+temporalContador+"<"+temporalTamano+") goto " + etiquetaSetear + "; // \n";
+            code->cadena3d += "goto " + etiquetaFinCiclo + "; \n";
+            code->cadena3d += etiquetaSetear +":// Setear valores por defecto\n";
+            QString inicioArray = generarTemporal();
+            code->cadena3d += ""+posicionRelativa +" =  " +inicioArray+ " + " + temporalContador+ "; // Direción del indice actual\n";
+            switch (atributo.raiz.hijos.value(1).tipo_)
             {
-                QString etiquetaCiclo = generarEtiqueta();
-                QString etiquetaFinCiclo = generarEtiqueta();
-                QString etiquetaSetear = generarEtiqueta();
-                QString temporalContador = generarTemporal();
-                code->cadena3d += temporalContador +" = 0 ; // Inicio del contador\n";
-                code->cadena3d += etiquetaCiclo +": // Ciclo de llenado de array.\n";
-                code->cadena3d += "if("+temporalContador+"<"+temporalTamano+") goto " + etiquetaSetear + "; // \n";
-                code->cadena3d += "goto " + etiquetaFinCiclo + "; \n";
-                code->cadena3d += etiquetaSetear +":// Setear valores por defecto\n";
-                QString posicionRelativa = generarTemporal();
-                code->cadena3d += ""+posicionRelativa +" =  " +inicioArray+ " + " + temporalContador+ "; // Direción del indice actual\n";
-                switch (atributo.raiz.hijos.value(1).tipo_)
+                case TENTERO_:
+                case TBOOLEANO_:
+                case TDECIMAL_:
                 {
-                    case TENTERO_:
-                    case TBOOLEANO_:
-                    case TDECIMAL_:
-                    {
-                        code->cadena3d +="heap["+posicionRelativa+"] = 0; //Valor por defecto\n";
-                        break;
-                    }
-                    case TOBJETO_:
-                    {
-                        code->cadena3d +="heap["+posicionRelativa+"] ="+QString::number(code->NADA_) +"; //Valor por defecto NULL \n";
-                        break;
-                    }
-
+                    code->cadena3d +="heap["+posicionRelativa+"] = 0; //Valor por defecto\n";
+                    break;
                 }
-                code->cadena3d += ""+ temporalContador + " = " + temporalContador + " + 1; // Siguiente indice\n";
-                code->cadena3d += "goto " + etiquetaCiclo + ";//Retorno a ciclo\n";
-                code->cadena3d += ""+etiquetaFinCiclo +":// \n";
-                //code->cadena3d += "h = h + " + temporalTamano + "; // Reservamos el tamaño del array en el heap.\n" ;
+                case TOBJETO_:
+                {
+                    code->cadena3d +="heap["+posicionRelativa+"] ="+QString::number(code->NADA_) +"; //Valor por defecto NULL \n";
+                    break;
+                }
+
             }
-            else
-            {
-                code->cadena3d += "heap[" + inicioArray+"] = "+QString::number(code->NADA_)+";// Apuntador NULL por defecto\n";
-            }
+            code->cadena3d += ""+ temporalContador + " = " + temporalContador + " + 1; // Siguiente indice\n";
+            code->cadena3d += "goto " + etiquetaCiclo + ";//Retorno a ciclo\n";
+            code->cadena3d += ""+etiquetaFinCiclo +":// \n";
+            code->cadena3d += inicioArray +" = h ; // Inicio del arreglo \n" ;
+            code->cadena3d += "heap["+direccionAtributo+"]  =  "+inicioArray+" ;//Direccion del inicio del arreglo\n";
+            code->cadena3d += "h = h + " + temporalTamano + "; // Reservamos el tamaño del array en el heap.\n" ;
         }
         else
-        // Declaración con instanción de un objeto como atributo con instanciación------------------------------------------------------------------------------------------------------------------------
+        // Declaración con instanción de un objeto como atributo con instanciación------------------------------------------------------------------------------------------------
         if((atributo.raiz.hijos.count()==4) && (atributo.raiz.hijos.value(3).tipo=="acceso") )
         {
             // Recorremos cada una de las llamadas a acceso
@@ -502,49 +609,40 @@ void GeneradorCodigo:: generarCodigoAtributos(nodo raizActual)
         if(atributo.raiz.hijos.count()==5) // Arreglos con asignación----------------------------------------------------------
         {
             QString direccionAtributo = generarTemporal();
-            QString direccionPuntero = generarTemporal();
+            QString temporalTamano = generarTemporal();
+            QString valorDimensionProvisional = generarTemporal();
             QString inicioArray = generarTemporal();
             code->cadena3d += direccionAtributo  +  " = " + direccionHeap + " + " + QString::number(i) +"; // Direccion del atributo " + atributo.nombre +"\n";
-            code->cadena3d += direccionPuntero  + " =  h ; //Direccion real del inicio del array. \n" ;
-            code->cadena3d += "h = h + 1; // Se reserva espacio en el heap para el puntero.\n";
-            code->cadena3d += "heap["+direccionAtributo+"] = "+direccionPuntero+"; // Asigna el puntero hacia el heap\n";
-            code->cadena3d += inicioArray + " = h; // Asigna el puntero hacia el inicio del array\n";
-            code->cadena3d += "h = h + 1; // Se reserva espacio en el heap para el puntero.\n";
-            code->cadena3d += "heap["+direccionPuntero+"] = "+inicioArray+"; // Puntero hacia el valor del objeto.\n";
-            QString temporalTamano = generarTemporal();
-            code->cadena3d += temporalTamano +" = 1 ; // Tamano inicial del arreglo\n";
+            code->cadena3d += "heap["+direccionAtributo+"] = h // Puntero a el inicio del array. \n";
+            code->cadena3d += temporalTamano + " =  1 ; // Tamano inicial del arreglo.\n";
+            code->cadena3d += inicioArray + "= h ; // Inicio de no sé que putas.\n";
+            code->cadena3d += "h = h  + 1 ; // Reservndo espacio para el puntero .\n";
             for(int j = 0 ; j<atributo.raiz.hijos.value(3).hijos.count(); j++)
             {
                 Operaciones *operacion = new Operaciones();
                 nodo nodoRaiz = atributo.raiz.hijos.value(3).hijos.value(j);
                 Resultado *resultado = operacion->aritmetica(&nodoRaiz);
                 /*Comprobamos el tipo del resultado*/
-                QString valorDimensionProvisional = generarTemporal();
                 code->cadena3d += valorDimensionProvisional + " = " + resultado->valor + " ; //\n";
                 switch (resultado->tipo_)
                 {
                     case TENTERO_:
                     case TBOOLEANO_:
                     case TDECIMAL_ :
-                    {
-                        QString temporalDecimal = generarTemporal();
-                        code->cadena3d += temporalDecimal + " = " + valorDimensionProvisional + " % 1 ; // Obtenemos la parte decimal\n";
-                        QString temporalEntero = generarTemporal();
-                        code->cadena3d += temporalEntero + " = " + valorDimensionProvisional  + "-" + temporalDecimal + "; // Casteo Implicito.\n";
-                        QString etqTamano = generarTemporal();
-                        code->cadena3d += etqTamano + " = " +  temporalTamano +" * " +temporalEntero +";// Se actualiza el tamaño total del array\n" ;
-                        temporalTamano = etqTamano;
-                        break;
-                    }
                     case TCARACTER_:
                     {
                         QString temporalDecimal = generarTemporal();
-                        code->cadena3d += temporalDecimal + " = " + valorDimensionProvisional + " % 1 ; // Obtenemos la parte decimal\n";
                         QString temporalEntero = generarTemporal();
-                        code->cadena3d += temporalEntero + " = " + valorDimensionProvisional  + "-" + temporalDecimal + "; // Casteo Implicito.\n";
                         QString etqTamano = generarTemporal();
+                        QString tamanoDimension = generarTemporal();
+                        code->cadena3d += temporalDecimal + " = " + valorDimensionProvisional + " % 1 ; // Obtenemos la parte decimal\n";
+                        code->cadena3d += temporalEntero + " = " + valorDimensionProvisional  + "-" + temporalDecimal + "; // Casteo Implicito.\n";
                         code->cadena3d += etqTamano + " = " +  temporalTamano +" * " +temporalEntero +";// Se actualiza el tamaño total del array\n" ;
                         temporalTamano = etqTamano;
+                        code->cadena3d +=  tamanoDimension + " = h; // Posicion donde guardar la "+QString::number(j)+" dimensión del array\n";
+                        code->cadena3d += " h = h +1 ; // Reserva tamaño para .\n";
+                        code->cadena3d += "heap["+tamanoDimension + "] = " + temporalEntero + "; // Guardar tamano de la dimensión " +QString::number(j) + "-esima\n";
+                        break;
                     }
                     default: // Error
                     {
@@ -556,27 +654,36 @@ void GeneradorCodigo:: generarCodigoAtributos(nodo raizActual)
             }
             if(atributo.raiz.hijos.value(4).tipo != "lvalores")
             {
+                QString temporalPosicion = generarTemporal();
                 Operaciones *operacion =  new Operaciones();
                 Resultado *resultado = new Resultado();
                 nodo nodoAOperar = atributo.raiz.hijos.value(4);
                 nodo *ptr =  &nodoAOperar;
-                resultado = operacion->logica(ptr,0);
+                resultado = operacion->logica(ptr);
                 /*Comprobación de tipos.*/
-                if(atributo.tipo  == "caracter" && resultado->tipo == "caracter"||
-                   atributo.tipo  == "caracter" && resultado->tipo == "entero"||
-                   atributo.tipo  == "caracter" && resultado->tipo == "decimal")
+                if(
+                   (atributo.tipo  == "caracter" && resultado->tipo == "caracter")||
+                   (atributo.tipo  == "caracter" && resultado->tipo == "entero")||
+                   (atributo.tipo  == "caracter" && resultado->tipo == "decimal")
+                  )
                 {
                     code->cadena3d += "heap["+ inicioArray+"] = "+ resultado->valor +"; //Dirección del arreglo.\n";
                 }
-                if(atributo.tipo  == "entero" && resultado->tipo == "caracter"||
-                   atributo.tipo  == "entero" && resultado->tipo == "entero"||
-                   atributo.tipo  == "entero" && resultado->tipo == "decimal")
+                if
+                (
+                   (atributo.tipo  == "entero" && resultado->tipo == "caracter")||
+                   (atributo.tipo  == "entero" && resultado->tipo == "entero")||
+                   (atributo.tipo  == "entero" && resultado->tipo == "decimal")
+                )
                 {
                     code->cadena3d += "heap["+ inicioArray+"] = "+ resultado->valor +"; //Dirección del arreglo.\n";
                 }
-                if(atributo.tipo  == "double" && resultado->tipo == "caracter"||
-                   atributo.tipo  == "double" && resultado->tipo == "entero"||
-                   atributo.tipo  == "double" && resultado->tipo == "decimal")
+                if
+                (
+                   (atributo.tipo  == "double" && resultado->tipo == "caracter")||
+                   (atributo.tipo  == "double" && resultado->tipo == "entero")||
+                   (atributo.tipo  == "double" && resultado->tipo == "decimal")
+                )
                 {
                     code->cadena3d += "heap["+ inicioArray+"] = "+ resultado->valor +"; //Dirección del arreglo.\n";
                 }
@@ -588,32 +695,38 @@ void GeneradorCodigo:: generarCodigoAtributos(nodo raizActual)
                 {
                     code->cadena3d += "heap["+ inicioArray+"] = "+ resultado->valor +"; //Dirección del arreglo.\n";
                 }
+                else if(atributo.tipo =="caracter" && atributo.dimension>0  && resultado->tipo =="cadena") // Objetos
+                {
+                    code->cadena3d += "heap["+ inicioArray+"] = "+ resultado->valor +"; //Dirección del arreglo.\n";
+                }
                 else
                 {
                     errorT * error = new errorT("Semantico","No se puede asignar un arreglo de tipo " + resultado->tipo + " a un arreglo de tipo " + atributo.tipo,
                                                 atributo.linea, atributo.columna);
                     listaErrores->append(*error);
                 }
+                //code->cadena3d += inicioArray +" = h ; // Inicio del arreglo \n" ;
+                //code->cadena3d += "heap["+direccionAtributo+"]  =  "+temporalPosicion+" ;//Direccion del inicio del arreglo\n";
             }
             else
             {
                 QString temporalTamanoIngreso = generarTemporal();
                 QString etiquetaAsignacion = generarEtiqueta();
-                QString etiquetaError = generarEtiqueta();
-                //QString temporalContador = generarTemporal();
+                QString etiquetaError = generarEtiqueta();                
                 QString temporalPosicion = generarTemporal();
                 code->cadena3d += temporalTamano + "= "+ QString::number(atributo.raiz.hijos.value(4).hijos.count())+" ;// Tamaño de los datos a ingresar.\n";
                 code->cadena3d += "if("+temporalTamano+"== "+temporalTamanoIngreso+")goto "+etiquetaAsignacion+";\n";
                 code->cadena3d += "goto "+ etiquetaError+ "; // Stack over flow perros.\n";
                 code->cadena3d += etiquetaAsignacion +":\n";
-                //code->cadena3d += temporalContador + " = 0 ; // Inicio de contador\n";
+                code->cadena3d += inicioArray +" = h ; // Inicio del arreglo \n" ;
+                code->cadena3d += "heap["+direccionAtributo+"]  =  "+temporalPosicion+" ;//Direccion del inicio del arreglo\n";
                 for(int iObjeto = 0 ; iObjeto < atributo.raiz.hijos.value(4).hijos.count();iObjeto++)
                 {
                     code->cadena3d += temporalPosicion + "= "+inicioArray + " + " + QString::number(iObjeto) +"; // Posicion absoluta del elemento del array\n";
                     Operaciones * operacionObjeto = new Operaciones();
                     Resultado * resultadoObjeto = new Resultado();
                     nodo nodoIndice = atributo.raiz.hijos.value(4).hijos.value(iObjeto);
-                    resultadoObjeto = operacionObjeto->logica(&nodoIndice,0);
+                    resultadoObjeto = operacionObjeto->logica(&nodoIndice);
                     switch (resultadoObjeto->tipo_)
                     {
                         case TENTERO_:
@@ -705,16 +818,6 @@ void GeneradorCodigo:: declararArregloAsignar(nodo raizActual)
             case TENTERO_:
             case TBOOLEANO_:
             case TDECIMAL_ :
-            {
-                QString temporalDecimal = generarTemporal();
-                code->cadena3d += temporalDecimal + " = " + valorDimensionProvisional + " % 1 ; // Obtenemos la parte decimal\n";
-                QString temporalEntero = generarTemporal();
-                code->cadena3d += temporalEntero + " = " + valorDimensionProvisional  + "-" + temporalDecimal + "; // Casteo Implicito.\n";
-                QString etqTamano = generarTemporal();
-                code->cadena3d += etqTamano + " = " +  temporalTamano +" * " +temporalEntero +";// Se actualiza el tamaño total del array\n" ;
-                temporalTamano = etqTamano;
-                break;
-            }
             case TCARACTER_:
             {
                 QString temporalDecimal = generarTemporal();
@@ -723,8 +826,20 @@ void GeneradorCodigo:: declararArregloAsignar(nodo raizActual)
                 code->cadena3d += temporalEntero + " = " + valorDimensionProvisional  + "-" + temporalDecimal + "; // Casteo Implicito.\n";
                 QString etqTamano = generarTemporal();
                 code->cadena3d += etqTamano + " = " +  temporalTamano +" * " +temporalEntero +";// Se actualiza el tamaño total del array\n" ;
+                code->apilarTamanoDimension(simbolo.nombre, temporalEntero);
                 temporalTamano = etqTamano;
+                break;
             }
+            /*case TCARACTER_:
+            {
+                QString temporalDecimal = generarTemporal();
+                code->cadena3d += temporalDecimal + " = " + valorDimensionProvisional + " % 1 ; // Obtenemos la parte decimal\n";
+                QString temporalEntero = generarTemporal();
+                code->cadena3d += temporalEntero + " = " + valorDimensionProvisional  + "-" + temporalDecimal + "; // Casteo Implicito.\n";
+                QString etqTamano = generarTemporal();
+                code->cadena3d += etqTamano + " = " +  temporalTamano +" * " +temporalEntero +";// Se actualiza el tamaño total del array\n" ;
+                temporalTamano = etqTamano;
+            }*/
             default: // Error
             {
                 errorT * error = new errorT("Semantico","Se esperaba un número númerico para definir el tamaño de la dimensión."
@@ -739,7 +854,7 @@ void GeneradorCodigo:: declararArregloAsignar(nodo raizActual)
         Resultado *resultado = new Resultado();
         nodo nodoAOperar = raizActual.hijos.value(3);
         nodo *ptr =  &nodoAOperar;
-        resultado = operacion->logica(ptr,0);
+        resultado = operacion->logica(ptr);
         /*Comprobación de tipos.*/
         if((raizActual.hijos.value(0).tipo  == "caracter" && resultado->tipo == "caracter")||
            (raizActual.hijos.value(0).tipo  == "caracter" && resultado->tipo == "entero")||
@@ -797,7 +912,7 @@ void GeneradorCodigo:: declararArregloAsignar(nodo raizActual)
             Operaciones * operacionObjeto = new Operaciones();
             Resultado * resultadoObjeto = new Resultado();
             nodo nodoIndice = raizActual.hijos.value(3).hijos.value(iObjeto);
-            resultadoObjeto = operacionObjeto->logica(&nodoIndice,0);
+            resultadoObjeto = operacionObjeto->logica(&nodoIndice);
             switch (resultadoObjeto->tipo_)
             {
                 case TENTERO_:
@@ -871,25 +986,21 @@ void GeneradorCodigo::declararArreglo(nodo raizActual)
             case TENTERO_:
             case TBOOLEANO_:
             case TDECIMAL_ :
-            {
-                QString temporalDecimal = generarTemporal();
-                code->cadena3d += temporalDecimal + " = " + valorDimensionProvisional + " % 1 ; // Obtenemos la parte decimal\n";
-                QString temporalEntero = generarTemporal();
-                code->cadena3d += temporalEntero + " = " + valorDimensionProvisional  + "-" + temporalDecimal + "; // Casteo Implicito.\n";
-                QString etqTamano = generarTemporal();
-                code->cadena3d += etqTamano + " = " +  temporalTamano +" * " +temporalEntero +";// Se actualiza el tamaño total del array\n" ;
-                temporalTamano = etqTamano;
-                break;
-            }
             case TCARACTER_:
             {
                 QString temporalDecimal = generarTemporal();
-                code->cadena3d += temporalDecimal + " = " + valorDimensionProvisional + " % 1 ; // Obtenemos la parte decimal\n";
                 QString temporalEntero = generarTemporal();
-                code->cadena3d += temporalEntero + " = " + valorDimensionProvisional  + "-" + temporalDecimal + "; // Casteo Implicito.\n";
                 QString etqTamano = generarTemporal();
+                QString tamanoDimension = generarTemporal();
+                code->cadena3d += temporalDecimal + " = " + valorDimensionProvisional + " % 1 ; // Obtenemos la parte decimal\n";
+                code->cadena3d += temporalEntero + " = " + valorDimensionProvisional  + "-" + temporalDecimal + "; // Casteo Implicito.\n";
                 code->cadena3d += etqTamano + " = " +  temporalTamano +" * " +temporalEntero +";// Se actualiza el tamaño total del array\n" ;
                 temporalTamano = etqTamano;
+                code->cadena3d +=  tamanoDimension + " = h; // Posicion donde guardar la "+QString::number(j)+" dimensión del array\n";
+                code->cadena3d += " h = h +1 ; // Reserva tamaño para .\n";
+                code->cadena3d += "heap["+tamanoDimension + "] = " + temporalEntero + "; // Guardar tamano de la dimensión " +QString::number(j) + "-esima\n";
+                temporalTamano = etqTamano;                
+                break;
             }
             default: // Error
             {
@@ -933,6 +1044,7 @@ void GeneradorCodigo::declararArreglo(nodo raizActual)
         code->cadena3d += ""+ temporalContador + " = " + temporalContador + " + 1; // Siguiente indice\n";
         code->cadena3d += "goto " + etiquetaCiclo + ";//Retorno a ciclo\n";
         code->cadena3d += ""+etiquetaFinCiclo +":// \n";
+        code->cadena3d += "heap["+direccionAtributo+"]  =  "+inicioArray+" ;//Direccion del inicio del arreglo\n";
         //code->cadena3d += "h = h + " + temporalTamano + "; // Reservamos el tamaño del array en el heap.\n" ;
     }
     else
@@ -1168,6 +1280,8 @@ Simbolo GeneradorCodigo::getClase(QString nombre)
     return simb;
 }
 
+
+
 Simbolo GeneradorCodigo::getMetodo(QString idMetodo)
 {
     Simbolo simb;
@@ -1329,15 +1443,15 @@ void GeneradorCodigo:: declararVariableAsignacion(nodo raizActual) // Declaraci�
     {
         nodo nodoExp = raizActual.hijos.value(2);
         nodo *ptr = &nodoExp;
-        resultado = operacion->logica(ptr,0);
-        code->desapilarMetodo();
+        resultado = operacion->logica(ptr);
+        //code->desapilarMetodo();
         //ambitoActual = code->getAmbitoActual();
     }
     else // Declaradción asignación de un arreglo.
     {
         nodo nodoExp = raizActual.hijos.value(2);
-        resultado = operacion->logica(&nodoExp,0);
-        code->desapilarMetodo();
+        resultado = operacion->logica(&nodoExp);
+        //code->desapilarMetodo();
         //ambitoActual = code->getAmbitoActual();
     }
     /*Comprobación de tipos*/

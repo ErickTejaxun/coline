@@ -7,8 +7,8 @@ class Operaciones
 public:
     Operaciones();
     Resultado *aritmetica(nodo *raiz);
-    Resultado *relacional(nodo *raiz,int flag);
-    Resultado *logica(nodo *raiz,int flag);
+    Resultado *relacional(nodo *raiz);
+    Resultado *logica(nodo *raiz);
     Resultado *acceso(nodo *raiz,QString);
     QString getCadena(Resultado *resultado);
     void addError(QString tipo, QString desc, int linea, int columna);
@@ -18,7 +18,7 @@ public:
     QString concatenarCadenaNumero(Resultado *resultado1,Resultado *resultado2);
     Resultado *relacionalSimple(Resultado *resultado1,QString operador,Resultado *resultado2,QString tipos);
     Resultado *relacionalCadena(Resultado *resultado1,QString operador,Resultado *resultado2,QString tipos);
-
+    QString getIndice(QList<QString> *dimensiones,QList<QString> *indices);
 
 };
 

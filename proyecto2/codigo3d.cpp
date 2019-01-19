@@ -54,9 +54,124 @@ QString Codigo3d::getAmbitoActual()
    return ambito;
 }
 
-QString Codigo3d:: getMetodoActual()
+QString Codigo3d:: getClaseActual()
 {
-    return this->metodoActual;
+    return this->pilaAmbitos->value(1);
+}
+
+Simbolo Codigo3d::getClase(QString nombre)
+{
+    Simbolo simb;
+    for(int i = 0 ; i< recorrido1->tabla->listaSimbolos->count(); i++)
+    {
+        if(nombre== recorrido1->tabla->listaSimbolos->value(i).nombre &&
+           recorrido1->tabla->listaSimbolos->value(i).ambito == "global")
+        {
+            simb = recorrido1->tabla->listaSimbolos->value(i);
+        }
+    }
+    return simb;
+}
+
+Simbolo Codigo3d::getAtributoClase(QString nombre,QString clase)
+{
+    QList<Simbolo> atributos=obtenerListaAtributos(clase);
+    Simbolo s;
+    for(int i=0;i<atributos.count();i++)
+    {
+        if(nombre==atributos[i].nombre)
+        {
+            return atributos[i];
+        }
+    }
+
+    return s;
+
+}
+
+
+QList<Simbolo> Codigo3d::obtenerListaAtributos(QString nombreClase)
+{
+    QList<Simbolo> *listaAtributos = new QList<Simbolo>();
+    QString claseActual = nombreClase; //
+    tablaSimbolos *tablaActual = recorrido1->tabla;
+    int linea = 0, columna = 0;
+    while(claseActual!="nada" && claseActual!="")
+    {
+        if(tablaActual->existeClase(claseActual))
+        {
+            /*Buscamos la clase*/
+            Simbolo clase = getClase(claseActual);
+            linea = clase.linea;
+            columna = clase.columna;
+            QString ambitoBuscado = "global$"+claseActual;
+            for(int i = 0 ; i < tablaActual->listaSimbolos->count(); i++)
+            {
+                Simbolo simbolo = tablaActual->listaSimbolos->value(i);
+                if
+                (
+                  simbolo.rol == "variable" &&
+                  simbolo.ambito == ambitoBuscado
+                )
+                {
+                    int flag = 0;
+                    for(int j = 0 ; j < listaAtributos->count(); j++)
+                    {
+                        if(listaAtributos->value(j).nombre == tablaActual->listaSimbolos->value(i).nombre)
+                        {
+                            flag =1;
+                            break;
+                        }
+                    }
+                    if(!flag)
+                    {
+                        listaAtributos->append(tablaActual->listaSimbolos->value(i));
+                    }
+                    else
+                    {
+                        errorT *error = new errorT("Advertencia ", "El atributo " + simbolo.nombre + " de la clase "+ claseActual+" se ha refenido en la clase hija " + nombreClase
+                                                   , simbolo.linea, simbolo.columna);
+                        listaErrores->append(*error);
+                    }
+                }
+            }
+            claseActual = clase.padre; // Obtenemos el nombre del padre.
+        }
+        else
+        {
+            if( claseActual != "principal")
+            {
+                errorT * error = new errorT("Semantico","No existe la clase "+claseActual,linea, columna);
+                listaErrores->append(*error);
+            }
+            break;
+        }
+    }
+    return  *listaAtributos;
+}
+
+
+int Codigo3d::getIndiceAtributo(QString nombre,QString clase)
+{
+    QList<Simbolo> atributos=obtenerListaAtributos(clase);
+    for(int i=0;i<atributos.count();i++)
+    {
+        if(nombre==atributos[i].nombre)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+
+void Codigo3d::copiarPila(QList<QString> *actual,QList<QString> *nueva)
+{
+    for(int i=0;i<actual->count();i++)
+    {
+        nueva->append(actual->value(i));
+    }
 }
 
 int Codigo3d:: getTamanoAmbitoActual()
@@ -172,6 +287,37 @@ Para asignaciones
         }
     }
     return simboloBuscado;
+}
+
+
+void Codigo3d:: apilarTamanoDimension(QString nombreVariable, QString temporal)
+{
+    Simbolo simbolo ;
+    Simbolo simaux ;
+    tablaSimbolos * tabla = recorrido1->tabla;
+    QString ambito = getAmbitoActual();
+    int linea = 0;
+    int columna = 0;
+    for(int i = 0 ; i< recorrido1->tabla->listaSimbolos->count(); i++)
+    {
+        simaux = recorrido1->tabla->listaSimbolos->value(i);
+        if(
+           simaux.nombre ==nombreVariable&&
+           simaux.ambito == ambito)
+        {
+            simaux.listaDimensiones->append(temporal);
+            recorrido1->tabla->listaSimbolos->replace(i, simaux);
+            return;
+        }
+        if(simaux.ambito == ambito)
+        {
+            linea = simaux.linea;
+            columna = simaux.columna;
+        }
+    }
+    errorT * error = new errorT("Semantico", "No se ha encontrado la variable "+ nombreVariable + " en el ambito "+ambito
+                                ,linea, columna);
+    listaErrores->append(*error);
 }
 
 

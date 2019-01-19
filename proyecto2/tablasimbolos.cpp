@@ -71,7 +71,7 @@ void tablaSimbolos:: actualiarTamanoArray(QString idObjeto, QString valor)
     {
         if(listaSimbolos->value(i).id == idObjeto)
         {
-            listaSimbolos->value(i).listaDimensiones.append(valor);
+            listaSimbolos->value(i).listaDimensiones->append(valor);
             return;
         }
     }

@@ -25,6 +25,13 @@ public:
     Simbolo getSimboloPorNombre(QString nombre);
     Simbolo getSimboloDeclaracion(QString nombre);
     QString getMetodoActual();
+    void apilarTamanoDimension(QString idVariable , QString temporal);
+    void copiarPila(QList<QString> *actual,QList<QString> *nueva);
+    int getIndiceAtributo(QString nombre,QString clase);
+    QList<Simbolo> obtenerListaAtributos(QString nombreClase);
+    Simbolo getAtributoClase(QString nombre,QString clase);
+    Simbolo getClase(QString nombre);
+    QString  getClaseActual();
     int NADA_;
     int ID_ = 0 ;
     int SENTENCIAS_ = 1;

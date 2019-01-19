@@ -12,6 +12,7 @@ Simbolo::Simbolo()
     this->tamano = 0;
     this->sobrescrito = 0;
     this->dimension = 0;
+    this->listaDimensiones = new QList<QString>();
 }
 
 Simbolo::Simbolo(QString nombre, QString tipo, QString rol, QString ambito, int direccion, int tamanio, int dim, int ref)

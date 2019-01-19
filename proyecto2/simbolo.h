@@ -33,7 +33,7 @@ public:
     int herencia;
     int sobrescrito;
     nodo raiz;
-    QList<QString> listaDimensiones;
+    QList<QString> *listaDimensiones;
     int getTipo();
 };
 

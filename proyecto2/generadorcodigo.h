@@ -24,7 +24,7 @@ public:
     void getAmbitoActual();
     void actualizarTamano(Simbolo sim);
     void actualizarContadores(int tamano);    
-    void declararSi(nodo raiz);
+    void generarCodigoIf(nodo raiz);
     void declararSeleccionar(nodo raiz);
     void declararVariableAsignacion(nodo raiz);
     void declararArregloAsignar(nodo raizActual);
@@ -65,7 +65,7 @@ public:
     int tamanoActual;
 
 
-
+    QList<QString> *copiaPilaActual;
 
     Resultado generarAcceso(nodo raiz);
 

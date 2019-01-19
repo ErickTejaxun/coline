@@ -1034,7 +1034,7 @@ Resultado *Operaciones::relacionalCadena(Resultado *resultado1,QString operador,
     return new Resultado("booleano",TBOOLEANO_,"",etiV,etiF);
 }
 
-Resultado *Operaciones::relacional(nodo *raiz,int flag)
+Resultado *Operaciones::relacional(nodo *raiz)
 {
     Resultado *resultado1;
     Resultado *resultado2;
@@ -1061,7 +1061,7 @@ Resultado *Operaciones::relacional(nodo *raiz,int flag)
         default:
             {
                 resultado1=aritmetica(raiz);
-                if((resultado1->tipo_==TBOOLEANO_||resultado1->tipo_==TENTERO_||resultado1->tipo_==TCARACTER_||resultado1->tipo_==TDECIMAL_)&&flag==1)
+                /*if((resultado1->tipo_==TBOOLEANO_||resultado1->tipo_==TENTERO_||resultado1->tipo_==TCARACTER_||resultado1->tipo_==TDECIMAL_))
                 {
                     QString etiV=code->genEti();
                     QString etiF=code->genEti();
@@ -1071,8 +1071,8 @@ Resultado *Operaciones::relacional(nodo *raiz,int flag)
                 }else
                 {
                     return resultado1;
-                }
-                break;
+                }*/
+                return resultado1;
             }
     }
 
@@ -1081,7 +1081,7 @@ Resultado *Operaciones::relacional(nodo *raiz,int flag)
 
     switch (resultado1->tipo_) {
         case TENTERO_:
-    {
+           {
                 switch (resultado2->tipo_) {
                     case TENTERO_:
                        {
@@ -1410,7 +1410,7 @@ Resultado *Operaciones::relacional(nodo *raiz,int flag)
 
 }
 
-Resultado *Operaciones::logica(nodo *raiz,int flag)
+Resultado *Operaciones::logica(nodo *raiz)
 {
     Resultado *resultado1;
     Resultado *resultado2;
@@ -1418,29 +1418,29 @@ Resultado *Operaciones::logica(nodo *raiz,int flag)
     switch (raiz->tipo_) {
         case OR_:
             {
-                resultado1=logica(&raiz->hijos[0],flag);
+                resultado1=logica(&raiz->hijos[0]);
                 code->cadena3d+=resultado1->etiF+":\n";
-                resultado2=logica(&raiz->hijos[1],flag);
+                resultado2=logica(&raiz->hijos[1]);
                 return new Resultado("booleano",TBOOLEANO_,"",resultado1->etiV+","+resultado2->etiV,resultado2->etiF);
             }
             break;
         case AND_:
             {
-                 resultado1=logica(&raiz->hijos[0],flag);
+                 resultado1=logica(&raiz->hijos[0]);
                  code->cadena3d+=resultado1->etiV+":\n";
-                 resultado2=logica(&raiz->hijos[1],flag);
+                 resultado2=logica(&raiz->hijos[1]);
                  return new Resultado("booleano",TBOOLEANO_,"",resultado2->etiV,resultado1->etiF+","+resultado2->etiF);
             }
             break;
         case NO_:
             {
-                resultado1=logica(&raiz->hijos[0],flag);
+                resultado1=logica(&raiz->hijos[0]);
                 return new Resultado("booleano",TBOOLEANO_,"",resultado1->etiF,resultado1->etiV);
 
             }
             break;
         default:
-            return relacional(raiz,flag);
+            return relacional(raiz);
             break;
     }
 
@@ -1593,26 +1593,131 @@ Resultado *Operaciones::acceso(nodo *raiz,QString posicion)
 {
 
     int este=0;
-    int contador=code->getTamanoAmbitoActual();
+    int contador=0;
+    QString tempActual="";
+    QString claseActual=code->getClaseActual();
+    Simbolo s;
+    QList<QString> l;
+    QList<QString> *ambitoAux=new QList<QString>();
 
+    code->copiarPila(code->pilaAmbitos,ambitoAux);
+
+    code->cadena3d+="//acceso objeto\n";
     for(int i=0;i<raiz->hijos.count();i++)
     {
-      if(raiz->hijos[i].tipo=="esteacceso")
+        l=*code->pilaAmbitos;
+        QString t=raiz->hijos[i].tipo;
+      if(raiz->hijos[i].tipo=="accesoeste")
       {
         QString temp1=code->genTemp();
         QString temp2=code->genTemp();
         este=1;
         code->cadena3d+=temp1+"=p+0;\n";
-        code->cadena3d+=temp2+"=stack["+temp1+"];\n";
+        code->cadena3d+=temp2+"=stack["+temp1+"];//este\n";
+        tempActual=temp2;
 
       }else if(raiz->hijos[i].tipo=="acceso")
       {
-          if(este==1)
+          if(code->pilaAmbitos->count()<3&&i==0)
           {
+              //ambito global
+              QString temp1=code->genTemp();
+              QString temp2=code->genTemp();
+              QString temp3=code->genTemp();
+              QString temp4=code->genTemp();
 
+              s=code->getAtributoClase(raiz->hijos[i].hijos[0].valor,claseActual);
+              //int indice=0;
+              int indice=code->getIndiceAtributo(raiz->hijos[i].hijos[0].valor,claseActual);
+              if(s.nombre=="")
+              {
+                  addError("Semantico","No se encontró la variable "+raiz->hijos[i].hijos[0].valor,raiz->linea,raiz->columna);
+                  return new Resultado("error",-1,"");
+              }
+              code->cadena3d+=temp1+"=p+0;\n";
+              code->cadena3d+=temp2+"=stack["+temp1+"];//este\n";
+              code->cadena3d+=temp3+"="+temp2+"+"+QString::number(indice)+";\n";
+              code->cadena3d+=temp4+"=heap["+temp3+"];//"+s.nombre+"\n";
+              tempActual=temp4;
+              claseActual=s.tipo;
+              code->pilaAmbitos->clear();
+              code->pilaAmbitos->append("global");
+              code->pilaAmbitos->append(s.tipo);
 
           }else
+          if(este==1||i>0)
           {
+              //se toma el valor de este para buscar a la variable en la clase acutal o padre
+              QString temp1=code->genTemp();
+              QString temp2=code->genTemp();
+
+              s=code->getAtributoClase(raiz->hijos[i].hijos[0].valor,claseActual);
+              //int indice=0;
+              int indice=code->getIndiceAtributo(raiz->hijos[i].hijos[0].valor,claseActual);
+              if(s.nombre=="")
+              {
+                  addError("Semantico","No se encontró la variable "+raiz->hijos[i].hijos[0].valor,raiz->linea,raiz->columna);
+                  return new Resultado("error",-1,"");
+              }
+
+              code->cadena3d+=temp1+"="+tempActual+"+"+QString::number(indice)+";\n";
+              code->cadena3d+=temp2+"=heap["+temp1+"];//"+s.nombre+"\n";
+              tempActual=temp2;
+              claseActual=s.tipo;
+              code->pilaAmbitos->clear();
+              code->pilaAmbitos->append("global");
+              code->pilaAmbitos->append(s.tipo);
+          }else
+          {
+              //se busca en el metodo local
+              QString temp1=code->genTemp();
+              QString temp2=code->genTemp();
+              QList<QString> *ambitoAux2=new QList<QString>();
+              code->copiarPila(code->pilaAmbitos,ambitoAux2);
+              Simbolo s2;
+              while(code->pilaAmbitos->count()>2&&s2.nombre=="")
+              {
+                  s2=code->getSimboloPorId(code->getAmbitoActual()+"$"+raiz->hijos[i].hijos[0].valor);
+                  code->pilaAmbitos->pop_back();
+
+              }
+              s=s2;
+              code->pilaAmbitos->clear();
+              code->copiarPila(ambitoAux2,code->pilaAmbitos);
+              if(s.nombre!="")
+              {
+                  code->cadena3d+=temp1+"=p"+"+"+QString::number(s.direccionLocal)+";\n";
+                  code->cadena3d+=temp2+"=stack["+temp1+"];//"+s.nombre+"\n";
+                  tempActual=temp2;
+                  claseActual=s.tipo;
+                  code->pilaAmbitos->clear();
+                  code->pilaAmbitos->append("global");
+                  code->pilaAmbitos->append(s.tipo);;
+
+
+              }else{
+                  //se busca en los atributos de clase o heredados
+                  s=code->getAtributoClase(raiz->hijos[i].hijos[0].valor,claseActual);
+                  if(s.nombre=="")
+                  {
+                      addError("Semantico","No se encontró la variable "+raiz->hijos[i].hijos[0].valor,raiz->linea,raiz->columna);
+                      return new Resultado("error",-1,"");
+                  }
+                  int indice=code->getIndiceAtributo(raiz->hijos[i].hijos[0].valor,claseActual);
+                  QString temp3=code->genTemp();
+                  QString temp4=code->genTemp();
+
+                  code->cadena3d+=temp1+"=p+0;\n";
+                  code->cadena3d+=temp2+"=stack["+temp1+";\n";
+
+                  code->cadena3d+=temp3+"="+temp2+"+"+QString::number(indice)+";\n";
+                  code->cadena3d+=temp4+"=heap["+temp3+"];//"+s.nombre+"\n";
+                  tempActual=temp4;
+                  claseActual=s.tipo;
+                  code->pilaAmbitos->clear();
+                  code->pilaAmbitos->append("global");
+                  code->pilaAmbitos->append(s.tipo);
+              }
 
           }
 
@@ -1621,6 +1726,107 @@ Resultado *Operaciones::acceso(nodo *raiz,QString posicion)
       }else if(raiz->hijos[i].tipo=="accesoarray")
       {
 
+          if(code->pilaAmbitos->count()<3&&i==0)
+          {
+              //si el acceso esta en el ambito clase
+              QString temp1=code->genTemp();
+              QString temp2=code->genTemp();
+              QString temp3=code->genTemp();
+              QString temp4=code->genTemp();
+
+              s=code->getAtributoClase(raiz->hijos[i].hijos[0].valor,claseActual);
+              //int indice=0;
+              int indice=code->getIndiceAtributo(raiz->hijos[i].hijos[0].valor,claseActual);
+              if(s.nombre=="")
+              {
+                  addError("Semantico","No se encontró la variable "+raiz->hijos[i].hijos[0].valor,raiz->linea,raiz->columna);
+                  return new Resultado("error",-1,"");
+              }
+              code->cadena3d+=temp1+"=p+0;\n";
+              code->cadena3d+=temp2+"=stack["+temp1+"];//este\n";
+              code->cadena3d+=temp3+"="+temp2+"+"+QString::number(indice)+";\n";
+              code->cadena3d+=temp4+"=heap["+temp3+"];//"+s.nombre+"\n";
+              tempActual=temp4;
+              //claseActual=s.tipo;
+              //code->pilaAmbitos->clear();
+              //code->pilaAmbitos->append("global");
+              //code->pilaAmbitos->append(s.tipo);
+
+          }else
+          {
+              //acceso ambito local
+              QString temp1=code->genTemp();
+              QString temp2=code->genTemp();
+              QList<QString> *ambitoAux2=new QList<QString>();
+              code->copiarPila(code->pilaAmbitos,ambitoAux2);
+              Simbolo s2;
+              while(code->pilaAmbitos->count()>2&&s2.nombre=="")
+              {
+                  s2=code->getSimboloPorId(code->getAmbitoActual()+"$"+raiz->hijos[i].hijos[0].valor);
+                  code->pilaAmbitos->pop_back();
+
+              }
+              s=s2;
+              code->pilaAmbitos->clear();
+              code->copiarPila(ambitoAux2,code->pilaAmbitos);
+              if(s.nombre!="")
+              {
+                  code->cadena3d+=temp1+"=p"+"+"+QString::number(s.direccionLocal)+";\n";
+                  code->cadena3d+=temp2+"=stack["+temp1+"];//"+s.nombre+"\n";
+                  tempActual=temp2;
+                  claseActual=s.tipo;
+                  code->pilaAmbitos->clear();
+                  code->pilaAmbitos->append("global");
+                  code->pilaAmbitos->append(s.tipo);;
+
+
+              }else{
+                  //se busca en los atributos de clase o herencia
+                  s=code->getAtributoClase(raiz->hijos[i].hijos[0].valor,claseActual);
+                  if(s.nombre=="")
+                  {
+                      addError("Semantico","No se encontró la variable "+raiz->hijos[i].hijos[0].valor,raiz->linea,raiz->columna);
+                      return new Resultado("error",-1,"");
+                  }
+                  int indice=code->getIndiceAtributo(raiz->hijos[i].hijos[0].valor,claseActual);
+                  QString temp3=code->genTemp();
+                  QString temp4=code->genTemp();
+
+                  code->cadena3d+=temp1+"=p+0;\n";
+                  code->cadena3d+=temp2+"=stack["+temp1+";\n";
+
+                  code->cadena3d+=temp3+"="+temp2+"+"+QString::number(indice)+";\n";
+                  code->cadena3d+=temp4+"=heap["+temp3+"];//"+s.nombre+"\n";
+                  tempActual=temp4;
+                  claseActual=s.tipo;
+                  code->pilaAmbitos->clear();
+                  code->pilaAmbitos->append("global");
+                  code->pilaAmbitos->append(s.tipo);
+              }
+
+          }
+
+          //buscar indice
+          nodo raizIndices=raiz->hijos[i].hijos.value(1);
+          QList<QString> *indices=new QList<QString>();
+
+          for(int i=0;i<raizIndices.hijos.count();i++)
+          {
+              QList<QString> *pilaAuxiliar = new QList<QString>();              
+              code->copiarPila(code->pilaAmbitos,pilaAuxiliar);
+              code->pilaAmbitos->clear();
+              code->copiarPila(ambitoAux,  code->pilaAmbitos);
+              Resultado *r=logica(&raizIndices.hijos[i]);              
+              indices->append(r->valor);
+              code->pilaAmbitos->clear();
+              code->copiarPila(pilaAuxiliar,code->pilaAmbitos);
+          }
+          if(indices->count()!=s.listaDimensiones->count()){
+              addError("Semantico","Las dimensiones del arreglo no coinciden con las del acceso",raiz->linea,raiz->columna);
+              return new Resultado("error",-1,"");
+          }
+          QString posicion=getIndice(s.listaDimensiones,indices);
+          tempActual=posicion;
           contador++;
 
       }else if(raiz->hijos[i].tipo=="llamada")
@@ -1631,78 +1837,36 @@ Resultado *Operaciones::acceso(nodo *raiz,QString posicion)
 
   }
 
-
-
-
-  Simbolo s;
-  QString valor=code->genTemp();
-  code->apilarMetodo("persona");
-
-  for(int i=0;i<raiz->hijos.count();i++)
-  {
-      if(raiz->hijos[i].tipo=="acceso")
-      {
-          if(i==0)
-          {
-              if(posicion!="")
-              {
-                  QString nombre=raiz->hijos[i].hijos[0].valor;
-                  s=code->getSimboloPorNombre(nombre);
-
-                  if(s.id=="")
-                  {
-                      return new Resultado("error",-1,"");
-                  }
-
-                  QString temp1=code->genTemp();
-
-                  code->cadena3d+=temp1+"="+posicion+"+"+QString::number(s.direccionLocal)+";//"+s.nombre+"\n";
-                  code->cadena3d+=valor+"=heap["+temp1+"];\n";
-              }else
-              {
-
-                  QString nombre=raiz->hijos[i].valor;
-                  s=code->getSimboloPorNombre(nombre);
-
-                  if(s.id=="")
-                  {
-                      return new Resultado("error",-1,"");
-                  }
-
-                  QString temp1=code->genTemp();
-
-                  code->cadena3d+=temp1+"=p"+s.direccionLocal+";//"+s.nombre+"\n";
-                  code->cadena3d+=valor+"=stack["+temp1+"];\n";
-
-              }
-
-          }else
-          {
-
-              QString nombre=raiz->hijos[i].hijos[0].valor;
-              s=code->getSimboloPorId("global$"+s.tipo+"$"+nombre);
-              if(s.id=="")
-              {
-                  return new Resultado("error",-1,"");
-              }
-
-              QString temp1=code->genTemp();
-              code->cadena3d+=temp1+"="+valor+"+"+QString::number(s.direccionLocal)+";\n";
-              code->cadena3d+=valor+"=heap["+temp1+"];\n";
-          }
-
-      }else if(raiz->hijos[i].tipo=="llamada")
-      {
-
-
-
-      }
-  }
-
-  return new Resultado(s.tipo,1,valor);
+  code->pilaAmbitos->clear();
+  code->copiarPila(ambitoAux,code->pilaAmbitos);
+  //QList<QString> *lista=code->pilaAmbitos;
+  code->cadena3d+="//fin acceso objeto\n";
+  //QString claseActual2=code->getClaseActual();
+  return new Resultado(s.tipo,1,tempActual);
 
 }
 
+
+QString Operaciones::getIndice(QList<QString> *dimensiones,QList<QString> *indices)
+{
+    //QList<QString> *dimensiones=new QList<QString>();
+    //QList<QString> *indices=new QList<QString>();
+
+    QString temp1=code->genTemp();
+    code->cadena3d+="//formula array\n";
+    code->cadena3d+=temp1+"="+indices->value(0)+";\n";
+    for(int i=1;i<dimensiones->count();i++)
+    {
+        QString temp2=code->genTemp();
+        code->cadena3d+=temp2+"="+temp1+"*"+dimensiones->value(i)+";\n";
+        QString temp3=code->genTemp();
+        code->cadena3d+=temp3+"="+temp2+"+"+indices->value(i)+";\n";
+
+        temp1=temp3;
+    }
+    code->cadena3d+="//fin formula array\n";
+    return temp1;
+}
 
 
 

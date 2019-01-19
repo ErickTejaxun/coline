@@ -258,8 +258,15 @@ IMPORTAR : importar parA cadena parC
 ICLASES :
         ICLASES ICLASE
         {
-         $$=$1;
-         $$->hijos.append(*$2);
+             $$=$1;
+             if($2->tipo == "constructor")
+             {
+                 $$->hijos.prepend(*$2);
+             }
+             else
+             {
+                $$->hijos.append(*$2);
+             }
         }
         |ICLASE
           {
@@ -768,7 +775,7 @@ CLASE: VISIBILIDAD clase id illave ICLASES fllave
                       nodoConstructor->hijos.append(*nodoDims);
                       nodoConstructor->hijos.append(*nodoParametros);
                       nodoConstructor->hijos.append(*nodoSentencias);
-                      $5->hijos.append(*nodoConstructor);
+                      $5->hijos.prepend(*nodoConstructor);
                       $$->hijos.replace(2,*$5);
                   }
               }
@@ -816,7 +823,7 @@ CLASE: VISIBILIDAD clase id illave ICLASES fllave
                       nodoConstructor->hijos.append(*nodoDims);
                       nodoConstructor->hijos.append(*nodoParametros);
                       nodoConstructor->hijos.append(*nodoSentencias);
-                      $4->hijos.append(*nodoConstructor);
+                      $4->hijos.prepend(*nodoConstructor);
                       $$->hijos.replace(2,*$4);
                   }
               }
